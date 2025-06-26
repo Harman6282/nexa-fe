@@ -1,113 +1,98 @@
-"use client"
-import Link from "next/link"
-import Image from "next/image"
-import { Bell, Menu, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
+"use client";
+
+import Link from "next/link";
+import { Search, Heart, ShoppingBag, User } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+} from "@/components/ui/dropdown-menu";
 
-export function Navbar() {
+const categories = [
+  { name: "MEN", href: "/men" },
+  { name: "WOMEN", href: "/women" },
+  { name: "KIDS", href: "/kids" },
+  { name: "HOME & LIVING", href: "/home-living" },
+  { name: "BEAUTY", href: "/beauty" },
+  { name: "STUDIO", href: "/studio" },
+];
+
+export const Navbar = () => {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        {/* Mobile menu */}
-        <div className="md:hidden mr-2">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-4">
-                <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
-                  <span>Your Brand</span>
-                </Link>
-                <div className="flex flex-col gap-2 mt-6">
-                  <Link href="/" className="hover:underline">
-                    Home
-                  </Link>
-                  <Link href="/about" className="hover:underline">
-                    About
-                  </Link>
-                  <Link href="/services" className="hover:underline">
-                    Services
-                  </Link>
-                  <Link href="/contact" className="hover:underline">
-                    Contact
-                  </Link>
-                </div>
-              </nav>
-            </SheetContent>
-          </Sheet>
-        </div>
-
+    <nav className="sticky top-0 z-50 bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <div className="mr-4 flex">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={32}
-              height={32}
-              className="h-8 w-auto"
-            />
-            <span className="hidden font-bold sm:inline-block">YourBrand</span>
-          </Link>
+        <Link
+          href="/"
+          className="text-xl font-extrabold text-black tracking-wide"
+        >
+          NEXA
+        </Link>
+
+        {/* Category Tabs */}
+        <div className="hidden lg:flex gap-6 text-sm font-medium tracking-wide">
+          {categories.map((cat) => (
+            <Link
+              key={cat.name}
+              href={cat.href}
+              className="text-gray-700 hover:text-black transition"
+            >
+              {cat.name}
+            </Link>
+          ))}
         </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex flex-1 justify-center">
-          <nav className="flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
-              Home
-            </Link>
-            <Link href="/about" className="text-sm font-medium transition-colors hover:text-primary">
-              About
-            </Link>
-            <Link href="/services" className="text-sm font-medium transition-colors hover:text-primary">
-              Services
-            </Link>
-            <Link href="/contact" className="text-sm font-medium transition-colors hover:text-primary">
-              Contact
-            </Link>
-          </nav>
-        </div>
+        {/* Right Icons */}
+        <div className="flex items-center gap-4">
+          {/* Search bar (hidden on small) */}
+          <div className="hidden md:block w-64">
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+              <Input
+                placeholder="Search for products, brands and more"
+                className="pl-10 text-sm rounded-sm border-gray-300"
+              />
+            </div>
+          </div>
 
-        {/* Right side actions */}
-        <div className="flex items-center justify-end space-x-2">
+          {/* Wishlist */}
           <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-            <span className="sr-only">Notifications</span>
+            <Heart className="h-5 w-5" />
           </Button>
 
+          {/* Bag */}
+          <Button variant="ghost" size="icon">
+            <ShoppingBag className="h-5 w-5" />
+          </Button>
+
+          {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <User className="h-5 w-5" />
-                <span className="sr-only">User menu</span>
+              <Button variant="ghost" size="icon">
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src="/profile.jpg" />
+                  <AvatarFallback>
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
                 <Link href="/profile">Profile</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/settings">Settings</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span className="text-destructive">Logout</span>
+              <DropdownMenuItem>Orders</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => alert("Logging out...")}>
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
-    </header>
-  )
-}
+    </nav>
+  );
+};
