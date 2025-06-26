@@ -18,7 +18,6 @@ const categories = [
   { name: "KIDS", href: "/kids" },
   { name: "HOME & LIVING", href: "/home-living" },
   { name: "BEAUTY", href: "/beauty" },
-  { name: "STUDIO", href: "/studio" },
 ];
 
 export const Navbar = () => {
@@ -35,13 +34,13 @@ export const Navbar = () => {
 
         {/* Category Tabs */}
         <div className="hidden lg:flex gap-6 text-sm font-medium tracking-wide">
-          {categories.map((cat) => (
+          {categories.map((tab) => (
             <Link
-              key={cat.name}
-              href={cat.href}
+              key={tab.name}
+              href={tab.href}
               className="text-gray-700 hover:text-black transition"
             >
-              {cat.name}
+              {tab.name}
             </Link>
           ))}
         </div>
