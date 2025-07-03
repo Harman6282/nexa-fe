@@ -53,25 +53,10 @@ const products = [
 export default function Home() {
   return (
     <div>
-      {/* Custom Navbar */}
-      <nav className={styles.navbar}>
-        <div className={styles.logo}>REFLECT</div>
-        <div className={styles.navLinks}>
-          {navLinks.map((link) => (
-            <Link key={link.name} href={link.href}>{link.name}</Link>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <span style={{ fontSize: 20, cursor: 'pointer' }}>🔍</span>
-          <span style={{ fontSize: 20, cursor: 'pointer' }}>❤️</span>
-          <span style={{ fontSize: 20, cursor: 'pointer' }}>🛒</span>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroText}>
-          <h1 className={styles.heroTitle}>REFLECT<br />FASHION</h1>
+          <h1 className={styles.heroTitle}>NEXA<br />FASHION</h1>
           <p className={styles.heroSubtitle}>
             Discover the latest trends in fashion for men and women. Shop the newest arrivals and elevate your style with our exclusive collection.
           </p>
