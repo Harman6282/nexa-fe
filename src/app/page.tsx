@@ -1,3 +1,4 @@
+import Banner from "@/components/landing-page/Banner";
 import { Navbar } from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
@@ -53,13 +54,8 @@ export default function Home() {
   return (
     <div>
       {/* Scrolling Banner */}
-      <div className="w-full overflow-hidden bg-black text-white whitespace-nowrap text-lg font-bold tracking-wider py-2 mb-8">
-        <span className="inline-block animate-marquee">
-          REFLECT FASHION &nbsp; ★ &nbsp; REFLECT FASHION &nbsp; ★ &nbsp;
-          REFLECT FASHION &nbsp; ★ &nbsp; REFLECT FASHION &nbsp; ★ &nbsp;
-          REFLECT FASHION &nbsp; ★ &nbsp; REFLECT FASHION &nbsp; ★ &nbsp;
-        </span>
-      </div>
+
+      <Banner />
 
       {/* Category Cards */}
       <section className="flex flex-col sm:flex-row gap-6 justify-center my-10">
@@ -82,7 +78,7 @@ export default function Home() {
           </div>
         ))}
       </section>
-
+      dslkfjdskfjdlkf
       {/* Product Collection */}
       <h2 className="text-2xl sm:text-3xl font-extrabold my-8 ml-2 sm:ml-8">
         OUR COLLECTION
