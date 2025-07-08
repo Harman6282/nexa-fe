@@ -54,17 +54,48 @@ const products = [
 
 
 export default function Home() {
- 
+
 
   return (
-    <div className="">
+    <div className="w-full min-h-screen">
+      {/* Image Carousel */}
+
+      <section className="flex flex-col md:flex-row items-center justify-between bg-white px-6 md:px-20 py-10 md:py-20">
+        {/* Left Content */}
+        <div className="md:w-1/2">
+          <h1 className="text-5xl md:text-9xl font-bold text-black ">
+            NEXA FASHION
+          </h1>
+          <p className="mt-6 text-gray-700 text-sm">
+            Discover a fashion experience that not only mirrors your unique personality
+            but amplifies it. At Nexa, every piece is crafted to elevate your confidence,
+            celebrate your individuality, and empower you to stand out effortlessly in any setting.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <button className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition">
+              Shop Now
+            </button>
+          </div>
+        </div>
+
+        {/* Right Image */}
+        <div className="mt-10 md:mt-0 md:w-1/2 flex justify-center">
+          <div className="rounded-3xl overflow-hidden">
+            <Image
+              src={"/hero.png"}
+              alt="Nexa Fashion Models"
+              width={600}
+              height={600}
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+
       {/* Scrolling Banner */}
       <Banner />
 
-      {/* Image Carousel */}
-
-      <Carousel />
-     
 
       {/* Category Cards */}
       <section className="flex flex-col sm:flex-row gap-6 justify-center my-10">
