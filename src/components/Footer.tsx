@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Facebook, Instagram, Linkedin, Twitter, Youtube, Mail } from "lucide-react";
+import Link from "next/link";
 
 const Footer = () => {
     return (
@@ -18,11 +19,11 @@ const Footer = () => {
                 <div>
                     <h2 className="text-lg font-semibold mb-4">Information</h2>
                     <ul className="space-y-2">
-                        <li><a href="#" className="hover:text-gray-400">My Account</a></li>
-                        <li><a href="#" className="hover:text-gray-400">Login</a></li>
-                        <li><a href="#" className="hover:text-gray-400">My Order</a></li>
-                        <li><a href="#" className="hover:text-gray-400">My Cart</a></li>
-                        <li><a href="#" className="hover:text-gray-400">Check Out</a></li>
+                        <li><Link href="#" className="hover:text-gray-400">My Account</Link></li>
+                        <li><Link href="#" className="hover:text-gray-400">Login</Link></li>
+                        <li><Link href="#" className="hover:text-gray-400">My Order</Link></li>
+                        <li><Link href="#" className="hover:text-gray-400">My Cart</Link></li>
+                        <li><Link href="#" className="hover:text-gray-400">Check Out</Link></li>
                     </ul>
                 </div>
 
@@ -30,24 +31,24 @@ const Footer = () => {
                 <div>
                     <h2 className="text-lg font-semibold mb-4">Service</h2>
                     <ul className="space-y-2">
-                        <li><a href="#" className="hover:text-gray-400">About Us</a></li>
-                        <li><a href="#" className="hover:text-gray-400">Delivery Policy</a></li>
-                        <li><a href="#" className="hover:text-gray-400">Privacy Policy</a></li>
-                        <li><a href="#" className="hover:text-gray-400">Refund Policy</a></li>
-                        <li><a href="#" className="hover:text-gray-400">Terms & Conditions</a></li>
+                        <li><Link href="#" className="hover:text-gray-400">About Us</Link></li>
+                        <li><Link href="#" className="hover:text-gray-400">Delivery Policy</Link></li>
+                        <li><Link href="#" className="hover:text-gray-400">Privacy Policy</Link></li>
+                        <li><Link href="#" className="hover:text-gray-400">Refund Policy</Link></li>
+                        <li><Link href="#" className="hover:text-gray-400">Terms & Conditions</Link></li>
                     </ul>
                 </div>
 
                 {/* Social Media */}
                 <div>
                     <h2 className="text-lg font-semibold mb-4">Social Media</h2>
-                    <div className="flex space-x-4">
-                        <a href="#" className="hover:text-gray-400"><Facebook /></a>
-                        <a href="#" className="hover:text-gray-400"><Instagram /></a>
-                        <a href="#" className="hover:text-gray-400"><Linkedin /></a>
-                        <a href="#" className="hover:text-gray-400"><Twitter /></a>
-                        <a href="#" className="hover:text-gray-400"><Youtube /></a>
-                        <a href="#" className="hover:text-gray-400"><Mail /></a>
+                    <div className="flex space-x-4 flex-wrap gap-1">
+                        <Link href="#" className="hover:text-gray-400"><Facebook /></Link>
+                        <Link href="#" className="hover:text-gray-400"><Instagram /></Link>
+                        <Link href="#" className="hover:text-gray-400"><Linkedin /></Link>
+                        <Link href="#" className="hover:text-gray-400"><Twitter /></Link>
+                        <Link href="#" className="hover:text-gray-400"><Youtube /></Link>
+                        <Link href="#" className="hover:text-gray-400"><Mail /></Link>
                     </div>
                 </div>
             </div>

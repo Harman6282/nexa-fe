@@ -14,7 +14,7 @@ const PromoAndNewsletter = () => {
         {/* Image */}
         <div className="rounded-lg overflow-hidden">
           <Image
-            src="https://images.unsplash.com/photo-1520975661595-6453be3f7070?auto=format&fit=crop&w=400&q=80"
+            src="/model.jpg"
             alt="Woman wearing black hat"
             width={400}
             height={400}
@@ -33,8 +33,8 @@ const PromoAndNewsletter = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="bg-gray-100 rounded-lg max-w-5xl mx-auto px-6 py-12 text-center space-y-6">
-        <h2 className="text-3xl md:text-4xl font-bold">SUBSCRIBE OUR NEWSLETTER</h2>
+      <section className="bg-gray-100 rounded-lg max-w-full mx-auto mb-5 px-6 py-7 xl:py-12 text-center space-y-6">
+        <h2 className="text-3xl md:text-5xl font-bold">SUBSCRIBE OUR NEWSLETTER</h2>
         <p className="text-gray-600 max-w-2xl mx-auto text-sm">
           Stay connected with the latest trends, exclusive offers, and behind-the-scenes updates by subscribing to our newsletter. Be the first to discover new collections and special promotions tailored just for you!
         </p>
@@ -44,7 +44,7 @@ const PromoAndNewsletter = () => {
             placeholder="Enter Your Email address here"
             className="flex-1 rounded-full"
           />
-          <Button type="submit" className="rounded-full px-6">
+          <Button type="submit" className="rounded-full px-6 bg-black text-white">
             <ArrowRight className="w-4 h-4" />
           </Button>
         </form>
