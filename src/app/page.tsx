@@ -6,6 +6,7 @@ import PromoAndNewsletter from "@/components/landing-page/PromoAndNewsletter";
 import { Navbar } from "@/components/Navbar";
 import Wrapper from "@/components/Wrapper";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
 
 
@@ -30,9 +31,9 @@ export default function Home() {
               celebrate your individuality, and empower you to stand out effortlessly in any setting.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <button className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition">
+              <Link href={"/products"} className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition">
                 Shop Now
-              </button>
+              </Link>
             </div>
           </div>
 
