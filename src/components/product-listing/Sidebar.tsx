@@ -29,7 +29,7 @@ const brands = [
   "HRX by Hrithik Roshan",
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ className }: { className?: string }) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -54,7 +54,9 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-80 p-5 border-r bg-white shadow-lg space-y-8">
+    <aside
+      className={`lg:w-60 p-5 border-r bg-white shadow-lg space-y-8 ${className}`}
+    >
       <h1 className="text-xl font-bold text-gray-800">Filters</h1>
 
       {/* Categories */}
