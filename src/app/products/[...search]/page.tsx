@@ -1,4 +1,7 @@
+"use client";
+
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -9,7 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
+import { Star, ArrowLeft } from "lucide-react";
 
 // Defining the TypeScript interfaces for our product data
 interface Image {
@@ -52,8 +55,8 @@ const productData: Product = {
   discount: 50,
   brand: "Adidas",
   categoryId: "5968739b-866a-4e21-8585-d5c0c97a8205",
-  ratings: 4.5, // Assuming a rating for demonstration
-  numReviews: 120, // Assuming a number of reviews for demonstration
+  ratings: 4.5,
+  numReviews: 120,
   createdAt: "2025-06-06T15:36:43.344Z",
   updatedAt: "2025-06-06T15:36:43.344Z",
   category: {
@@ -84,13 +87,26 @@ const productData: Product = {
 };
 
 export default function ProductDetailsPage() {
+  const router = useRouter();
+
   const discountedPrice =
     productData.price - (productData.price * productData.discount) / 100;
 
   return (
-    <div className="bg-white md:w-full text-black min-h-screen p-4 md:p-8">
-      <Card className="bg-white border-0 rounded-lg overflow-hidden lg:overflow-visible w-full max-w-6xl mx-auto">
-        <div className="md:grid md:grid-cols-2 ">
+    <div className="bg-white md:w-full text-black min-h-screen p-4 md:p-8 relative ">
+      {/* Go Back Button */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="absolute top-4 left-4 flex items-center gap-1 border border-gray-300"
+        onClick={() => router.push("/products")}
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back
+      </Button>
+
+      <Card className="bg-white border-0 rounded-lg overflow-hidden lg:overflow-visible w-full max-w-6xl mx-auto mt-8">
+        <div className="md:grid md:grid-cols-2 items-start">
           <div className="p-4">
             <Carousel className="w-full md:w-3/4 mx-auto lg:w-4/5">
               <CarouselContent className="border-0">
@@ -129,7 +145,7 @@ export default function ProductDetailsPage() {
               {productData.description}
             </p>
 
-            <div className="flex items-center mb-4">
+            <div className="flex items-start mb-4">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -157,7 +173,11 @@ export default function ProductDetailsPage() {
               </Badge>
             </div>
 
-            <Button size="lg" className="w-full bg-black text-white">
+            <Button
+              size="lg"
+              className="w-full bg-black text-white cursor-pointer hover:bg-gray-800"
+              onClick={() => alert("Added to cart!")}
+            >
               Add to Cart
             </Button>
           </div>

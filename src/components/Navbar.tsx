@@ -64,9 +64,11 @@ export const Navbar = () => {
           </Button>
 
           {/* Bag */}
-          <Button variant="ghost" size="icon">
-            <ShoppingBag className="h-5 w-5" />
-          </Button>
+          <Link href="/cart">
+            <Button variant="ghost" size="icon" className="cursor-pointer">
+              <ShoppingBag className="h-5 w-5 cursor-pointer" />
+            </Button>
+          </Link>
 
           {/* Profile Dropdown */}
           <DropdownMenu>

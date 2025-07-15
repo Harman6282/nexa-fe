@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
+import { redirect } from "next/navigation";
 
 type ProductCardProps = {
+  id: string;
+  slug: string;
   title: string;
   image: string[];
   brand: string;
@@ -13,6 +16,8 @@ type ProductCardProps = {
 };
 
 export const ProductCard = ({
+  slug,
+  id,
   title,
   image,
   brand,
@@ -22,7 +27,8 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   return (
     <Card
-      className={`rounded-sm border-0 py-0 hover:shadow-md transition-all overflow-hidden ${className}`}
+      onClick={() => redirect(`/products/${slug}`)}
+      className={`rounded-sm border-0 py-0 hover:shadow-md transition-all cursor-pointer overflow-hidden ${className}`}
     >
       {/* Image */}
       <div className="relative h-60">
