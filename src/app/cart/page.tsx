@@ -10,6 +10,7 @@ import {
   Truck,
   Trash2,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CartItem {
   id: string;
@@ -110,9 +111,9 @@ export default function Cart() {
             <ShoppingBag className="w-24 h-24 text-gray-300 mb-6" />
             <h2 className="text-2xl font-semibold mb-2">Your bag is empty</h2>
             <p className="text-gray-600 mb-6">Add items to it now.</p>
-            <button className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors">
+            <Button className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors">
               Shop Now
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -167,12 +168,12 @@ export default function Cart() {
                               Size: {item.size} | Color: {item.color}
                             </p>
                           </div>
-                          <button
+                          <Button
                             onClick={() => removeItem(item.id)}
                             className="text-gray-400 hover:text-gray-600 p-1"
                           >
                             <X className="w-5 h-5" />
-                          </button>
+                          </Button>
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -196,7 +197,7 @@ export default function Cart() {
 
                         <div className="flex items-center  justify-between mt-4">
                           <div className="flex items-center border rounded-lg">
-                            <button
+                            <Button
                               onClick={() =>
                                 updateQuantity(item.id, item.quantity - 1)
                               }
@@ -204,35 +205,35 @@ export default function Cart() {
                               disabled={item.quantity <= 1}
                             >
                               <Minus className="w-4 h-4" />
-                            </button>
+                            </Button>
                             <span className="px-4 py-2 font-semibold">
                               {item.quantity}
                             </span>
-                            <button
+                            <Button
                               onClick={() =>
                                 updateQuantity(item.id, item.quantity + 1)
                               }
                               className="p-2 hover:bg-gray-100"
                             >
                               <Plus className="w-4 h-4" />
-                            </button>
+                            </Button>
                           </div>
 
                           <div className="flex gap-4">
-                            <button
+                            <Button
                               onClick={() => moveToWishlist(item.id)}
                               className="flex items-center text-sm text-gray-600 hover:text-gray-900"
                             >
                               <Heart className="w-4 h-4 mr-1" />
                               <span className="hidden md:inline">WISHLIST</span>
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               onClick={() => removeItem(item.id)}
                               className="text-sm text-gray-600 hover:text-gray-900 flex items-center"
                             >
                               <Trash2 className="w-4 h-4 mr-1" />
                               <span className="hidden md:inline">REMOVE</span>
-                            </button>
+                            </Button>
                           </div>
                         </div>
 
@@ -289,9 +290,9 @@ export default function Cart() {
                 </div>
               </div>
 
-              <button className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
+              <Button className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
                 PLACE ORDER
-              </button>
+              </Button>
 
               <div className="text-center">
                 <p className="text-sm text-gray-600">
