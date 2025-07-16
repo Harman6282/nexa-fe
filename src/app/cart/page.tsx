@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface CartItem {
   id: string;
@@ -290,9 +291,11 @@ export default function Cart() {
                 </div>
               </div>
 
-              <Button className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
-                PLACE ORDER
-              </Button>
+              <Link href="/checkout">
+                <Button className="w-full cursor-pointer bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
+                  CHECKOUT
+                </Button>
+              </Link>
 
               <div className="text-center">
                 <p className="text-sm text-gray-600">

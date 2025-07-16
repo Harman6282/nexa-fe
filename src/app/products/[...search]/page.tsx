@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -14,17 +15,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, ArrowLeft } from "lucide-react";
 
-// Defining the TypeScript interfaces for our product data
-interface Image {
+// Interfaces
+interface Variant {
   id: string;
-  publicId: string;
-  url: string;
   productId: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
+  size: string;
+  color: string;
+  stock: number;
 }
 
 interface Product {
@@ -35,55 +32,52 @@ interface Product {
   price: number;
   discount: number;
   brand: string;
-  categoryId: string;
   ratings: number;
   numReviews: number;
-  createdAt: string;
-  updatedAt: string;
-  category: Category;
-  images: Image[];
-  variants: any[]; // Assuming variants can be of any type for now
+  images: { id: string; url: string }[];
+  variants: Variant[];
 }
 
-// The product data provided
 const productData: Product = {
   id: "4665f3cd-fa47-49b1-aa8e-981ef45d37cet",
   name: "Printed t-shirt ",
   slug: "printed-t-shirt-mKO_7Wiu",
-  description: "A colurful printed tshirt for mens",
+  description: "A colourful printed t-shirt for men",
   price: 2000,
   discount: 50,
   brand: "Adidas",
-  categoryId: "5968739b-866a-4e21-8585-d5c0c97a8205",
   ratings: 4.5,
   numReviews: 120,
-  createdAt: "2025-06-06T15:36:43.344Z",
-  updatedAt: "2025-06-06T15:36:43.344Z",
-  category: {
-    id: "5968739b-866a-4e21-8585-d5c0c97a8205",
-    name: "all",
-  },
   images: [
     {
-      id: "28b81780-3a38-4535-a911-c48dcd8ec66a",
-      publicId: "images/mhdawccg9qln730lokoc",
+      id: "1",
       url: "https://res.cloudinary.com/drr5mq41s/image/upload/v1749224200/images/mhdawccg9qln730lokoc.webp",
-      productId: "4665f3cd-fa47-49b1-aa8e-981ef45d37ce",
     },
     {
-      id: "1befb25c-99b4-4ec6-8508-d327e1ceed42",
-      publicId: "images/lk04yewtbzistjetducy",
+      id: "2",
       url: "https://res.cloudinary.com/drr5mq41s/image/upload/v1749224201/images/lk04yewtbzistjetducy.jpg",
-      productId: "4665f3cd-fa47-49b1-aa8e-981ef45d37ce",
     },
     {
-      id: "17a29ea2-77f8-4afd-aae4-de16d70dd739",
-      publicId: "images/w91bqviimw8ofuwlccmx",
+      id: "3",
       url: "https://res.cloudinary.com/drr5mq41s/image/upload/v1749224202/images/w91bqviimw8ofuwlccmx.png",
-      productId: "4665f3cd-fa47-49b1-aa8e-981ef45d37ce",
     },
   ],
-  variants: [],
+  variants: [
+    {
+      id: "732e34a0-b8d7-4f91-8564-336c5b2f3209",
+      productId: "4665f3cd-fa47-49b1-aa8e-981ef45d37cet",
+      size: "S",
+      color: "Red",
+      stock: 10,
+    },
+    {
+      id: "24eca498-0804-401f-9c3d-f3ae9a791a69",
+      productId: "4665f3cd-fa47-49b1-aa8e-981ef45d37cet",
+      size: "M",
+      color: "Blue",
+      stock: 4,
+    },
+  ],
 };
 
 export default function ProductDetailsPage() {
@@ -92,8 +86,18 @@ export default function ProductDetailsPage() {
   const discountedPrice =
     productData.price - (productData.price * productData.discount) / 100;
 
+  // State for selected variant
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
+  // Find variant based on selection
+  const selectedVariant = productData.variants.find(
+    (variant) =>
+      variant.size === selectedSize && variant.color === selectedColor
+  );
+
   return (
-    <div className="bg-white md:w-full text-black min-h-screen p-4 md:p-8 relative ">
+    <div className="bg-white md:w-full text-black min-h-screen p-4 md:p-8 relative">
       {/* Go Back Button */}
       <Button
         variant="outline"
@@ -107,6 +111,7 @@ export default function ProductDetailsPage() {
 
       <Card className="bg-white border-0 rounded-lg overflow-hidden lg:overflow-visible w-full max-w-6xl mx-auto mt-8">
         <div className="md:grid md:grid-cols-2 items-start">
+          {/* Images */}
           <div className="p-4">
             <Carousel className="w-full md:w-3/4 mx-auto lg:w-4/5">
               <CarouselContent className="border-0">
@@ -131,6 +136,7 @@ export default function ProductDetailsPage() {
             </Carousel>
           </div>
 
+          {/* Product Details */}
           <div className="p-6 md:p-8 flex flex-col justify-center">
             <Badge
               variant="outline"
@@ -145,8 +151,9 @@ export default function ProductDetailsPage() {
               {productData.description}
             </p>
 
-            <div className="flex items-start mb-4">
-              <div className="flex items-center">
+            {/* Ratings */}
+            <div className="flex items-center mb-4">
+              <div className="flex">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
@@ -163,7 +170,63 @@ export default function ProductDetailsPage() {
               </span>
             </div>
 
-            <div className="flex items-baseline gap-4 mb-6">
+            {/* Variant Selector */}
+            <div className="space-y-4">
+              {/* Size */}
+              <div>
+                <h3 className="text-sm font-medium mb-2">Select Size:</h3>
+                <div className="flex gap-2 flex-wrap">
+                  {[...new Set(productData.variants.map((v) => v.size))].map(
+                    (size) => (
+                      <Button
+                        key={size}
+                        variant={selectedSize === size ? "default" : "outline"}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {size}
+                      </Button>
+                    )
+                  )}
+                </div>
+              </div>
+
+              {/* Color */}
+              <div>
+                <h3 className="text-sm font-medium mb-2">Select Color:</h3>
+                <div className="flex gap-2 flex-wrap">
+                  {[...new Set(productData.variants.map((v) => v.color))].map(
+                    (color) => (
+                      <button
+                        key={color}
+                        onClick={() => setSelectedColor(color)}
+                        className={`w-8 h-8 rounded-full border-2 ${
+                          selectedColor === color
+                            ? "border-black"
+                            : "border-gray-300"
+                        }`}
+                        style={{ backgroundColor: color.toLowerCase() }}
+                      />
+                    )
+                  )}
+                </div>
+              </div>
+
+              {/* Stock Info */}
+              {selectedSize && selectedColor && (
+                <p
+                  className={`text-sm font-medium ${
+                    selectedVariant?.stock ? "text-green-400" : "text-red-400"
+                  }`}
+                >
+                  {selectedVariant?.stock
+                    ? `In Stock: ${selectedVariant.stock}`
+                    : "Out of Stock"}
+                </p>
+              )}
+            </div>
+
+            {/* Pricing */}
+            <div className="flex items-baseline gap-4 mt-6 mb-6">
               <span className="text-3xl font-bold">₹{discountedPrice}</span>
               <span className="text-xl text-gray-500 line-through">
                 ₹{productData.price}
@@ -173,12 +236,16 @@ export default function ProductDetailsPage() {
               </Badge>
             </div>
 
+            {/* Add to Cart */}
             <Button
               size="lg"
-              className="w-full bg-black text-white cursor-pointer hover:bg-gray-800"
-              onClick={() => alert("Added to cart!")}
+              disabled={!selectedVariant || selectedVariant?.stock === 0}
+              className="w-full bg-black text-white hover:bg-gray-800 disabled:bg-gray-400"
+              onClick={() =>
+                alert(`Added ${selectedSize} - ${selectedColor} to cart!`)
+              }
             >
-              Add to Cart
+              {selectedVariant?.stock === 0 ? "Out of Stock" : "Add to Cart"}
             </Button>
           </div>
         </div>
