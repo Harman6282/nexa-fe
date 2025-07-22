@@ -30,10 +30,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     setTimeout(() => {
       setLoading(false);
       alert(`${isLogin ? "Logged in" : "Registered"} successfully!`);
-    redirect("/")
-
+      redirect("/");
     }, 1000);
-
   };
 
   return (
