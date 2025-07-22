@@ -117,7 +117,7 @@ const ProductDetails = () => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${
+        className={`h-5 w-5 ${
           i < Math.floor(rating)
             ? "fill-yellow-400 text-yellow-400"
             : "fill-muted text-muted-foreground"
@@ -128,24 +128,26 @@ const ProductDetails = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-20 xl:px-36 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Image Gallery */}
-          <div className="space-y-4">
-            <div className="aspect-square overflow-hidden rounded-lg bg-muted">
+          <div className="space-y-5">
+            <div className="aspect-square overflow-hidden rounded-xl bg-muted shadow-md">
               <img
                 src={productData.images[selectedImage]?.url}
                 alt={productData.name}
-                className="h-full w-full object-cover object-top transition-transform hover:scale-105"
+                className="h-full w-full object-cover object-top transition-transform duration-300 hover:scale-105"
               />
             </div>
-            <div className="flex space-x-2">
+            <div className="flex space-x-3">
               {productData.images.map((image, index) => (
                 <button
                   key={image.id}
                   onClick={() => setSelectedImage(index)}
-                  className={`aspect-square w-20 overflow-hidden rounded-md border-2 transition-colors ${
-                    selectedImage === index ? "border-primary" : "border-muted"
+                  className={`aspect-square w-20 overflow-hidden rounded-lg border-2 transition-colors duration-200 ${
+                    selectedImage === index
+                      ? "border-black"
+                      : "border-muted"
                   }`}
                 >
                   <img
@@ -159,15 +161,15 @@ const ProductDetails = () => {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div>
-              <Badge variant="secondary" className="mb-2">
+              <Badge variant="secondary" className="mb-3">
                 {productData.brand}
               </Badge>
-              <h1 className="text-3xl font-bold text-foreground">
+              <h1 className="text-4xl font-bold text-foreground">
                 {productData.name}
               </h1>
-              <div className="flex items-center space-x-2 mt-2">
+              <div className="flex items-center space-x-2 mt-3">
                 <div className="flex">{renderStars(productData.ratings)}</div>
                 <span className="text-sm text-muted-foreground">
                   ({productData.numReviews} reviews)
@@ -175,15 +177,15 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl font-bold text-foreground">
-                  ${discountedPrice.toFixed(2)}
+            <div className="space-y-3">
+              <div className="flex items-center space-x-4">
+                <span className="text-4xl font-bold text-foreground">
+                  ₹{discountedPrice.toFixed(2)}
                 </span>
                 {productData.discount > 0 && (
                   <>
                     <span className="text-lg text-muted-foreground line-through">
-                      ${productData.price.toFixed(2)}
+                      ₹{productData.price.toFixed(2)}
                     </span>
                     <Badge variant="destructive">
                       {productData.discount}% OFF
@@ -193,32 +195,31 @@ const ProductDetails = () => {
               </div>
               {savings > 0 && (
                 <p className="text-sm text-green-600">
-                  You save ${savings.toFixed(2)}!
+                  You save ₹{savings.toFixed(2)}!
                 </p>
               )}
             </div>
 
             <Separator />
 
-            <div>
-              <h3 className="font-semibold mb-2">Description</h3>
-              <p className="text-muted-foreground">{productData.description}</p>
-            </div>
+            <p className="text-base text-muted-foreground">
+              {productData.description}
+            </p>
 
             {/* Size Selection */}
             <div>
               <h3 className="font-semibold mb-3">Size</h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {uniqueSizes.map((size) => (
                   <Button
                     key={size}
                     size="sm"
                     onClick={() => setSelectedSize(size)}
-                    className={
+                    className={`rounded-full px-4 py-1 text-sm transition-all duration-200 ${
                       selectedSize === size
                         ? "bg-black text-white"
-                        : "bg-white text-black border-1"
-                    }
+                        : "bg-white text-black border"
+                    }`}
                   >
                     {size}
                   </Button>
@@ -229,17 +230,17 @@ const ProductDetails = () => {
             {/* Color Selection */}
             <div>
               <h3 className="font-semibold mb-3">Color</h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {uniqueColors.map((color) => (
                   <Button
                     key={color}
-                    className={
-                      selectedColor === color
-                        ? "bg-black text-white"
-                        : "bg-white text-black border-1"
-                    }
                     size="sm"
                     onClick={() => setSelectedColor(color)}
+                    className={`rounded-full px-4 py-1 text-sm transition-all duration-200 ${
+                      selectedColor === color
+                        ? "bg-black text-white"
+                        : "bg-white text-black border"
+                    }`}
                   >
                     {color}
                   </Button>
@@ -247,25 +248,32 @@ const ProductDetails = () => {
               </div>
             </div>
 
+            {/* Stock Info */}
             {selectedSize && selectedColor && (
               <div>
                 {selectedVariant && selectedVariant.stock === 0 ? (
                   <span className="text-red-600 font-semibold">
                     Out of Stock
                   </span>
-                ) : null}
-                {!selectedVariant && (
-                  <span className="text-red-600 font-semibold">
-                    Out of Stock
-                  </span>
+                ) : (
+                  selectedVariant && (
+                    <span
+                      className={`font-medium ${
+                        selectedVariant.stock > 5
+                          ? "text-green-600"
+                          : "text-orange-500"
+                      }`}
+                    >
+                      {selectedVariant.stock} in stock
+                    </span>
+                  )
                 )}
               </div>
             )}
 
-            {/* Quantity */}
-            <div>
-              <h3 className="font-semibold mb-3">Quantity</h3>
-              <div className="flex items-center space-x-3">
+            {/* Quantity & Actions */}
+            <div className="space-y-5">
+              <div className="flex items-center space-x-4">
                 <Button
                   variant="outline"
                   size="sm"
@@ -274,7 +282,9 @@ const ProductDetails = () => {
                 >
                   <Minus className="h-4 w-4" />
                 </Button>
-                <span className="font-medium w-8 text-center">{quantity}</span>
+                <span className="font-medium text-lg w-8 text-center">
+                  {quantity}
+                </span>
                 <Button
                   variant="outline"
                   size="sm"
@@ -286,13 +296,9 @@ const ProductDetails = () => {
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-3">
               <Button
-                className="w-full"
-                size="lg"
+                className="w-full py-5 text-lg"
                 disabled={
                   !selectedSize ||
                   !selectedColor ||
@@ -300,37 +306,23 @@ const ProductDetails = () => {
                   selectedVariant.stock === 0
                 }
               >
-                <ShoppingCart className="mr-2 h-5 w-5" />
+                <ShoppingCart className="mr-3 h-5 w-5" />
                 Add to Cart
               </Button>
+
               <Button
                 variant="outline"
-                className="w-full"
-                size="lg"
+                className="w-full py-5 text-lg"
                 onClick={() => setIsWishlisted(!isWishlisted)}
               >
                 <Heart
-                  className={`mr-2 h-5 w-5 ${
-                    isWishlisted ? "fill-current text-red-500" : ""
+                  className={`mr-3 h-5 w-5 transition-transform duration-200 ${
+                    isWishlisted ? "fill-current text-red-500 scale-125" : ""
                   }`}
                 />
                 {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
               </Button>
             </div>
-
-            {/* Product Features */}
-            <Card>
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">Product Features</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Premium cotton fabric</li>
-                  <li>• Slim fit design</li>
-                  <li>• Machine washable</li>
-                  <li>• Wrinkle resistant</li>
-                  <li>• Professional styling</li>
-                </ul>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
