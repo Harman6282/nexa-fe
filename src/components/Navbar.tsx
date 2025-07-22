@@ -11,6 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import axios from "axios";
+import { useEffect } from "react";
+import { useProductStore } from "@/lib/store";
 
 const categories = [
   { name: "MEN", href: "/products/men" },
@@ -21,6 +24,18 @@ const categories = [
 ];
 
 export const Navbar = () => {
+  const { setProducts } = useProductStore();
+
+  const getProducts = async () => {
+    const response = await axios.get("http://localhost:3001/api/products");
+    console.log(response.data.data);
+    setProducts(response.data.data);
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">

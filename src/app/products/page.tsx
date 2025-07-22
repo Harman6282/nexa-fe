@@ -1,33 +1,20 @@
 "use client";
 import { ProductCard } from "@/components/product-listing/ProductCard";
 import Sidebar from "@/components/product-listing/Sidebar";
-import { data } from "@/lib/data";
 import { useParams } from "next/navigation";
-import axios from "axios";
-import { useEffect } from "react";
 import { useProductStore } from "@/lib/store";
 
 export default function Products() {
   const params = useParams<{ search?: string }>();
 
-  const { setProducts } = useProductStore();
-
-  const getProducts = async () => {
-    const response = await axios.get("http://localhost:3001/api/products");
-    console.log(response.data.data);
-    setProducts(response.data.data);
-  };
-
-  useEffect(() => {
-    getProducts();
-  }, []);
+  const products = useProductStore((state) => state.products);
 
   return (
     <div className="flex gap-1">
       <Sidebar className="hidden sm:inline-block w-1/4" />
 
       <div className="flex flex-wrap w-11/12 ps-5 md:gap-4 mx-auto justify-start my-3 pb-10">
-        {data.map((product) => (
+        {products.map((product) => (
           <ProductCard
             key={product.id}
             id={product.id}
