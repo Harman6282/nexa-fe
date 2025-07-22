@@ -10,7 +10,7 @@ const OrderSuccess: React.FC = () => {
       <CheckCircle className="w-20 h-20 text-green-500 animate-bounce" />
 
       {/* Heading */}
-      <h1 className="text-3xl font-bold mt-6">Order Placed Successfully!</h1>
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mt-6">Order Placed Successfully!</h1>
 
       {/* Subheading */}
       <p className="text-gray-600 mt-2 text-center">

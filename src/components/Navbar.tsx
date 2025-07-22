@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const categories = [
-  { name: "MEN", href: "/men" },
-  { name: "WOMEN", href: "/women" },
-  { name: "KIDS", href: "/kids" },
-  { name: "HOME & LIVING", href: "/home-living" },
-  { name: "BEAUTY", href: "/beauty" },
+  { name: "MEN", href: "/products/men" },
+  { name: "WOMEN", href: "/products/women" },
+  { name: "KIDS", href: "/products/kids" },
+  { name: "HOME & LIVING", href: "/products/home-living" },
+  { name: "BEAUTY", href: "/products/beauty" },
 ];
 
 export const Navbar = () => {
