@@ -6,7 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import Link from "next/link";
 
 export default function page() {
   return (
@@ -67,7 +73,9 @@ export default function page() {
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
-              <Label htmlFor="terms">I have read and agree to the Terms and Conditions.</Label>
+              <Label htmlFor="terms">
+                I have read and agree to the Terms and Conditions.
+              </Label>
             </div>
           </div>
         </div>
@@ -86,7 +94,9 @@ export default function page() {
             </div>
             <div className="flex items-center mt-4 mb-4">
               <Input placeholder="Discount code" className="mr-2" />
-              <Button className="bg-black text-white hover:bg-gray-800">Apply</Button>
+              <Button className="bg-black text-white hover:bg-gray-800">
+                Apply
+              </Button>
             </div>
             <Separator className="mb-4" />
             <div className="flex justify-between">
@@ -105,7 +115,11 @@ export default function page() {
               <span>Total</span>
               <span>$40.00</span>
             </div>
-            <Button className="w-full mt-4 bg-black text-white hover:bg-gray-800">Pay Now</Button>
+            <Link href={"/placed"}>
+              <Button className="w-full mt-4 bg-black text-white hover:bg-gray-800">
+                Pay Now
+              </Button>
+            </Link>
             <div className="flex items-center space-x-2 text-sm text-gray-600 mt-4">
               <span>🔒</span>
               <span>Secure Checkout - SSL Encrypted</span>
@@ -115,4 +129,4 @@ export default function page() {
       </div>
     </div>
   );
-};
+}
