@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useProductStore } from "@/lib/store";
 
 interface CartItem {
   id: string;
@@ -69,6 +70,9 @@ export default function Cart() {
     },
   ]);
 
+  const products = useProductStore((state) => state.products);
+
+  console.log("cart products", products[0]);
   const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
     setCartItems((items) =>

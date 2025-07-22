@@ -3,9 +3,25 @@ import { ProductCard } from "@/components/product-listing/ProductCard";
 import Sidebar from "@/components/product-listing/Sidebar";
 import { data } from "@/lib/data";
 import { useParams } from "next/navigation";
+import axios from "axios";
+import { useEffect } from "react";
+import { useProductStore } from "@/lib/store";
 
 export default function Products() {
   const params = useParams<{ search?: string }>();
+
+  const { setProducts } = useProductStore();
+
+  const getProducts = async () => {
+    const response = await axios.get("http://localhost:3001/api/products");
+    console.log(response.data.data);
+    setProducts(response.data.data);
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
   return (
     <div className="flex gap-1">
       <Sidebar className="hidden sm:inline-block w-1/4" />
