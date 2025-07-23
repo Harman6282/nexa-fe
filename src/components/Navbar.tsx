@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import axios from "axios";
 import { useEffect } from "react";
-import { useProductStore } from "@/lib/store";
+import { useProductStore, userStore } from "@/lib/store";
 
 const categories = [
   { name: "MEN", href: "/products/men" },
@@ -25,6 +25,7 @@ const categories = [
 
 export const Navbar = () => {
   const { setProducts } = useProductStore();
+  const { setUser } = userStore();
 
   const getProducts = async () => {
     const response = await axios.get("http://localhost:3001/api/products");
@@ -32,8 +33,18 @@ export const Navbar = () => {
     setProducts(response.data.data);
   };
 
+  const getUser = async () => {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+      withCredentials: true,
+    });
+    console.log(res.data.data);
+    setUser(res.data.data);
+  };
+
+
   useEffect(() => {
     getProducts();
+    getUser();
   }, []);
 
   return (

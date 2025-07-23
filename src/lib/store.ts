@@ -48,3 +48,33 @@ export const useProductStore = create<ProductStore>((set) => ({
 
   setProducts: (products) => set(() => ({ products })),
 }));
+
+type Count = {
+  cart: number;
+  address: number;
+  order: number;
+};
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  imageUrl: string;
+  address: [];
+  cart: [];
+  _count: Count;
+  order: [];
+  createdAt: Date;
+  updateAt: Date;
+};
+
+type UserStore = {
+  user: User | null;
+  setUser: (user: User) => void;
+};
+
+export const userStore = create<UserStore>((set) => ({
+  user: null,
+
+  setUser: (user) => set(() => ({ user })),
+}));
