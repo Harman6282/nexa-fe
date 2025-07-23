@@ -20,7 +20,7 @@ type Category = {
   name: string;
 };
 
-type Product = {
+export type ProductSchema = {
   id: string;
   name: string;
   slug: string;
@@ -39,8 +39,8 @@ type Product = {
 };
 
 type ProductStore = {
-  products: Product[];
-  setProducts: (products: Product[]) => void;
+  products: ProductSchema[];
+  setProducts: (products: ProductSchema[]) => void;
 };
 
 export const useProductStore = create<ProductStore>((set) => ({

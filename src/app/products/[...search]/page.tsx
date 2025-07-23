@@ -111,6 +111,12 @@ const ProductDetails = () => {
     ));
   };
 
+  async function handleAddToCart() {
+    console.log(productData?.id);
+    console.log("variant id : ", selectedVariant);
+    console.log("quantity: ", quantity);
+  }
+
   return (
     productData && (
       <div className="min-h-screen bg-background relative">
@@ -243,26 +249,24 @@ const ProductDetails = () => {
               </div>
 
               {/* Stock Info */}
-              {selectedSize && selectedColor && (
-                <div>
-                  {selectedVariant && selectedVariant.stock === 0 ? (
-                    <span className="text-red-600 font-semibold">
-                      Out of Stock
-                    </span>
+              {selectedSize && selectedColor ? (
+                selectedVariant ? (
+                  selectedVariant.stock > 0 ? (
+                    <p className="text-sm text-green-600">
+                      In stock: {selectedVariant.stock}
+                    </p>
                   ) : (
-                    selectedVariant && (
-                      <span
-                        className={`font-medium ${
-                          selectedVariant.stock > 5
-                            ? "text-green-600"
-                            : "text-orange-500"
-                        }`}
-                      >
-                        {selectedVariant.stock} in stock
-                      </span>
-                    )
-                  )}
-                </div>
+                    <p className="text-sm text-red-600 font-semibold">
+                      Out of stock
+                    </p>
+                  )
+                ) : (
+                  <p className="text-sm text-red-600">out of stock</p>
+                )
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Select size and color
+                </p>
               )}
 
               {/* Quantity & Actions */}
@@ -292,13 +296,14 @@ const ProductDetails = () => {
                 </div>
 
                 <Button
-                  className="w-full py-5 text-lg"
+                  className="w-full py-5 text-lg bg-black text-white cursor-pointer"
                   disabled={
                     !selectedSize ||
                     !selectedColor ||
                     !selectedVariant ||
                     selectedVariant.stock === 0
                   }
+                  onClick={handleAddToCart}
                 >
                   <ShoppingCart className="mr-3 h-5 w-5" />
                   Add to Cart
