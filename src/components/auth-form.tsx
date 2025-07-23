@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,26 +14,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { redirect } from "next/navigation";
+import { loginSchema, registerSchema } from "@/lib/validator";
+import axios from "axios";
 
 interface AuthFormProps {
   type: "login" | "register";
 }
 
 export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
-  const [loading, setLoading] = useState(false);
-
   const isLogin = type === "login";
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(isLogin ? loginSchema : registerSchema),
+  });
 
-    // Mock API delay
-    setTimeout(() => {
-      setLoading(false);
-      alert(`${isLogin ? "Logged in" : "Registered"} successfully!`);
-      redirect("/");
-    }, 1000);
+  const onSubmit = async (data: any) => {
+    console.log(data);
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/${isLogin ? "login" : "register"}`, data,{
+      withCredentials: true,
+    });
+    console.log(response.data);
+    alert(`${isLogin ? "Logged in" : "Registered"} successfully!`);
+    redirect("/");
   };
 
   return (
@@ -42,36 +50,63 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
             {isLogin ? "Welcome Back 👋" : "Create Your Account 🚀"}
           </CardTitle>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
+            {/* Full Name (only for register) */}
             {!isLogin && (
+              <div>
+                <Input
+                  type="text"
+                  placeholder="Full Name"
+                  {...register("email")}
+                  className="focus-visible:ring-black"
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.email.message?.toString()}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Email */}
+            <div>
               <Input
-                type="text"
-                placeholder="Full Name"
-                required
+                type="email"
+                placeholder="Email"
+                {...register("email")}
                 className="focus-visible:ring-black"
               />
-            )}
-            <Input
-              type="email"
-              placeholder="Email"
-              required
-              className="focus-visible:ring-black"
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              required
-              className="focus-visible:ring-black"
-            />
+              {errors.email && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.email.message?.toString()}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <Input
+                type="password"
+                placeholder="Password"
+                {...register("password")}
+                className="focus-visible:ring-black"
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.password.message?.toString()}
+                </p>
+              )}
+            </div>
           </CardContent>
+
           <CardFooter className="flex flex-col gap-3">
             <Button
               type="submit"
               className="w-full mt-4 bg-black text-white hover:bg-gray-800"
-              disabled={loading}
+              disabled={isSubmitting}
             >
-              {loading
+              {isSubmitting
                 ? isLogin
                   ? "Logging in..."
                   : "Registering..."
