@@ -38,8 +38,8 @@ export default function page() {
         { withCredentials: true }
       );
       console.log(response.data);
-      toast.success("Logged in successfully!");
       redirect("/");
+      toast.success("Logged in successfully!");
     } catch (error: any) {
       console.error(error);
       toast.error("Login failed. Please try again.");

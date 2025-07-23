@@ -1,12 +1,9 @@
 "use client";
 import { ProductCard } from "@/components/product-listing/ProductCard";
 import Sidebar from "@/components/product-listing/Sidebar";
-import { useParams } from "next/navigation";
 import { useProductStore } from "@/lib/store";
 
 export default function Products() {
-  const params = useParams<{ search?: string }>();
-
   const products = useProductStore((state) => state.products);
 
   return (
