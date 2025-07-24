@@ -31,7 +31,7 @@ export const ProductCard = ({
         console.log(id);
         redirect(`/products/${slug}`);
       }}
-      className={`rounded-sm border-0 py-0 hover:shadow-md transition-all cursor-pointer overflow-hidden ${className}`}
+      className={`rounded-sm  h-1/2 border-0 py-0 hover:shadow-md transition-all cursor-pointer overflow-hidden ${className}`}
     >
       {/* Image */}
       <div className="relative h-60">
@@ -39,7 +39,7 @@ export const ProductCard = ({
           src={image[0]}
           alt={brand}
           fill
-          className="object-cover object-center "
+          className="object-cover object-top "
           sizes="(max-width: 768px) 100vw, 256px"
         />
       </div>

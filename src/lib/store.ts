@@ -28,7 +28,7 @@ export type ProductSchema = {
   price: number;
   discount: number;
   brand: string;
-  categoryId: string;
+  categoryName: string;
   ratings: number;
   numReviews: number;
   createdAt: string;

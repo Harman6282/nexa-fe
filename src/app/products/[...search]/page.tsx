@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { redirect, useRouter } from "next/navigation"; // 🚨 Import router
+import { redirect, usePathname, useRouter } from "next/navigation"; // 🚨 Import router
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,13 +58,15 @@ interface Product {
 const ProductDetails = () => {
   const params = useParams();
   const [productData, setProductData] = useState<Product>();
+  const path = usePathname();
+  console.log(path);
 
-  const slug = params?.search?.toString();
-  console.log(slug);
+  const q = params?.search?.toString();
+  console.log(q);
 
   const getProduct = async () => {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${slug}`
+      `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${q}`
     );
     console.log(res.data.data[0]);
     setProductData(res.data.data[0]);

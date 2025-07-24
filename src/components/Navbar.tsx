@@ -16,11 +16,11 @@ import { useEffect } from "react";
 import { useProductStore, userStore } from "@/lib/store";
 
 const categories = [
-  { name: "MEN", href: "/products/men" },
-  { name: "WOMEN", href: "/products/women" },
-  { name: "KIDS", href: "/products/kids" },
-  { name: "HOME & LIVING", href: "/products/home-living" },
-  { name: "BEAUTY", href: "/products/beauty" },
+  { name: "MEN", href: "/products?category=men" },
+  { name: "WOMEN", href: "/products?category=women" },
+  { name: "KIDS", href: "/products?category=kids" },
+  { name: "HOME & LIVING", href: "/products?category=home&living" },
+  { name: "BEAUTY", href: "/products?category=beauty" },
 ];
 
 export const Navbar = () => {
@@ -30,6 +30,7 @@ export const Navbar = () => {
   const getProducts = async () => {
     const response = await axios.get("http://localhost:3001/api/products");
     setProducts(response.data.data);
+    console.log(response.data.data)
   };
 
   const getUser = async () => {
