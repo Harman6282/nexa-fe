@@ -129,7 +129,7 @@ export default function Cart() {
                   <div className="space-y-6">
                     {cartItems.map((item: any) => (
                       <div
-                        key={item.product.id}
+                        key={item.product.id + Date.now()}
                         className="flex gap-4 pb-6 border-b border-gray-100 last:border-b-0"
                       >
                         <div className="w-20 h-28 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">

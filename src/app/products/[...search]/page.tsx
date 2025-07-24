@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { redirect, usePathname, useRouter } from "next/navigation"; // 🚨 Import router
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 import {
   Star,
   Heart,
@@ -13,6 +13,7 @@ import {
   Minus,
   Plus,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import axios from "axios";
@@ -59,10 +60,8 @@ const ProductDetails = () => {
   const params = useParams();
   const [productData, setProductData] = useState<Product>();
   const path = usePathname();
-  console.log(path);
 
   const q = params?.search?.toString();
-  console.log(q);
 
   const getProduct = async () => {
     const res = await axios.get(
@@ -81,6 +80,7 @@ const ProductDetails = () => {
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [addingState, setAddingState] = useState(false);
 
   const discountedPrice = productData
     ? productData.price * (1 - productData.discount / 100)
@@ -113,10 +113,26 @@ const ProductDetails = () => {
     ));
   };
 
+  const data = {
+    productId: productData?.id,
+    variantId: selectedVariant?.id,
+    quantity: quantity,
+  };
+
   async function handleAddToCart() {
-    console.log(productData?.id);
-    console.log("variant id : ", selectedVariant);
-    console.log("quantity: ", quantity);
+    setAddingState(true);
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/cart/add`,
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+    toast.success("Added to cart", {
+      className: "bg-red text-black border border-gray-200",
+    });
+
+    setAddingState(false);
   }
 
   return (
@@ -303,12 +319,17 @@ const ProductDetails = () => {
                     !selectedSize ||
                     !selectedColor ||
                     !selectedVariant ||
-                    selectedVariant.stock === 0
+                    selectedVariant.stock === 0 ||
+                    addingState
                   }
                   onClick={handleAddToCart}
                 >
                   <ShoppingCart className="mr-3 h-5 w-5" />
-                  Add to Cart
+                  {addingState ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    " Add to Cart"
+                  )}
                 </Button>
 
                 <Button
