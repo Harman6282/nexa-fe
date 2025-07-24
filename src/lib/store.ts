@@ -82,12 +82,20 @@ type UserStore = {
   cartItems: CartItems[] | null;
   setUser: (user: User) => void;
   setCartItems: (cart: CartItems[]) => void;
+  removeFromCart: (id: string) => void
+  clearCart: () => void
 };
 
 export const userStore = create<UserStore>((set) => ({
   user: null,
   cartItems: null,
 
+
+
   setUser: (user) => set(() => ({ user })),
   setCartItems: (cartItems) => set(() => ({ cartItems })),
+  removeFromCart: (id) => set((state) => ({
+    cartItems: state.cartItems?.filter(item => item.id != id)
+  })),
+  clearCart: () => set({ cartItems: [] }),
 }));

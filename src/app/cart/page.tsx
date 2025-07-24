@@ -15,6 +15,7 @@ import Link from "next/link";
 import { ProductSchema, useProductStore, userStore } from "@/lib/store";
 import axios from "axios";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface CartItem {
   id: string;
@@ -27,6 +28,7 @@ interface CartItem {
 export default function Cart() {
   const { setCartItems } = userStore();
   const cartItems = userStore((state) => state.cartItems);
+  const { removeFromCart } = userStore();
 
   const subtotal = cartItems?.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
@@ -54,6 +56,19 @@ export default function Cart() {
     getCart();
   }, []);
   console.log("cartItems: ", cartItems);
+
+  async function removeItem(id: string) {
+    removeFromCart(id);
+    toast.success("Item removed");
+
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_URL}/cart/delete/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(res.data);
+  }
 
   if (cartItems?.length === 0) {
     return (
@@ -101,9 +116,9 @@ export default function Cart() {
                 </div>
 
                 <div className="space-y-6">
-                  {cartItems.map((item: any) => (
+                  {cartItems.map((item: any, index) => (
                     <div
-                      key={item.product.id + Date.now()}
+                      key={item.product.id + index}
                       className="flex gap-4 pb-6 border-b border-gray-100 last:border-b-0"
                     >
                       <div className="w-20 h-28 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
@@ -131,7 +146,7 @@ export default function Cart() {
                             </p>
                           </div>
                           <Button
-                            // onClick={() => removeItem(item.id)}
+                            onClick={() => removeItem(item.id)}
                             className="text-gray-400 hover:text-gray-600 p-1"
                           >
                             <X className="w-5 h-5" />
@@ -190,7 +205,7 @@ export default function Cart() {
                               <span className="hidden md:inline">WISHLIST</span>
                             </Button>
                             <Button
-                              // onClick={() => removeItem(item.id)}
+                              onClick={() => removeItem(item.id)}
                               className="text-sm text-gray-600 hover:text-gray-900 flex items-center"
                             >
                               <Trash2 className="w-4 h-4 mr-1" />
