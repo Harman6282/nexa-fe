@@ -68,13 +68,26 @@ type User = {
   updateAt: Date;
 };
 
+export interface CartItems {
+  id: string;
+  productId: string;
+  product: ProductSchema;
+  variant: Variant;
+  quantity: number;
+  inStock: boolean;
+}
+
 type UserStore = {
   user: User | null;
+  cartItems: CartItems[] | null;
   setUser: (user: User) => void;
+  setCartItems: (cart: CartItems[]) => void;
 };
 
 export const userStore = create<UserStore>((set) => ({
   user: null,
+  cartItems: null,
 
   setUser: (user) => set(() => ({ user })),
+  setCartItems: (cartItems) => set(() => ({ cartItems })),
 }));
