@@ -17,18 +17,10 @@ import axios from "axios";
 import Image from "next/image";
 import { toast } from "sonner";
 
-interface CartItem {
-  id: string;
-  productId: string;
-  product: ProductSchema;
-  quantity: number;
-  inStock: boolean;
-}
-
 export default function Cart() {
   const { setCartItems } = userStore();
   const cartItems = userStore((state) => state.cartItems);
-  const { removeFromCart } = userStore();
+  const { removeFromCart, increaseQuantity, decreaseQuantity } = userStore();
 
   const subtotal = cartItems?.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
@@ -67,6 +59,47 @@ export default function Cart() {
         withCredentials: true,
       }
     );
+  }
+
+  async function increaseItemQty(
+    itemId: string,
+    qty: number,
+    variantId: string
+  ) {
+    increaseQuantity(itemId);
+    // console.log(qty + 1, variantId);
+    let data = {
+      quantity: qty + 1,
+      variantId,
+    };
+    const res = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log(res.data);
+  }
+  async function decreaseItemQty(
+    itemId: string,
+    qty: number,
+    variantId: string
+  ) {
+    decreaseQuantity(itemId);
+    let data = {
+      quantity: qty - 1,
+      variantId,
+    };
+    const res = await axios.put(
+      `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+
     console.log(res.data);
   }
 
@@ -175,9 +208,13 @@ export default function Cart() {
                         <div className="flex items-center  justify-between mt-4">
                           <div className="flex items-center border rounded-lg">
                             <Button
-                              // onClick={() =>
-                              //   updateQuantity(item.id, item.quantity - 1)
-                              // }
+                              onClick={() =>
+                                decreaseItemQty(
+                                  item.id,
+                                  item.quantity,
+                                  item.variantId
+                                )
+                              }
                               className="p-2 hover:bg-gray-100 disabled:opacity-50"
                               disabled={item.quantity <= 1}
                             >
@@ -187,9 +224,14 @@ export default function Cart() {
                               {item.quantity}
                             </span>
                             <Button
-                              // onClick={() =>
-                              //   updateQuantity(item.id, item.quantity + 1)
-                              // }
+                              onClick={() =>
+                                increaseItemQty(
+                                  item.id,
+                                  item.quantity,
+                                  item.variantId
+                                )
+                              }
+                              disabled={item.quantity === item.variant.stock}
                               className="p-2 hover:bg-gray-100"
                             >
                               <Plus className="w-4 h-4" />

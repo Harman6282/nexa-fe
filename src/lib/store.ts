@@ -82,20 +82,41 @@ type UserStore = {
   cartItems: CartItems[] | null;
   setUser: (user: User) => void;
   setCartItems: (cart: CartItems[]) => void;
-  removeFromCart: (id: string) => void
-  clearCart: () => void
+  removeFromCart: (id: string) => void;
+  clearCart: () => void;
+  increaseQuantity: (id: string) => void;
+  decreaseQuantity: (id: string) => void;
 };
 
 export const userStore = create<UserStore>((set) => ({
   user: null,
   cartItems: null,
 
-
-
   setUser: (user) => set(() => ({ user })),
   setCartItems: (cartItems) => set(() => ({ cartItems })),
-  removeFromCart: (id) => set((state) => ({
-    cartItems: state.cartItems?.filter(item => item.id != id)
-  })),
+  removeFromCart: (id) =>
+    set((state) => ({
+      cartItems: state.cartItems?.filter((item) => item.id != id),
+    })),
   clearCart: () => set({ cartItems: [] }),
+  increaseQuantity: (id: string) =>
+    set((state) => ({
+      cartItems: state.cartItems?.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              quantity: Math.min(item.quantity + 1, item.variant.stock),
+            }
+          : item
+      ),
+    })),
+
+  decreaseQuantity: (id: string) =>
+    set((state) => ({
+      cartItems: state.cartItems
+        ?.map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) => item.quantity > 0),
+    })),
 }));

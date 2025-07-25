@@ -17,59 +17,19 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import axios from "axios";
-
-interface ProductImage {
-  id: string;
-  publicId: string;
-  url: string;
-  productId: string;
-}
-
-interface ProductVariant {
-  id: string;
-  productId: string;
-  size: string;
-  color: string;
-  stock: number;
-}
-
-interface Category {
-  id: string;
-  name: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  discount: number;
-  brand: string;
-  categoryId: string;
-  ratings: number;
-  numReviews: number;
-  createdAt: string;
-  updatedAt: string;
-  category: Category;
-  images: ProductImage[];
-  variants: ProductVariant[];
-}
+import { ProductSchema, useProductStore } from "@/lib/store";
 
 const ProductDetails = () => {
   const params = useParams();
-  const [productData, setProductData] = useState<Product>();
-  const path = usePathname();
+  const [productData, setProductData] = useState<ProductSchema>();
+  const products = useProductStore((state) => state.products);
 
-  const q = params?.search?.toString();
+  const slug = params?.search?.toString();
 
-  const getProduct = async () => {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${q}`
-    );
-    console.log(res.data.data[0]);
-    setProductData(res.data.data[0]);
-  };
+  function getProduct() {
+    const item = products.find((item) => item.slug == slug);
+    setProductData(item);
+  }
 
   useEffect(() => {
     getProduct();
