@@ -1,132 +1,384 @@
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
   Select,
-  SelectTrigger,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
+import { Plus, MapPin, CreditCard } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { userStore } from "@/lib/store";
 
-export default function page() {
+interface Address {
+  id: string;
+  lineOne: string;
+  lineTwo?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+}
+
+interface CheckoutForm {
+  selectedAddress: string;
+}
+
+interface AddAddressForm {
+  lineOne: string;
+  lineTwo?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+}
+
+const Checkout = () => {
+  const [addresses, setAddresses] = useState<Address[]>([]);
+
+  const userAddresses = userStore((state) => state.user?.address);
+
+  useEffect(() => {
+    if (userAddresses) {
+      setAddresses(userAddresses);
+    }
+  }, []);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // main checkout form
+  const checkoutForm = useForm<CheckoutForm>({
+    defaultValues: {
+      selectedAddress: "",
+    },
+  });
+
+  const addAddressForm = useForm<AddAddressForm>({
+    defaultValues: {
+      lineOne: "",
+      lineTwo: "",
+      city: "",
+      state: "",
+      pincode: "",
+      country: "",
+    },
+  });
+
+  const onSubmitNewAddress = (data: AddAddressForm) => {
+    const newAddr: Address = {
+      id: Date.now().toString(),
+      ...data,
+    };
+    setAddresses((prev) => [...prev, newAddr]);
+    checkoutForm.setValue("selectedAddress", newAddr.id);
+    addAddressForm.reset();
+    setIsDialogOpen(false);
+  };
+
+  const subtotal = 89.99;
+  const shipping = 9.99;
+  const tax = 7.2;
+  const total = subtotal + shipping + tax;
+
+  async function onPayNow() {
+    const selectedId = checkoutForm.getValues("selectedAddress");
+    console.log("Selected Address ID:", selectedId);
+  }
+
   return (
-    <div className="min-h-screen bg-white text-black flex items-center justify-center p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
-        {/* Left Side - Shipping Info */}
-        <div>
-          <h1 className="text-3xl font-bold mb-4">Checkout</h1>
-          <h2 className="text-lg font-semibold mb-2">Shipping Information</h2>
-          <RadioGroup defaultValue="delivery" className="flex space-x-4 mb-6">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="delivery" id="delivery" />
-              <Label htmlFor="delivery">Delivery</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="pickup" id="pickup" />
-              <Label htmlFor="pickup">Pick up</Label>
-            </div>
-          </RadioGroup>
-
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <Label htmlFor="name">Full name *</Label>
-              <Input id="name" placeholder="Enter your name" />
-            </div>
-            <div>
-              <Label htmlFor="email">Email address *</Label>
-              <Input id="email" placeholder="Enter your email" />
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone number *</Label>
-              <Input id="phone" placeholder="Enter your phone number" />
-            </div>
-            <div>
-              <Label htmlFor="country">Country *</Label>
-              <Select>
-                <SelectTrigger id="country">Choose country</SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="india">India</SelectItem>
-                  <SelectItem value="usa">USA</SelectItem>
-                  <SelectItem value="uk">UK</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <Label htmlFor="city">City</Label>
-                <Input id="city" placeholder="Enter city" />
-              </div>
-              <div>
-                <Label htmlFor="state">State</Label>
-                <Input id="state" placeholder="Enter state" />
-              </div>
-              <div>
-                <Label htmlFor="zip">ZIP Code</Label>
-                <Input id="zip" placeholder="Enter ZIP code" />
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
-              <Label htmlFor="terms">
-                I have read and agree to the Terms and Conditions.
-              </Label>
-            </div>
-          </div>
+    <div className="min-h-screen p-4 md:p-6 bg-background">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground">Checkout</h1>
+          <p className="text-muted-foreground mt-2">Complete your order</p>
         </div>
 
-        {/* Right Side - Order Summary */}
-        <Card className="bg-gray-100 border border-gray-300 rounded-xl p-6">
-          <CardContent>
-            <h2 className="text-lg font-semibold mb-4">Review your cart</h2>
-            <div className="flex justify-between mb-2">
-              <span>DuoComfort Sofa Premium</span>
-              <span>$20.00</span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span>IronOne Desk</span>
-              <span>$25.00</span>
-            </div>
-            <div className="flex items-center mt-4 mb-4">
-              <Input placeholder="Discount code" className="mr-2" />
-              <Button className="bg-black text-white hover:bg-gray-800">
-                Apply
-              </Button>
-            </div>
-            <Separator className="mb-4" />
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>$45.00</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Shipping</span>
-              <span>$5.00</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Discount</span>
-              <span>-$10.00</span>
-            </div>
-            <div className="flex justify-between font-bold text-lg mt-2">
-              <span>Total</span>
-              <span>$40.00</span>
-            </div>
-            <Link href={"/placed"}>
-              <Button className="w-full mt-4 bg-black text-white hover:bg-gray-800">
-                Pay Now
-              </Button>
-            </Link>
-            <div className="flex items-center space-x-2 text-sm text-gray-600 mt-4">
-              <span>🔒</span>
-              <span>Secure Checkout - SSL Encrypted</span>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Shipping Address
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Form {...checkoutForm}>
+                  <form className="space-y-4">
+                    <FormField
+                      control={checkoutForm.control}
+                      name="selectedAddress"
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="space-y-3"
+                        >
+                          {addresses.map((address) => (
+                            <div
+                              key={address.id}
+                              className="flex items-start space-x-3"
+                            >
+                              <RadioGroupItem
+                                value={address.id}
+                                id={address.id}
+                                className="mt-1"
+                              />
+                              <Label
+                                htmlFor={address.id}
+                                className="flex-1 cursor-pointer"
+                              >
+                                <div className="p-4 border rounded-lg hover:bg-accent transition-colors">
+                                  <div className="font-medium flex items-center gap-2">
+                                    {address.lineOne}
+                                    {/* {address.isDefault && (
+                                      <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
+                                        Default
+                                      </span>
+                                    )} */}
+                                  </div>
+                                  <div className="text-sm text-muted-foreground mt-1">
+                                    {address.lineTwo}
+                                    <br />
+                                    {address.city}, {address.state}{" "}
+                                    {address.pincode}
+                                    <br />
+                                    {address.country}
+                                  </div>
+                                </div>
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      )}
+                    />
+                  </form>
+                </Form>
+
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full bg-black text-white mt-4"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add New Address
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md bg-white">
+                    <DialogHeader>
+                      <DialogTitle>Add New Address</DialogTitle>
+                    </DialogHeader>
+                    <Form {...addAddressForm}>
+                      <form
+                        onSubmit={addAddressForm.handleSubmit(
+                          onSubmitNewAddress
+                        )}
+                        className="space-y-4 bg-white text-black p-5"
+                      >
+                        <FormField
+                          control={addAddressForm.control}
+                          name="lineOne"
+                          rules={{ required: "Required" }}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Line one</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Home / Office" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={addAddressForm.control}
+                          name="lineTwo"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                Line two <span>(optional)</span>
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="123 Main Street"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={addAddressForm.control}
+                            name="city"
+                            rules={{ required: "Required" }}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>City</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="City" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={addAddressForm.control}
+                            name="state"
+                            rules={{ required: "Required" }}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>State</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="State" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={addAddressForm.control}
+                            name="pincode"
+                            rules={{ required: "Required" }}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>ZIP Code</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="10001" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={addAddressForm.control}
+                            name="country"
+                            rules={{ required: "Required" }}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Country</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="country" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="flex gap-2 pt-4 items-center mt-4">
+                          <Button
+                            type="submit"
+                            className="flex-1 bg-black text-white "
+                          >
+                            Add Address
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setIsDialogOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Order Summary */}
+          <div className="lg:col-span-1">
+            <Card className="sticky top-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5" />
+                  Order Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span>${shipping.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Tax</span>
+                    <span>${tax.toFixed(2)}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between font-semibold">
+                    <span>Total</span>
+                    <span>${total.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <Button
+                  className="w-full bg-black text-white"
+                  size="lg"
+                  disabled={!checkoutForm.watch("selectedAddress")}
+                  onClick={() => onPayNow()}
+                >
+                  Pay Now
+                </Button>
+
+                {!checkoutForm.watch("selectedAddress") && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    Please select a shipping address to continue
+                  </p>
+                )}
+
+                <div className="pt-4 space-y-2">
+                  <div className="text-xs text-muted-foreground">
+                    • Secure SSL encryption
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    • 30-day money-back guarantee
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    • Free returns on all orders
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default Checkout;
