@@ -32,6 +32,7 @@ import {
 import { Plus, MapPin, CreditCard } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { userStore } from "@/lib/store";
+import axios from "axios";
 
 interface Address {
   id: string;
@@ -60,14 +61,13 @@ const Checkout = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
 
   const userAddresses = userStore((state) => state.user?.address);
+  const cartId = userStore((state) => state?.user?.cart[0].id);
 
   useEffect(() => {
     if (userAddresses) {
       setAddresses(userAddresses);
     }
   }, []);
-
-          
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -107,7 +107,18 @@ const Checkout = () => {
 
   async function onPayNow() {
     const selectedId = checkoutForm.getValues("selectedAddress");
-    console.log("Selected Address ID:", selectedId);
+    const data = {
+      cartId: cartId,
+      addressId: selectedId,
+    };
+
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/orders`,
+      data,
+      { withCredentials: true }
+    );
+
+    console.log(res.data.data)
   }
 
   return (

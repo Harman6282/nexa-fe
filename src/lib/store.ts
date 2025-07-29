@@ -61,7 +61,10 @@ type User = {
   email: string;
   imageUrl: string;
   address: [];
-  cart: [];
+  cart: {
+    id: string;
+    userId: string;
+  }[];
   _count: Count;
   order: [];
   createdAt: Date;
