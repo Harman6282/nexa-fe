@@ -118,7 +118,7 @@ const Checkout = () => {
       { withCredentials: true }
     );
 
-    console.log(res.data.data)
+    console.log(res.data.data);
   }
 
   return (

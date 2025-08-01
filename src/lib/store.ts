@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type Image = {
+export type ImageSchema = {
   id: string;
   publicId: string;
   url: string;
@@ -34,7 +34,7 @@ export type ProductSchema = {
   createdAt: string;
   updatedAt: string;
   category: Category;
-  images: Image[];
+  images: ImageSchema[];
   variants: Variant[];
 };
 
