@@ -1,22 +1,10 @@
-"use client"
+"use client";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Edit3, Plus, Trash2 } from "lucide-react"
-
-interface Address {
-  type: string
-  name: string
-  address: string
-  city: string
-  phone: string
-  isDefault: boolean
-}
-
-interface AddressBookProps {
-  addresses: Address[]
-}
+import { AddressBookProps } from "@/app/profile/page";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Edit3, Plus, Trash2 } from "lucide-react";
 
 export function AddressBook({ addresses }: AddressBookProps) {
   return (
@@ -33,25 +21,38 @@ export function AddressBook({ addresses }: AddressBookProps) {
           <Card key={index} className="border-gray-200">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg text-gray-900">{address.type}</CardTitle>
-                {address.isDefault && (
-                  <Badge variant="outline" className="border-gray-300 text-gray-700">
+                {/* <CardTitle className="text-lg text-gray-900">
+                  {address.type}
+                </CardTitle> */}
+                {/* {address.isDefault && (
+                  <Badge
+                    variant="outline"
+                    className="border-gray-300 text-gray-700"
+                  >
                     Default
                   </Badge>
-                )}
+                )} */}
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
-              <p className="font-medium text-gray-900">{address.name}</p>
-              <p className="text-gray-600">{address.address}</p>
+              <p className="font-medium text-gray-900">{address.lineOne}</p>
+              <p className="text-gray-600">{address.lineTwo}</p>
               <p className="text-gray-600">{address.city}</p>
-              <p className="text-gray-600">{address.phone}</p>
+              <p className="text-gray-600">{address.state}</p>
               <div className="flex gap-2 pt-4">
-                <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 bg-transparent">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-gray-300 text-gray-700 bg-transparent"
+                >
                   <Edit3 className="w-4 h-4 mr-2" />
                   Edit
                 </Button>
-                <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 bg-transparent">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-gray-300 text-gray-700 bg-transparent"
+                >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete
                 </Button>
@@ -61,5 +62,5 @@ export function AddressBook({ addresses }: AddressBookProps) {
         ))}
       </div>
     </div>
-  )
+  );
 }

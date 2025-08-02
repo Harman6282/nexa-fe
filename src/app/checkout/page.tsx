@@ -33,6 +33,7 @@ import { Plus, MapPin, CreditCard } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { userStore } from "@/lib/store";
 import axios from "axios";
+import { redirect } from "next/navigation";
 
 interface Address {
   id: string;
@@ -117,6 +118,8 @@ const Checkout = () => {
       data,
       { withCredentials: true }
     );
+
+    redirect("/profile");
 
     console.log(res.data.data);
   }

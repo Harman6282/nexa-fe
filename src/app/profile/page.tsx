@@ -60,6 +60,22 @@ const wishlistData = [
   },
 ];
 
+export interface Address {
+  city: string;
+  country: string;
+  createdAt: string;
+  id: string;
+  lineOne: string;
+  lineTwo: string;
+  pincode: string;
+  state: string;
+  updatedAt: string;
+  userId: string;
+}
+
+export interface AddressBookProps {
+  addresses: Address[];
+}
 const addressesData = [
   {
     type: "Home",
@@ -81,17 +97,29 @@ const addressesData = [
 
 export default function ProfilePage() {
   const [orders, setOrders] = useState<OrderHistoryProps[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
 
   // const cartId = userStore((state) => state.user?.cart[0].id);
 
-  const getOrders = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/orders/myorders`, {
+  const getAddresses = async () => {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/address`, {
       withCredentials: true,
     });
+    setAddresses(res.data.data);
+  };
+
+  const getOrders = async () => {
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/orders/myorders`,
+      {
+        withCredentials: true,
+      }
+    );
     setOrders(res.data.data.items);
   };
   useEffect(() => {
     getOrders();
+    getAddresses();
   }, []);
 
   return (
@@ -133,7 +161,7 @@ export default function ProfilePage() {
             </TabsContent>
 
             <TabsContent value="addresses">
-              <AddressBook addresses={addressesData} />
+              <AddressBook addresses={addresses} />
             </TabsContent>
           </Tabs>
         </div>
