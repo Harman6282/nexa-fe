@@ -18,6 +18,8 @@ import Image from "next/image";
 import { toast } from "sonner";
 
 export default function Cart() {
+  
+  
   const { setCartItems } = userStore();
   const cartItems = userStore((state) => state.cartItems);
   const { removeFromCart, increaseQuantity, decreaseQuantity } = userStore();

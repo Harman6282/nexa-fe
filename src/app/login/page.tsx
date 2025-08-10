@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import axios from "axios";
-import { redirect } from "next/navigation";
 import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
