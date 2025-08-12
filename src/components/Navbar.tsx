@@ -50,7 +50,7 @@ export const Navbar = () => {
         {/* Logo */}
         <Link
           href="/"
-          className="text-xl font-extrabold text-black tracking-wide"
+          className="text-xl font-extrabold text-black tracking-wide cursor-pointer"
         >
           NEXA
         </Link>
@@ -61,7 +61,7 @@ export const Navbar = () => {
             <Link
               key={tab.name}
               href={tab.href}
-              className="text-gray-700 hover:text-black transition"
+              className="text-gray-700 hover:text-black transition cursor-pointer"
             >
               {tab.name}
             </Link>
@@ -82,9 +82,11 @@ export const Navbar = () => {
           </div>
 
           {/* Wishlist */}
-          <Button variant="ghost" size="icon">
-            <Heart className="h-5 w-5" />
-          </Button>
+          <Link href="/whishlist">
+            <Button variant="ghost" size="icon" className="cursor-pointer">
+             <Heart className="h-5 w-5" />
+            </Button>
+          </Link>
 
           {/* Bag */}
           <Link href="/cart">
@@ -97,7 +99,7 @@ export const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Avatar className="h-6 w-6">
+                <Avatar className="h-6 w-6 cursor-pointer" >
                   {/* <AvatarImage src="" /> */}
                   <AvatarFallback>
                     <User className="h-4 w-4" />
@@ -107,7 +109,7 @@ export const Navbar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href="/profile">Profile</Link>
+                <Link href="/profile" className="cursor-pointer">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem>Orders</DropdownMenuItem>
               <DropdownMenuItem onClick={() => alert("Logging out...")}>
