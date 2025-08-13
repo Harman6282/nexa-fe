@@ -93,8 +93,8 @@ export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
                     }
                     className={
                       ord.status === "DELIVERED"
-                        ? "bg-gray-900 text-white"
-                        : "border-gray-300 text-gray-700"
+                        ? "bg-green-500 text-white font-bold"
+                        : "border-gray-300 text-gray-700" 
                     }
                   >
                     {ord.status}
@@ -103,7 +103,7 @@ export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-gray-300 text-gray-700 bg-transparent"
+                    className="border-gray-300 text-gray-700 bg-transparent cursor-pointer"
                   >
                     View Details
                   </Button>

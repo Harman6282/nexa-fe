@@ -1,37 +1,34 @@
-
 import Banner from "@/components/landing-page/Banner";
-import Carousel from "@/components/landing-page/Carousel";
 import CollectionSection from "@/components/landing-page/OurCollection";
 import PromoAndNewsletter from "@/components/landing-page/PromoAndNewsletter";
-import { Navbar } from "@/components/Navbar";
 import Wrapper from "@/components/Wrapper";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
-
 export default function Home() {
-
-
   return (
     <Wrapper>
-
-      <div className="w-full min-h-screen">
+      <div className="w-full min-h-screen ">
         {/* Image Carousel */}
 
-        <section className="flex flex-col md:flex-row items-center justify-between bg-white px-6 md:px-20 py-10 md:py-20">
+        <section className="flex flex-col md:flex-row items-center justify-between  bg-white px-6 md:px-20 py-10 md:py-20">
           {/* Left Content */}
           <div className="md:w-1/2">
             <h1 className="text-5xl md:text-9xl font-bold text-black ">
               NEXA FASHION
             </h1>
             <p className="mt-6 text-gray-700 text-sm">
-              Discover a fashion experience that not only mirrors your unique personality
-              but amplifies it. At Nexa, every piece is crafted to elevate your confidence,
-              celebrate your individuality, and empower you to stand out effortlessly in any setting.
+              Discover a fashion experience that not only mirrors your unique
+              personality but amplifies it. At Nexa, every piece is crafted to
+              elevate your confidence, celebrate your individuality, and empower
+              you to stand out effortlessly in any setting.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Link href={"/products"} className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition">
+              <Link
+                href={"/products"}
+                className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition"
+              >
                 Shop Now
               </Link>
             </div>
@@ -51,14 +48,12 @@ export default function Home() {
           </div>
         </section>
 
-
         {/* Scrolling Banner */}
         <Banner />
 
         {/* Product Collection */}
 
         <CollectionSection />
-
 
         {/* Dark Section */}
         <section className="bg-black text-white rounded-2xl flex flex-col lg:flex-row items-center gap-8 px-8 sm:px-8 py-10 my-12">
@@ -78,15 +73,17 @@ export default function Home() {
               occasion. From casual wear to formal attire, find your perfect fit
               and style.
             </div>
-            <button className="mt-2 px-6 py-3 rounded-lg bg-white text-black font-bold hover:bg-gray-200 transition">
+            <Link
+              href="/products"
+              className="mt-2 px-6 py-3 rounded-lg bg-white text-black font-bold hover:bg-gray-200 transition"
+            >
               Explore Products
-            </button>
+            </Link>
           </div>
         </section>
 
         <PromoAndNewsletter />
       </div>
     </Wrapper>
-
   );
 }

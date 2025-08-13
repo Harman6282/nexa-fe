@@ -50,7 +50,7 @@ export const Navbar = () => {
         {/* Logo */}
         <Link
           href="/"
-          className="text-xl font-extrabold text-black tracking-wide cursor-pointer"
+          className="text-2xl font-extrabold text-black tracking-wide cursor-pointer"
         >
           NEXA
         </Link>
@@ -84,7 +84,7 @@ export const Navbar = () => {
           {/* Wishlist */}
           <Link href="/whishlist">
             <Button variant="ghost" size="icon" className="cursor-pointer">
-             <Heart className="h-5 w-5" />
+              <Heart className="h-5 w-5" />
             </Button>
           </Link>
 
@@ -99,7 +99,7 @@ export const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Avatar className="h-6 w-6 cursor-pointer" >
+                <Avatar className="h-6 w-6 cursor-pointer">
                   {/* <AvatarImage src="" /> */}
                   <AvatarFallback>
                     <User className="h-4 w-4" />
@@ -109,7 +109,9 @@ export const Navbar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href="/profile" className="cursor-pointer">Profile</Link>
+                <Link href="/profile" className="cursor-pointer">
+                  Profile
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>Orders</DropdownMenuItem>
               <DropdownMenuItem onClick={() => alert("Logging out...")}>
