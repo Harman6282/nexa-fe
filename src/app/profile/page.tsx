@@ -32,7 +32,6 @@ export interface OrderHistoryProps {
   image: string;
   variantId: string;
   size: string;
-  color: string;
   stock: number;
   createdAt: Date;
 }

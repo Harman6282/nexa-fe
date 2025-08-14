@@ -37,27 +37,16 @@ const ProductDetails = () => {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [addingState, setAddingState] = useState(false);
 
-  const discountedPrice = productData
-    ? productData.price * (1 - productData.discount / 100)
-    : 0;
-  const savings = productData ? productData.price - discountedPrice : 0;
-
   const uniqueSizes = productData
     ? [...new Set(productData.variants.map((v) => v.size))]
     : [];
-  const uniqueColors = productData
-    ? [...new Set(productData.variants.map((v) => v.color))]
-    : [];
 
   const selectedVariant = productData
-    ? productData.variants.find(
-        (v) => v.size === selectedSize && v.color === selectedColor
-      )
+    ? productData.variants.find((v) => v.size === selectedSize)
     : undefined;
 
   const renderStars = (rating: number) => {
@@ -158,7 +147,7 @@ const ProductDetails = () => {
               <div className="space-y-3">
                 <div className="flex items-center space-x-4">
                   <span className="text-4xl font-bold text-foreground">
-                    ₹{discountedPrice.toFixed(2)}
+                    ₹{productData.price.toFixed(2)}
                   </span>
                   {productData.discount > 0 && (
                     <>
@@ -171,9 +160,13 @@ const ProductDetails = () => {
                     </>
                   )}
                 </div>
-                {savings > 0 && (
+                {productData.discount > 0 && (
                   <p className="text-sm text-green-600">
-                    You save ₹{savings.toFixed(2)}!
+                    You save ₹
+                    {(
+                      productData.price * (productData.discount / 100)
+                    ).toFixed(2)}
+                    !
                   </p>
                 )}
               </div>
@@ -205,29 +198,8 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              {/* Color Selection */}
-              <div>
-                <h3 className="font-semibold mb-3">Color</h3>
-                <div className="flex flex-wrap gap-3">
-                  {uniqueColors.map((color) => (
-                    <Button
-                      key={color}
-                      size="sm"
-                      onClick={() => setSelectedColor(color)}
-                      className={`rounded-full px-4 py-1 text-sm transition-all duration-200 ${
-                        selectedColor === color
-                          ? "bg-black text-white"
-                          : "bg-white text-black border"
-                      }`}
-                    >
-                      {color}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
               {/* Stock Info */}
-              {selectedSize && selectedColor ? (
+              {selectedSize ? (
                 selectedVariant ? (
                   selectedVariant.stock > 0 ? (
                     <p className="text-sm text-green-600">
@@ -242,9 +214,7 @@ const ProductDetails = () => {
                   <p className="text-sm text-red-600">out of stock</p>
                 )
               ) : (
-                <p className="text-sm text-muted-foreground">
-                  Select size and color
-                </p>
+                <p className="text-sm text-muted-foreground">Select size</p>
               )}
 
               {/* Quantity & Actions */}
@@ -277,7 +247,6 @@ const ProductDetails = () => {
                   className="w-full py-5 text-lg bg-black text-white cursor-pointer"
                   disabled={
                     !selectedSize ||
-                    !selectedColor ||
                     !selectedVariant ||
                     selectedVariant.stock === 0 ||
                     addingState

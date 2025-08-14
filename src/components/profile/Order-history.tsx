@@ -43,7 +43,6 @@ export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
       },
       variant: {
         size: itemDetails.size,
-        color: itemDetails.color, // Will be undefined if not present
       },
     });
 
@@ -130,8 +129,7 @@ export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
                           {item.product?.name || "Product Name"}
                         </p>
                         <p className="text-sm text-gray-600">
-                          Color: {item.variant?.color || "-"} • Size:{" "}
-                          {item.variant?.size || "-"}
+                          Size: {item.variant?.size || "-"}
                         </p>
                       </div>
                       <p className="text-sm text-gray-600">

@@ -176,8 +176,8 @@ export default function Cart() {
                               {item.product.name}
                             </p>
                             <p className="text-sm text-gray-500">
-                              Size: {item.variant.size} | Color:{" "}
-                              {item.variant.color}
+                              Size: {item.variant.size}
+                              
                             </p>
                           </div>
                           <Button

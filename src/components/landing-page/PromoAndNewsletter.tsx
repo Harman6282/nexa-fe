@@ -11,32 +11,6 @@ const PromoAndNewsletter = () => {
   return (
     <div className="space-y-16 ">
       {/* Promo Section */}
-      <section className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        {/* Image */}
-        <div className="rounded-lg overflow-hidden">
-          <Image
-            src="/model.jpg"
-            alt="Woman wearing black hat"
-            width={400}
-            height={400}
-            className="object-cover w-full h-full"
-          />
-        </div>
-
-        {/* Promo Text */}
-        <div className="text-center md:text-left space-y-4">
-          <h2 className="text-4xl md:text-5xl font-extrabold">
-            30% OFF ON ALL <br /> NEW ARRIVAL
-          </h2>
-          <p className="text-gray-600">Offer Last Date 30 September</p>
-          <Link
-            href="/products"
-            className="mt-4 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 transition"
-          >
-            Explore Now
-          </Link>
-        </div>
-      </section>
 
       {/* Newsletter Section */}
       <section className="bg-gray-100 rounded-lg max-w-full mx-auto mb-5 px-6 py-7 xl:py-12 text-center space-y-6">
