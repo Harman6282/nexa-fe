@@ -31,7 +31,7 @@ export const ProductCard = ({
         console.log(id);
         redirect(`/products/${slug}`);
       }}
-      className={`rounded-sm  h-1/2 border-0 py-0 hover:shadow-md transition-all cursor-pointer overflow-hidden ${className}`}
+      className={`rounded-sm  border-0 py-0 hover:shadow-md transition-all cursor-pointer overflow-hidden ${className}`}
     >
       {/* Image */}
       <div className="relative h-60">

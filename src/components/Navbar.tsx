@@ -23,7 +23,7 @@ const categories = [
 
 export const Navbar = () => {
   const { setProducts } = useProductStore();
-  const { setUser } = userStore();
+  const { cartItems, setUser } = userStore();
 
   const getProducts = async () => {
     const response = await axios.get("http://localhost:3001/api/products");
@@ -43,6 +43,8 @@ export const Navbar = () => {
     getProducts();
     getUser();
   }, []);
+
+  console.log(cartItems?.length);
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
@@ -89,9 +91,14 @@ export const Navbar = () => {
           </Link>
 
           {/* Bag */}
-          <Link href="/cart">
+          <Link href="/cart" className="relative">
             <Button variant="ghost" size="icon" className="cursor-pointer">
               <ShoppingBag className="h-5 w-5 cursor-pointer" />
+              {cartItems && cartItems?.length > 0 && (
+                <span className="absolute -top-1 -right-0 bg-gray-800 text-white text-xs rounded-full px-1 min-w-[14px] flex items-center justify-center">
+                  {cartItems.length}
+                </span>
+              )}
             </Button>
           </Link>
 

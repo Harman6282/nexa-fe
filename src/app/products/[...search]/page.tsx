@@ -163,9 +163,9 @@ const ProductDetails = () => {
                 {productData.discount > 0 && (
                   <p className="text-sm text-green-600">
                     You save ₹
-                    {(
-                      productData.price * (productData.discount / 100)
-                    ).toFixed(2)}
+                    {(productData.price * (productData.discount / 100)).toFixed(
+                      2
+                    )}
                     !
                   </p>
                 )}

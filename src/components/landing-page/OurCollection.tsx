@@ -9,7 +9,6 @@ const CollectionSection = async () => {
     { withCredentials: true }
   );
   const products = data.data;
-  console.log(products)
   return (
     products && (
       <section className="max-w-7xl mx-auto px-4 py-12">
