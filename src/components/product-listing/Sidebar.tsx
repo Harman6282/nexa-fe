@@ -7,35 +7,60 @@ import { Button } from "@/components/ui/button";
 export default function Sidebar({ className }: { className?: string }) {
   const [priceRange, setPriceRange] = useState<number[]>([500, 5000]);
 
+  const handleApplyFilters = () => {
+    // Handle filter application logic here
+    console.log("Applied price range:", priceRange);
+  };
+
   return (
     <aside
-      className={`lg:w-60 p-5 border-r bg-white shadow-lg space-y-8 ${className}`}
+      className={`lg:w-64 p-6 border-r border-gray-200 bg-white shadow-sm space-y-6 ${className}`}
     >
-      <h1 className="text-xl font-bold text-gray-800">Filters</h1>
+      <div className="border-b border-gray-200 pb-4">
+        <h1 className="text-lg font-semibold text-gray-900">Price Filter</h1>
+      </div>
 
-      {/* Price Range */}
-      <div>
-        <h2 className="font-semibold mb-3">Price Range</h2>
+      {/* Price Range Slider */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <label className="text-sm font-medium text-gray-700">
+            Price Range
+          </label>
+          <span className="text-xs text-gray-500">
+            ₹{priceRange[0]} - ₹{priceRange[1]}
+          </span>
+        </div>
+
         <Slider
           min={100}
           max={10000}
           step={100}
           value={priceRange}
-          className="bg-gray-800 rounded-lg text-white cursor-pointer"
           onValueChange={setPriceRange}
+          className="w-full [&_[data-slot=slider-track]]:bg-gray-400 [&_[data-slot=slider-range]]:bg-black [&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-black [&_[data-slot=slider-thumb]]:shadow-lg"
         />
 
-        <div className="flex justify-between text-sm text-gray-900 mt-2">
-          <span>₹{priceRange[0]}</span>
-          <span>₹{priceRange[1]}</span>
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>₹{priceRange[0].toLocaleString()}</span>
+          <span>₹{priceRange[1].toLocaleString()}</span>
         </div>
       </div>
 
+      {/* Apply Button */}
       <Button
-        variant="default"
-        className="w-full bg-gray-700 hover:bg-gray-900 text-white cursor-pointer"
+        onClick={handleApplyFilters}
+        className="w-full bg-black hover:bg-gray-800 text-white font-medium py-2"
       >
-        Apply Filters
+        Apply Price Filter
+      </Button>
+
+      {/* Reset Button */}
+      <Button
+        variant="outline"
+        onClick={() => setPriceRange([500, 5000])}
+        className="w-full border-black text-black hover:bg-gray-100"
+      >
+        Reset Filter
       </Button>
     </aside>
   );

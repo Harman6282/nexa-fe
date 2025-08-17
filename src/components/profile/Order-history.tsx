@@ -7,8 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Eye, Package } from "lucide-react";
 import Image from "next/image";
 
-
-
 export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
   if (!order || order.length === 0) {
     return (
@@ -52,7 +50,6 @@ export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
   // Convert the grouped object back into an array for mapping
   const ordersToRender = Object.values(groupedOrders);
 
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -87,13 +84,11 @@ export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
                 </div>
                 <div className="flex items-center gap-4">
                   <Badge
-                    variant={
-                      ord.status === "DELIVERED" ? "default" : "outline"
-                    }
+                    variant={ord.status === "DELIVERED" ? "default" : "outline"}
                     className={
                       ord.status === "DELIVERED"
                         ? "bg-green-500 text-white font-bold"
-                        : "border-gray-300 text-gray-700" 
+                        : "border-gray-300 text-gray-700"
                     }
                   >
                     {ord.status}
@@ -114,7 +109,7 @@ export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
                 {ord.items.map((item: any) => (
                   <div
                     key={item.id}
-                    className="flex gap-4 border rounded-md p-3 hover:bg-gray-50 transition-all"
+                    className="flex gap-4 border-gray-200 border rounded-md p-3 hover:bg-gray-50 transition-all"
                   >
                     <Image
                       src={item.image || "/placeholder.png"}

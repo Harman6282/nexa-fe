@@ -98,6 +98,8 @@ export default function ProfilePage() {
   const [orders, setOrders] = useState<OrderHistoryProps[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
 
+  const user = userStore((state) => state.user);
+
   // const cartId = userStore((state) => state.user?.cart[0].id);
 
   const getAddresses = async () => {
@@ -108,14 +110,21 @@ export default function ProfilePage() {
   };
 
   const getOrders = async () => {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/orders/myorders`,
-      {
-        withCredentials: true,
-      }
-    );
-    setOrders(res.data.data.items);
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/myorders`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res.data);
+      setOrders(res.data.data.items);
+    } catch (error) {
+      setOrders([]);
+    }
+    return;
   };
+
   useEffect(() => {
     getOrders();
     getAddresses();
@@ -125,9 +134,9 @@ export default function ProfilePage() {
     orders && (
       <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <ProfileHeader name={userData.name} email={userData.email} />
+          {user && <ProfileHeader name={user?.name} email={user?.email} />}
 
-          <Tabs defaultValue="profile" className="w-full">
+          <Tabs defaultValue="orders" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-gray-100 mb-8 ">
               <TabsTrigger
                 value="orders"

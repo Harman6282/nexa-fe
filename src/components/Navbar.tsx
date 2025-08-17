@@ -23,7 +23,7 @@ const categories = [
 
 export const Navbar = () => {
   const { setProducts } = useProductStore();
-  const { cartItems, setUser } = userStore();
+  const { cartItems, setUser, user } = userStore();
 
   const getProducts = async () => {
     const response = await axios.get("http://localhost:3001/api/products");
@@ -106,22 +106,32 @@ export const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Avatar className="h-6 w-6 cursor-pointer">
-                  {/* <AvatarImage src="" /> */}
+                <Avatar className="h-6 w-6 cursor-pointer  duration-300 border-none">
                   <AvatarFallback>
                     <User className="h-4 w-4" />
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href="/profile" className="cursor-pointer">
+            <DropdownMenuContent
+              className="bg-white border-none shadow-sm"
+              align="end"
+            >
+              <DropdownMenuItem
+                className="cursor-pointer hover:bg-gray-100 duration-300"
+                asChild
+              >
+                <Link href="/profile" className="cursor-pointer  rounded-none">
                   Profile
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>Orders</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => alert("Logging out...")}>
+              <DropdownMenuItem className="cursor-pointer  hover:bg-gray-100 duration-300 border-b-gray-200 rounded-none">
+                Orders
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer hover:bg-gray-100 duration-300 rounded-none"
+                onClick={() => alert("Logging out...")}
+              >
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
