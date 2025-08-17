@@ -128,7 +128,7 @@ const ProductDetails = () => {
             </div>
 
             {/* Product Info */}
-            <div className="space-y-8">
+            <div className="space-y-5">
               <div>
                 <Badge variant="secondary" className="mb-3">
                   {productData.brand}
@@ -136,45 +136,22 @@ const ProductDetails = () => {
                 <h1 className="text-4xl font-bold text-foreground">
                   {productData.name}
                 </h1>
-                <div className="flex items-center space-x-2 mt-3">
+                {/* <div className="flex items-center space-x-2 mt-3">
                   <div className="flex">{renderStars(productData.ratings)}</div>
                   <span className="text-sm text-muted-foreground">
                     ({productData.numReviews} reviews)
                   </span>
-                </div>
+                </div> */}
               </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center space-x-4">
-                  <span className="text-4xl font-bold text-foreground">
-                    ₹{productData.price.toFixed(2)}
-                  </span>
-                  {productData.discount > 0 && (
-                    <>
-                      <span className="text-lg text-muted-foreground line-through">
-                        ₹{productData.price.toFixed(2)}
-                      </span>
-                      <Badge variant="destructive">
-                        {productData.discount}% OFF
-                      </Badge>
-                    </>
-                  )}
-                </div>
-                {productData.discount > 0 && (
-                  <p className="text-sm text-green-600">
-                    You save ₹
-                    {(productData.price * (productData.discount / 100)).toFixed(
-                      2
-                    )}
-                    !
-                  </p>
-                )}
+              <div className="flex items-center space-x-4">
+                <span className="text-4xl font-bold text-foreground">
+                  ₹{productData.price.toFixed(2)}
+                </span>
               </div>
 
-              <Separator />
-
-              <p className="text-base text-muted-foreground">
-                {productData.description}
+              <p className="text-base text-muted-foreground whitespace-pre-line">
+                {productData.description.split(",").join("\n")}
               </p>
 
               {/* Size Selection */}
