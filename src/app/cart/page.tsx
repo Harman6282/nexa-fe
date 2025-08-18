@@ -49,7 +49,6 @@ export default function Cart() {
   useEffect(() => {
     getCart();
   }, []);
-  console.log("cartItems: ", cartItems);
 
   async function removeItem(id: string) {
     removeFromCart(id);

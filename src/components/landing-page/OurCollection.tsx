@@ -1,15 +1,26 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import axios from "axios";
 import Link from "next/link";
 
-const CollectionSection = async () => {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/products/collection`,
-    { withCredentials: true }
-  );
-  const products = data.data;
+function CollectionSection() {
+  const [products, setProducts] = React.useState<any[]>([]);
+
+  async function getData() {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/products/collection`,
+      { withCredentials: true }
+    );
+    const products = data.data;
+    setProducts(products);
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     products && (
       <section className="max-w-7xl mx-auto px-4 py-12">
@@ -54,6 +65,6 @@ const CollectionSection = async () => {
       </section>
     )
   );
-};
+}
 
 export default CollectionSection;
