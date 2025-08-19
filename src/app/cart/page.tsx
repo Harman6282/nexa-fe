@@ -18,8 +18,6 @@ import Image from "next/image";
 import { toast } from "sonner";
 
 export default function Cart() {
-  
-  
   const { setCartItems } = userStore();
   const cartItems = userStore((state) => state.cartItems);
   const { removeFromCart, increaseQuantity, decreaseQuantity } = userStore();
@@ -41,10 +39,14 @@ export default function Cart() {
   const total = subtotal! + deliveryCharges - discount;
 
   const getCart = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
-      withCredentials: true,
-    });
-    setCartItems(res.data.data.items);
+    try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
+        withCredentials: true,
+      });
+      setCartItems(res.data.data.items);
+    } catch (_error) {
+      // Optionally show a toast: toast.error("Failed to load cart");
+    }
   };
   useEffect(() => {
     getCart();
@@ -54,12 +56,16 @@ export default function Cart() {
     removeFromCart(id);
     toast.success("Item removed");
 
-    const res = await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart/delete/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
+    try {
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/delete/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
+    } catch (_error) {
+      // Optionally show a toast: toast.error("Failed to remove item");
+    }
   }
 
   async function increaseItemQty(
@@ -73,15 +79,17 @@ export default function Cart() {
       quantity: qty + 1,
       variantId,
     };
-    const res = await axios.put(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
-      data,
-      {
-        withCredentials: true,
-      }
-    );
-
-    console.log(res.data);
+    try {
+      await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+    } catch (_error) {
+      // Optionally show a toast: toast.error("Failed to update quantity");
+    }
   }
   async function decreaseItemQty(
     itemId: string,
@@ -93,15 +101,18 @@ export default function Cart() {
       quantity: qty - 1,
       variantId,
     };
-    const res = await axios.put(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
-      data,
-      {
-        withCredentials: true,
-      }
-    );
-
-    console.log(res.data);
+    try {
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res.data);
+    } catch (_error) {
+      // Optionally show a toast: toast.error("Failed to update quantity");
+    }
   }
 
   if (cartItems?.length === 0) {
@@ -176,7 +187,6 @@ export default function Cart() {
                             </p>
                             <p className="text-sm text-gray-500">
                               Size: {item.variant.size}
-                              
                             </p>
                           </div>
                           <Button

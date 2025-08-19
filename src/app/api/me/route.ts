@@ -1,30 +1,36 @@
 import axios from "axios";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   const cookieStore = await cookies();
   const token = cookieStore.get("accessToken")?.value;
 
   if (!token) {
-    return Response.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json(
+      { success: false, message: "Not authenticated" },
+      { status: 401 }
+    );
   }
 
   try {
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
       headers: { Cookie: `accessToken=${token}` },
-      withCredentials: true,
     });
 
-    const user = res.data;
-    return Response.json(user, { status: 200 });
-  } catch (error: any) {
-    console.error(
-      "Error fetching user:",
-      error?.response?.data || error.message
+    return NextResponse.json(
+      { success: true, user: res.data },
+      { status: 200 }
     );
-    return Response.json(
-      { error: error?.response?.data?.message || "Failed to fetch user" },
-      { status: error?.response?.status || 500 }
-    );
+  } catch (err: unknown) {
+    const status = axios.isAxiosError(err) ? err.response?.status ?? 500 : 500;
+
+    const message = axios.isAxiosError(err)
+      ? err.response?.data?.message ?? "Failed to fetch user"
+      : "Unexpected error occurred";
+
+    console.error("Error fetching user:", message);
+
+    return NextResponse.json({ success: false, message }, { status });
   }
 }

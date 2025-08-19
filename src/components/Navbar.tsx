@@ -23,7 +23,7 @@ const categories = [
 
 export const Navbar = () => {
   const { setProducts } = useProductStore();
-  const { cartItems, setUser, user } = userStore();
+  const { cartItems, setUser } = userStore();
 
   const getProducts = async () => {
     const response = await axios.get("http://localhost:3001/api/products");
@@ -31,17 +31,17 @@ export const Navbar = () => {
   };
 
   const getUser = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-      withCredentials: true,
-    });
-    setUser(res.data.data);
+    try {
+      const res = await axios.get(`/api/me`, { validateStatus: () => true });
+
+      setUser(res.data.user.data);
+    } catch (_error) {}
   };
 
   useEffect(() => {
-    getProducts();
     getUser();
+    getProducts();
   }, []);
-
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">

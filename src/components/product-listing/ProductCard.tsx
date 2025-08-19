@@ -28,7 +28,6 @@ export const ProductCard = ({
   return (
     <Card
       onClick={() => {
-        console.log(id);
         redirect(`/products/${slug}`);
       }}
       className={`rounded-sm  border-0 py-0 hover:shadow-md transition-all cursor-pointer overflow-hidden ${className}`}

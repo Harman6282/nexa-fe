@@ -11,13 +11,6 @@ import axios from "axios";
 import { Heart, MapPin, Package, User } from "lucide-react";
 import { useEffect, useState } from "react";
 
-// Mock data
-const userData = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  phone: "+1 (555) 123-4567",
-};
-
 export interface OrderHistoryProps {
   orderId: string;
   status: string;
@@ -40,22 +33,26 @@ const wishlistData = [
   {
     name: "Wireless Headphones",
     price: "$199.99",
-    image: "/placeholder.svg?height=200&width=200&text=Headphones",
+    image:
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/APRIL/12/ipUGC2Eu_d0a66ec6d0ba4849af9742225dfc0040.jpg",
   },
   {
     name: "Smart Watch",
     price: "$299.99",
-    image: "/placeholder.svg?height=200&width=200&text=Smart+Watch",
+    image:
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/APRIL/12/ipUGC2Eu_d0a66ec6d0ba4849af9742225dfc0040.jpg",
   },
   {
     name: "Laptop Stand",
     price: "$79.99",
-    image: "/placeholder.svg?height=200&width=200&text=Laptop+Stand",
+    image:
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/APRIL/12/ipUGC2Eu_d0a66ec6d0ba4849af9742225dfc0040.jpg",
   },
   {
     name: "Coffee Maker",
     price: "$149.99",
-    image: "/placeholder.svg?height=200&width=200&text=Coffee+Maker",
+    image:
+      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/APRIL/12/ipUGC2Eu_d0a66ec6d0ba4849af9742225dfc0040.jpg",
   },
 ];
 
@@ -75,24 +72,6 @@ export interface Address {
 export interface AddressBookProps {
   addresses: Address[];
 }
-const addressesData = [
-  {
-    type: "Home",
-    name: "John Doe",
-    address: "123 Main Street, Apt 4B",
-    city: "New York, NY 10001",
-    phone: "+1 (555) 123-4567",
-    isDefault: true,
-  },
-  {
-    type: "Work",
-    name: "John Doe",
-    address: "456 Business Ave, Suite 200",
-    city: "New York, NY 10002",
-    phone: "+1 (555) 987-6543",
-    isDefault: false,
-  },
-];
 
 export default function ProfilePage() {
   const [orders, setOrders] = useState<OrderHistoryProps[]>([]);

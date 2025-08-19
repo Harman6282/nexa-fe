@@ -17,7 +17,7 @@ import {
 import Link from "next/link";
 import axios from "axios";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -30,6 +30,8 @@ export default function page() {
     resolver: zodResolver(loginSchema),
   });
 
+  const router = useRouter()
+
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await axios.post(
@@ -38,7 +40,7 @@ export default function page() {
         { withCredentials: true }
       );
       console.log(response.data);
-      redirect("/");
+      router.push('/')
       toast.success("Logged in successfully!");
     } catch (error: any) {
       console.error(error);
