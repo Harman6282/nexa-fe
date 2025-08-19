@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { useEffect } from "react";
 import { useProductStore, userStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
 
 const categories = [
   { name: "MEN", href: "/products?category=men" },
@@ -24,10 +25,12 @@ const categories = [
 export const Navbar = () => {
   const { setProducts } = useProductStore();
   const { cartItems, setUser } = userStore();
-
+  const router = useRouter();
   const getProducts = async () => {
-    const response = await axios.get("http://localhost:3001/api/products");
-    setProducts(response.data.data);
+    try {
+      const response = await axios.get("http://localhost:3001/api/products");
+      setProducts(response.data.data);
+    } catch (_error) {}
   };
 
   const getUser = async () => {
@@ -42,6 +45,21 @@ export const Navbar = () => {
     getUser();
     getProducts();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      router.push("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm">
@@ -127,7 +145,7 @@ export const Navbar = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer hover:bg-gray-100 duration-300 rounded-none"
-                onClick={() => alert("Logging out...")}
+                onClick={() => handleLogout()}
               >
                 Logout
               </DropdownMenuItem>

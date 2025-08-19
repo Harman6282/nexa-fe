@@ -9,12 +9,16 @@ function CollectionSection() {
   const [products, setProducts] = React.useState<any[]>([]);
 
   async function getData() {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/products/collection`,
-      { withCredentials: true }
-    );
-    const products = data.data;
-    setProducts(products);
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/collection`,
+        { withCredentials: true }
+      );
+      const products = data.data;
+      setProducts(products);
+    } catch (_error) {
+      setProducts([]);
+    }
   }
 
   useEffect(() => {

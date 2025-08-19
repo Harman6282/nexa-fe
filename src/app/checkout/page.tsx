@@ -113,15 +113,19 @@ const Checkout = () => {
       addressId: selectedId,
     };
 
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/orders`,
-      data,
-      { withCredentials: true }
-    );
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders`,
+        data,
+        { withCredentials: true }
+      );
 
-    redirect("/profile");
+      redirect("/profile");
 
-    console.log(res.data.data);
+      console.log(res.data.data);
+    } catch (_error) {
+      // Optionally show a toast: toast.error("Payment failed");
+    }
   }
 
   return (

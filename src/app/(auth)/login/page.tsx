@@ -30,7 +30,7 @@ export default function page() {
     resolver: zodResolver(loginSchema),
   });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -40,7 +40,7 @@ export default function page() {
         { withCredentials: true }
       );
       console.log(response.data);
-      router.push('/')
+      router.push("/");
       toast.success("Logged in successfully!");
     } catch (error: any) {
       console.error(error);

@@ -82,10 +82,17 @@ export default function ProfilePage() {
   // const cartId = userStore((state) => state.user?.cart[0].id);
 
   const getAddresses = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/address`, {
-      withCredentials: true,
-    });
-    setAddresses(res.data.data);
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/address`,
+        {
+          withCredentials: true,
+        }
+      );
+      setAddresses(res.data.data);
+    } catch (_error) {
+      setAddresses([]);
+    }
   };
 
   const getOrders = async () => {

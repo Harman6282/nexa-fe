@@ -70,18 +70,22 @@ const ProductDetails = () => {
 
   async function handleAddToCart() {
     setAddingState(true);
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/cart/add`,
-      data,
-      {
-        withCredentials: true,
-      }
-    );
-    toast.success("Added to cart", {
-      className: "bg-red text-black border border-gray-200",
-    });
-
-    setAddingState(false);
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/cart/add`,
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success("Added to cart", {
+        className: "bg-red text-black border border-gray-200",
+      });
+    } catch (_error) {
+      // Optionally show a toast: toast.error("Failed to add to cart");
+    } finally {
+      setAddingState(false);
+    }
   }
 
   return (
