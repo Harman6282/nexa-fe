@@ -1,48 +1,116 @@
 import Banner from "@/components/landing-page/Banner";
+import InfoSection from "@/components/landing-page/InfoSection";
 import CollectionSection from "@/components/landing-page/OurCollection";
 import PromoAndNewsletter from "@/components/landing-page/PromoAndNewsletter";
 import Wrapper from "@/components/Wrapper";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 
 export default function Home() {
   return (
     <Wrapper>
       <div className="w-full min-h-screen ">
-        {/* Image Carousel */}
+        {/* Hero */}
+        <section className="px-4 md:px-8 lg:px-16 py-10 md:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+            {/* Left column */}
+            <div className="space-y-4 md:space-y-6">
+              {/* Big statement card */}
+              <div className="rounded-3xl bg-neutral-100 p-6 md:p-8 lg:p-10 text-black shadow-sm">
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight">
+                  FOR
+                  <br />
+                  EVERYONE BUT
+                  <br />
+                  NOT ANYONE
+                </h1>
+                <p className="mt-4 md:mt-6 text-xs md:text-sm text-neutral-600 max-w-xl">
+                  We establish personal relationships with our boutiques, to
+                  make sure each is vetted for a stress-free shopping
+                  experience.
+                </p>
+              </div>
 
-        <section className="flex flex-col md:flex-row items-center justify-between  bg-white px-6 md:px-20 py-10 md:py-20">
-          {/* Left Content */}
-          <div className="md:w-1/2">
-            <h1 className="text-5xl md:text-9xl font-bold text-black ">
-              NEXA FASHION
-            </h1>
-            <p className="mt-6 text-gray-700 text-sm">
-              Discover a fashion experience that not only mirrors your unique
-              personality but amplifies it. At Nexa, every piece is crafted to
-              elevate your confidence, celebrate your individuality, and empower
-              you to stand out effortlessly in any setting.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Link
-                href={"/products"}
-                className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 transition"
-              >
-                Shop Now
-              </Link>
+              {/* Three small image chips */}
+              <div className="grid grid-cols-3 gap-3 md:gap-4">
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
+                  <Image
+                    src="/card1.jpg"
+                    alt="#RIPSTOP"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(min-width: 1024px) 20vw, 30vw"
+                  />
+                  <span className="absolute bottom-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold">
+                    #RIPSTOP
+                  </span>
+                </div>
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
+                  <Image
+                    src="/card2.jpg"
+                    alt="#INSULATED"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(min-width: 1024px) 20vw, 30vw"
+                  />
+                  <span className="absolute bottom-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold">
+                    #INSULATED
+                  </span>
+                </div>
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
+                  <Image
+                    src="/card3.jpg"
+                    alt="#WATERPROOF"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(min-width: 1024px) 20vw, 30vw"
+                  />
+                  <span className="absolute bottom-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold">
+                    #WATERPROOF
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Right Image */}
-          <div className="mt-10 md:mt-0 md:w-1/2 flex justify-center">
-            <div className="rounded-3xl overflow-hidden">
+            {/* Right column - big image with CTAs */}
+            <div className="relative rounded-3xl overflow-hidden min-h-[360px] md:min-h-[520px]">
               <Image
-                src={"/hero.png"}
-                alt="Nexa Fashion Models"
-                width={600}
-                height={600}
+                src="/model.jpg"
+                alt="Featured model"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
               />
+
+              {/* Shop now bubble */}
+              <button className="absolute right-4 top-4 h-20 w-20 rounded-full bg-white/90 text-black text-xs font-semibold backdrop-blur-sm shadow-md">
+                <span className="absolute inset-0 grid place-items-center">
+                  SHOP
+                  <br />
+                  NOW
+                </span>
+              </button>
+
+              {/* Bottom controls */}
+              <div className="absolute left-4 right-4 bottom-4 flex items-center justify-center gap-3">
+                <Link
+                  href="/products"
+                  className="rounded-full bg-white text-black px-5 py-3 text-sm font-semibold shadow-md inline-flex items-center gap-2"
+                >
+                  LEARN MORE
+                  <ArrowUpRight className="h-4 w-4" />
+                </Link>
+                <button className="grid h-11 w-11 place-items-center rounded-full bg-black text-white shadow-md">
+                  <ArrowDown className="h-4 w-4" />
+                </button>
+                <Link
+                  href="/contact"
+                  className="rounded-full border border-white/70 text-white px-5 py-3 text-sm font-semibold inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm"
+                >
+                  CONTACT US
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -51,35 +119,9 @@ export default function Home() {
         <Banner />
 
         {/* Product Collection */}
-
         <CollectionSection />
 
-        {/* Dark Section */}
-        <section className="bg-black text-white rounded-2xl flex flex-col lg:flex-row items-center gap-8 px-8 sm:px-8 py-10 my-12">
-          <Image
-            src="/img2.avif"
-            alt="Clothing Collection"
-            width={500}
-            height={380}
-            className="sm:w-56 sm:h-80 md:w-2/3 lg:w-2/4 lg:h-96 object-cover rounded-xl shadow-2xl"
-          />
-          <div className="max-w-md w-full">
-            <div className="text-2xl sm:text-3xl font-extrabold mb-4">
-              CLOTHING COLLECTION
-            </div>
-            <div className="text-gray-300 text-base sm:text-lg mb-4">
-              Explore our curated selection of premium clothing for every
-              occasion. From casual wear to formal attire, find your perfect fit
-              and style.
-            </div>
-            <Link
-              href="/products"
-              className="mt-2 px-6 py-3 rounded-lg bg-white text-black font-bold hover:bg-gray-200 transition"
-            >
-              Explore Products
-            </Link>
-          </div>
-        </section>
+        <InfoSection />
 
         <PromoAndNewsletter />
       </div>

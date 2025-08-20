@@ -13,7 +13,7 @@ const PromoAndNewsletter = () => {
       {/* Promo Section */}
 
       {/* Newsletter Section */}
-      <section className="bg-gray-100 rounded-lg max-w-full mx-auto mb-5 px-6 py-7 xl:py-12 text-center space-y-6">
+      <section className=" rounded-lg max-w-full mx-auto mb-5 px-6 py-7 xl:py-12 text-center space-y-6">
         <h2 className="text-3xl md:text-5xl font-bold">
           SUBSCRIBE OUR NEWSLETTER
         </h2>

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import axios from "axios";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -30,6 +30,8 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
+  const router = useRouter();
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
       const response = await axios.post(
@@ -39,7 +41,7 @@ export default function RegisterForm() {
       );
       console.log(response.data);
       toast.success("Registered successfully!");
-      redirect("/");
+      router.push("/");
     } catch (error: any) {
       console.error(error);
       toast.error("Registration failed. Please try again.");
@@ -111,4 +113,4 @@ export default function RegisterForm() {
       </Card>
     </div>
   );
-};
+}

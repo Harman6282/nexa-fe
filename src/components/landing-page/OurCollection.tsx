@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import axios from "axios";
 import Link from "next/link";
+import { ShoppingCart, ArrowRight } from "lucide-react";
 
 function CollectionSection() {
   const [products, setProducts] = React.useState<any[]>([]);
@@ -36,35 +36,63 @@ function CollectionSection() {
         </div>
 
         {/* Products */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product: any) => (
-            <div
-              key={product.id}
-              className="relative group rounded-lg overflow-hidden border border-gray-200 bg-white transition-colors duration-300 group-hover:bg-white/70"
-            >
-              <Image
-                src={product?.images[0]?.url}
-                alt={product.name}
-                width={400}
-                height={400}
-                className="object-cover object-top w-full h-64 lg:h-80 group-hover:scale-105 group-hover:opacity-90 transition-transform duration-300"
-              />
-              {/* Hover Buttons */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center  opacity-0 group-hover:opacity-100  transition-opacity duration-300 space-y-2">
-                <Link
-                  href={`/products/${product.slug}`}
-                  className="px-3 py-1 text-black cursor-pointer rounded-lg bg-white hover:bg-gray-100"
-                >
-                  View
-                </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6 md:gap-8">
+          {products.map((product: any) => {
+            const badgeText =
+              product?.badge ??
+              (product?.discountPercentage
+                ? `GET OFF ${product.discountPercentage}%`
+                : product?.isNew
+                ? "NEW ARRIVAL"
+                : null);
+            return (
+              <div key={product.id} className="group">
+                {/* Image tile */}
+                <div className="relative rounded-3xl overflow-hidden bg-neutral-100 aspect-[4/5]">
+                  <Image
+                    src={product?.images?.[0]?.url}
+                    alt={product.name}
+                    fill
+                    sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                    className="object-cover object-top"
+                  />
+                  {badgeText && (
+                    <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[10px] font-semibold shadow">
+                      {badgeText}
+                    </span>
+                  )}
+
+                  {/* Hover CTAs */}
+                  <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="rounded-full bg-white text-black px-4 py-2 text-xs font-semibold shadow inline-flex items-center gap-2"
+                    >
+                      ADD TO CART
+                      <ShoppingCart className="h-4 w-4" />
+                    </Link>
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="rounded-full bg-white/20 backdrop-blur text-white border border-white/60 px-4 py-2 text-xs font-semibold inline-flex items-center gap-2"
+                    >
+                      BUY NOW
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Text area */}
+                <div className="mt-3">
+                  <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight uppercase">
+                    {product.name}
+                  </h3>
+                  <p className="text-sm font-extrabold text-neutral-500">
+                    ${product.price}
+                  </p>
+                </div>
               </div>
-              {/* Product Info */}
-              <div className="px-4 py-2 flex justify-between items-center">
-                <p className="text-sm">{product.name}</p>
-                <p className="font-semibold">${product.price}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     )
