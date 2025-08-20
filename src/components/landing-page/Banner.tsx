@@ -13,11 +13,11 @@ const Banner = () => {
   );
 
   return (
-    <div className="w-full overflow-hidden bg-black text-white py-2 flex ">
+    <div className="w-full lg:h-16 items-center overflow-hidden bg-black text-white py-2 flex sm:my-4 lg:my-8 ">
       <div
-        className="flex justify-around gap-5 whitespace-nowrap text-xl font-semibold animate-scroll gap-x-3"
+        className="flex justify-around gap-5 whitespace-nowrap text-xl lg:text-3xl font-semibold animate-scroll gap-x-3"
         style={{
-          animation: "scroll 60s linear infinite",
+          animation: "scroll 190s linear infinite",
         }}
       >
         <span>{content}</span>

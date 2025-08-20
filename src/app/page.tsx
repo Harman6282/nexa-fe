@@ -5,7 +5,7 @@ import PromoAndNewsletter from "@/components/landing-page/PromoAndNewsletter";
 import Wrapper from "@/components/Wrapper";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Asterisk } from "lucide-react";
 
 export default function Home() {
   return (
@@ -98,7 +98,7 @@ export default function Home() {
                   href="/products"
                   className="rounded-full bg-white text-black px-5 py-3 text-sm font-semibold shadow-md inline-flex items-center gap-2"
                 >
-                  LEARN MORE
+                  SEE ALL
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
                 <button className="grid h-11 w-11 place-items-center rounded-full bg-black text-white shadow-md">
@@ -117,6 +117,43 @@ export default function Home() {
 
         {/* Scrolling Banner */}
         <Banner />
+
+        {/* Statement section */}
+        <section className="px-4 md:px-8 lg:px-16 py-8 md:py-14">
+          <div className="relative max-w-5xl mx-auto text-center">
+            {/* floating avatars */}
+            <Image
+              src="/card1.jpg"
+              alt="avatar-1"
+              width={64}
+              height={64}
+              className="hidden md:block absolute -top-6 left-1/4 rounded-full object-cover"
+            />
+            <Image
+              src="/card3.jpg"
+              alt="avatar-2"
+              width={64}
+              height={64}
+              className="hidden md:block absolute -bottom-6 left-8 rounded-full object-cover"
+            />
+            <Image
+              src="/card2.jpg"
+              alt="avatar-3"
+              width={64}
+              height={64}
+              className="hidden md:block absolute -bottom-6 right-8 rounded-full object-cover"
+            />
+
+            <p className="text-2xl md:text-4xl lg:text-5xl leading-snug md:leading-snug font-extrabold tracking-tight text-black">
+              Puremod clothing for Elevated Everyday Life. Styles change
+              <span className="inline-flex items-center gap-2 mx-2 align-middle rounded-full border border-black px-3 py-1">
+                <Asterisk className="h-5 w-5" /> with seasons
+              </span>
+              united by the liberating essence of travel-inspired
+              lightheartedness
+            </p>
+          </div>
+        </section>
 
         {/* Product Collection */}
         <CollectionSection />

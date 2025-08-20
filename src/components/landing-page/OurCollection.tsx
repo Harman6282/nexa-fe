@@ -63,20 +63,13 @@ function CollectionSection() {
                   )}
 
                   {/* Hover CTAs */}
-                  <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition duration-300">
                     <Link
                       href={`/products/${product.slug}`}
                       className="rounded-full bg-white text-black px-4 py-2 text-xs font-semibold shadow inline-flex items-center gap-2"
                     >
                       ADD TO CART
                       <ShoppingCart className="h-4 w-4" />
-                    </Link>
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="rounded-full bg-white/20 backdrop-blur text-white border border-white/60 px-4 py-2 text-xs font-semibold inline-flex items-center gap-2"
-                    >
-                      BUY NOW
-                      <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
                 </div>
