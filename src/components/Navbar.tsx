@@ -30,6 +30,7 @@ export const Navbar = () => {
     try {
       const response = await axios.get("http://localhost:3001/api/products");
       setProducts(response.data.data);
+      console.log(response.data.data)
     } catch (_error) {}
   };
 
