@@ -19,11 +19,13 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { User, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { userStore } from "@/lib/store";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = userStore();
   const {
     register,
     handleSubmit,
@@ -41,7 +43,22 @@ export default function RegisterForm() {
         data,
         { withCredentials: true }
       );
-      console.log(response.data);
+
+      // Try to set user immediately from response
+      const immediateUser = response?.data?.user?.data ?? response?.data?.user;
+      if (immediateUser) {
+        setUser(immediateUser);
+      } else {
+        // Fallback to /api/me to hydrate user
+        try {
+          const me = await axios.get(`/api/me`, { validateStatus: () => true });
+          if (me.status === 200 && me.data?.user) {
+            const payload = me.data.user?.data ?? me.data.user;
+            setUser(payload);
+          }
+        } catch {}
+      }
+
       toast.success("Registered successfully!");
       router.push("/");
     } catch (error: any) {
@@ -88,7 +105,9 @@ export default function RegisterForm() {
                 />
               </div>
               {errors.name && (
-                <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.name.message}
+                </p>
               )}
 
               {/* Email */}
@@ -111,7 +130,9 @@ export default function RegisterForm() {
                 />
               </div>
               {errors.email && (
-                <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.email.message}
+                </p>
               )}
 
               {/* Password */}
@@ -146,7 +167,9 @@ export default function RegisterForm() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.password.message}
+                </p>
               )}
             </CardContent>
             <CardFooter className="flex flex-col gap-3">

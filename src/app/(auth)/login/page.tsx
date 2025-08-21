@@ -19,11 +19,13 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { userStore } from "@/lib/store";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function page() {
   const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = userStore();
   const {
     register,
     handleSubmit,
@@ -41,7 +43,22 @@ export default function page() {
         data,
         { withCredentials: true }
       );
-      console.log(response.data);
+
+      // Try to set user immediately from response
+      const immediateUser = response?.data?.user?.data ?? response?.data?.user;
+      if (immediateUser) {
+        setUser(immediateUser);
+      } else {
+        // Fallback to /api/me to hydrate user
+        try {
+          const me = await axios.get(`/api/me`, { validateStatus: () => true });
+          if (me.status === 200 && me.data?.user) {
+            const payload = me.data.user?.data ?? me.data.user;
+            setUser(payload);
+          }
+        } catch {}
+      }
+
       router.push("/");
       toast.success("Logged in successfully!");
     } catch (error: any) {
