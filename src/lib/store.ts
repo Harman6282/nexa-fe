@@ -86,8 +86,8 @@ type UserStore = {
   setCartItems: (cart: CartItems[]) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
-  increaseQuantity: (id: string) => void;
-  decreaseQuantity: (id: string) => void;
+  increaseQuantity: (id: string, qty: number) => void;
+  decreaseQuantity: (id: string, qty: number) => void;
 };
 
 export const userStore = create<UserStore>((set) => ({
@@ -101,23 +101,25 @@ export const userStore = create<UserStore>((set) => ({
       cartItems: state.cartItems?.filter((item) => item.id != id),
     })),
   clearCart: () => set({ cartItems: [] }),
-  increaseQuantity: (id: string) =>
+  increaseQuantity: (id: string, qty: number) =>
     set((state) => ({
       cartItems: state.cartItems?.map((item) =>
         item.id === id
           ? {
               ...item,
-              quantity: Math.min(item.quantity + 1, item.variant.stock),
+              quantity: qty || Math.min(item.quantity + 1, item.variant.stock),
             }
           : item
       ),
     })),
 
-  decreaseQuantity: (id: string) =>
+  decreaseQuantity: (id: string, qty: number) =>
     set((state) => ({
       cartItems: state.cartItems
         ?.map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+          item.id === id
+            ? { ...item, quantity: qty || item.quantity - 1 }
+            : item
         )
         .filter((item) => item.quantity > 0),
     })),

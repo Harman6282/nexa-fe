@@ -17,14 +17,16 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import axios from "axios";
-import { ProductSchema, useProductStore } from "@/lib/store";
+import { ProductSchema, useProductStore, userStore } from "@/lib/store";
 
 const ProductDetails = () => {
   const params = useParams();
   const [productData, setProductData] = useState<ProductSchema>();
   const products = useProductStore((state) => state.products);
+  const {user} = userStore()
 
   const slug = params?.search?.toString();
+  
 
   function getProduct() {
     const item = products.find((item) => item.slug == slug);
@@ -68,6 +70,8 @@ const ProductDetails = () => {
     quantity: quantity,
   };
 
+  console.log(user)
+  
   async function handleAddToCart() {
     setAddingState(true);
     try {
@@ -78,6 +82,7 @@ const ProductDetails = () => {
           withCredentials: true,
         }
       );
+      
       toast.success("Added to cart", {
         className: "bg-red text-black border border-gray-200",
       });

@@ -24,7 +24,8 @@ const categories = [
 
 export const Navbar = () => {
   const { setProducts } = useProductStore();
-  const { cartItems, setUser, user } = userStore();
+  const { setCartItems, cartItems, setUser, user } = userStore();
+
   const router = useRouter();
   const getProducts = async () => {
     try {
@@ -48,9 +49,21 @@ export const Navbar = () => {
     }
   };
 
+  const getCart = async () => {
+    try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
+        withCredentials: true,
+      });
+      setCartItems(res.data.data.items);
+    } catch (_error) {
+      // Optionally show a toast: toast.error("Failed to load cart");
+    }
+  };
+
   useEffect(() => {
     getUser();
     getProducts();
+    getCart();
   }, []);
 
   const handleLogout = async () => {

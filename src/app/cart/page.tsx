@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Minus,
   Plus,
@@ -18,9 +18,9 @@ import Image from "next/image";
 import { toast } from "sonner";
 
 export default function Cart() {
-  const { setCartItems } = userStore();
   const cartItems = userStore((state) => state.cartItems);
   const { removeFromCart, increaseQuantity, decreaseQuantity } = userStore();
+  const timeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const subtotal = cartItems?.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
@@ -38,20 +38,6 @@ export default function Cart() {
   const deliveryCharges = subtotal! > 1500 ? 0 : 99;
   const total = subtotal! + deliveryCharges - discount;
 
-  const getCart = async () => {
-    try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
-        withCredentials: true,
-      });
-      setCartItems(res.data.data.items);
-    } catch (_error) {
-      // Optionally show a toast: toast.error("Failed to load cart");
-    }
-  };
-  useEffect(() => {
-    getCart();
-  }, []);
-
   async function removeItem(id: string) {
     removeFromCart(id);
     toast.success("Item removed");
@@ -68,51 +54,54 @@ export default function Cart() {
     }
   }
 
-  async function increaseItemQty(
-    itemId: string,
-    qty: number,
-    variantId: string
-  ) {
-    increaseQuantity(itemId);
+  function increaseItemQty(itemId: string, qty: number, variantId: string) {
+    const previousQty = qty;
+    const newQty = qty + 1;
+    increaseQuantity(itemId, newQty);
     // console.log(qty + 1, variantId);
     let data = {
-      quantity: qty + 1,
+      quantity: newQty,
       variantId,
     };
-    try {
-      await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
-        data,
-        {
-          withCredentials: true,
-        }
-      );
-    } catch (_error) {
-      // Optionally show a toast: toast.error("Failed to update quantity");
-    }
+    if (timeRef.current) clearTimeout(timeRef.current);
+    timeRef.current = setTimeout(async () => {
+      try {
+        await axios.put(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
+          data,
+          {
+            withCredentials: true,
+          }
+        );
+      } catch (_error) {
+        increaseQuantity(itemId, previousQty);
+      }
+    }, 1300);
   }
-  async function decreaseItemQty(
-    itemId: string,
-    qty: number,
-    variantId: string
-  ) {
-    decreaseQuantity(itemId);
+
+  function decreaseItemQty(itemId: string, qty: number, variantId: string) {
+    const previousQty = qty;
+    const newQty = qty - 1;
+    decreaseQuantity(itemId, newQty);
     let data = {
-      quantity: qty - 1,
+      quantity: newQty,
       variantId,
     };
-    try {
-      const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
-        data,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(res.data);
-    } catch (_error) {
-      // Optionally show a toast: toast.error("Failed to update quantity");
-    }
+    if (timeRef.current) clearTimeout(timeRef.current);
+    timeRef.current = setTimeout(async () => {
+      try {
+        const res = await axios.put(
+          `${process.env.NEXT_PUBLIC_API_URL}/cart/update/${itemId}`,
+          data,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(res.data);
+      } catch (_error) {
+        increaseQuantity(itemId, previousQty);
+      }
+    }, 1300);
   }
 
   if (cartItems?.length === 0) {
@@ -219,13 +208,13 @@ export default function Cart() {
                         <div className="flex items-center  justify-between mt-4">
                           <div className="flex items-center border rounded-lg">
                             <Button
-                              onClick={() =>
+                              onClick={() => {
                                 decreaseItemQty(
                                   item.id,
                                   item.quantity,
                                   item.variantId
-                                )
-                              }
+                                );
+                              }}
                               className="p-2 hover:bg-gray-100 disabled:opacity-50"
                               disabled={item.quantity <= 1}
                             >
