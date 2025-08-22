@@ -5,6 +5,7 @@ import { AddressBook } from "@/components/profile/Address-book";
 import { OrderHistory } from "@/components/profile/Order-history";
 import { ProfileHeader } from "@/components/profile/Profile-header";
 import { Wishlist } from "@/components/profile/Whishlist";
+import ProfileShimmer from "@/components/shimmer/Profile_shimmer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { userStore } from "@/lib/store";
 import axios from "axios";
@@ -115,6 +116,10 @@ export default function ProfilePage() {
     getOrders();
     getAddresses();
   }, []);
+
+  if (user === null || user === undefined) {
+    return <ProfileShimmer />;
+  }
 
   return (
     orders && (

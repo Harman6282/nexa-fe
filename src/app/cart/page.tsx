@@ -16,6 +16,7 @@ import { ProductSchema, useProductStore, userStore } from "@/lib/store";
 import axios from "axios";
 import Image from "next/image";
 import { toast } from "sonner";
+import CartShimmer from "@/components/shimmer/Cart_shimmer";
 
 export default function Cart() {
   const cartItems = userStore((state) => state.cartItems);
@@ -58,7 +59,6 @@ export default function Cart() {
     const previousQty = qty;
     const newQty = qty + 1;
     increaseQuantity(itemId, newQty);
-    // console.log(qty + 1, variantId);
     let data = {
       quantity: newQty,
       variantId,
@@ -102,6 +102,10 @@ export default function Cart() {
         increaseQuantity(itemId, previousQty);
       }
     }, 1300);
+  }
+
+  if (cartItems === null || cartItems === undefined) {
+    return <CartShimmer />;
   }
 
   if (cartItems?.length === 0) {
@@ -191,17 +195,6 @@ export default function Cart() {
                             <span className="text-lg font-bold">
                               ₹{item.product.price}
                             </span>
-                            {/* <span className="text-sm text-gray-500 line-through ml-2">
-                                ₹{item.originalPrice}
-                              </span>
-                              <span className="text-sm text-green-600 ml-2">
-                                {Math.round(
-                                  ((item.product.price - item.product.price) /
-                                    item.product.price) *
-                                    100
-                                )}
-                                % OFF
-                              </span> */}
                           </div>
                         </div>
 
@@ -239,10 +232,7 @@ export default function Cart() {
                           </div>
 
                           <div className="flex gap-4">
-                            <Button
-                              // onClick={() => moveToWishlist(item.id)}
-                              className="flex items-center text-sm text-gray-600 hover:text-gray-900"
-                            >
+                            <Button className="flex items-center text-sm text-gray-600 hover:text-gray-900">
                               <Heart className="w-4 h-4 mr-1" />
                               <span className="hidden md:inline">WISHLIST</span>
                             </Button>
@@ -326,6 +316,6 @@ export default function Cart() {
       </div>
     </div>
   ) : (
-    <div>Loading...</div>
+    <CartShimmer />
   );
 }

@@ -5,12 +5,14 @@ import Sidebar from "@/components/product-listing/Sidebar";
 import { ProductSchema, useProductStore } from "@/lib/store";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import ProdShimmer from "@/components/shimmer/Prod_shimmer";
 
 export default function Products() {
   const products = useProductStore((state) => state.products);
   const [filteredProducts, setFilteredProducts] = useState<ProductSchema[]>([]);
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
+  const isLoading = products.length === 0;
 
   useEffect(() => {
     if (products && category) {
@@ -23,8 +25,8 @@ export default function Products() {
     }
   }, [products, category]);
 
-  async function handleLoadmore(){
-    console.log('loadmore called')
+  async function handleLoadmore() {
+    console.log("loadmore called");
   }
 
   return (
@@ -32,7 +34,9 @@ export default function Products() {
       <Sidebar className="hidden md:inline-block w-1/4" />
 
       <div className="flex-1 px-2 md:px-4 mx-auto my-3 pb-10 w-full">
-        {filteredProducts.length === 0 ? (
+        {isLoading ? (
+          <ProdShimmer count={10} />
+        ) : filteredProducts.length === 0 ? (
           <NoProductsFound className="mx-auto" category={category} />
         ) : (
           <>
