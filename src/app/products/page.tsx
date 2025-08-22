@@ -23,27 +23,44 @@ export default function Products() {
     }
   }, [products, category]);
 
+  async function handleLoadmore(){
+    console.log('loadmore called')
+  }
+
   return (
     <div className="flex gap-1">
-      <Sidebar className="hidden sm:inline-block w-1/4" />
+      <Sidebar className="hidden md:inline-block w-1/4" />
 
-      <div className="flex flex-wrap w-11/12 ps-2 md:gap-4 mx-auto justify-start my-3 pb-10">
+      <div className="flex-1 px-2 md:px-4 mx-auto my-3 pb-10 w-full">
         {filteredProducts.length === 0 ? (
           <NoProductsFound className="mx-auto" category={category} />
         ) : (
-          filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              slug={product.slug}
-              title={product.name}
-              image={product.images.map((img) => img.url)}
-              price={product.price}
-              discount={product.discount}
-              brand={product.brand}
-              className="w-1/2 sm:w-1/2 md:w-[30%] lg:w-1/5 p-2"
-            />
-          ))
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  id={product.id}
+                  slug={product.slug}
+                  title={product.name}
+                  image={product.images.map((img) => img.url)}
+                  price={product.price}
+                  discount={product.discount}
+                  brand={product.brand}
+                  className=""
+                />
+              ))}
+            </div>
+
+            <div className="flex justify-center mt-6">
+              <button
+                className="px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition"
+                onClick={() => handleLoadmore()}
+              >
+                Load More
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

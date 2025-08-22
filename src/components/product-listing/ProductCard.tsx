@@ -30,28 +30,33 @@ export const ProductCard = ({
       onClick={() => {
         redirect(`/products/${slug}`);
       }}
-      className={`rounded-sm  border-0 py-0 hover:shadow-md transition-all cursor-pointer overflow-hidden ${className}`}
+      className={`rounded-md border py-0 border-gray-200/70 hover:border-gray-300 bg-white transition-all cursor-pointer overflow-hidden hover:shadow-lg ${className}`}
     >
       {/* Image */}
-      <div className="relative h-60">
+      <div className="relative w-full h-2/3 aspect-[4/5] bg-gray-50">
         <Image
           src={image[0]}
           alt={brand}
           fill
-          className="object-cover object-top "
-          sizes="(max-width: 768px) 100vw, 256px"
+          className="object-cover object-center"
+          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
+          priority={false}
         />
       </div>
 
       {/* Content */}
-      <CardContent className="p-2 pt-0">
-        <h3 className="text-sm font-semibold">{brand}</h3>
-        <h1 className="text-sm text-gray-700">{title}</h1>
+      <CardContent className="px-2 py-0">
+        <h3 className="text-[12px] font-semibold tracking-tight text-gray-900 line-clamp-1">
+          {brand}
+        </h3>
+        <h1 className="text-[12px] text-gray-700 line-clamp-2">{title}</h1>
 
         {/* Price */}
-        <div className="flex gap-3 items-center mt-1">
-          <p className="text-md font-bold text-black">Rs. {price}</p>
-          <p className="text-orange-500 text-sm">(Rs. {discount} OFF)</p>
+        <div className="flex items-baseline gap-2 mt-1">
+          <p className="text-sm font-bold text-black">Rs. {price}</p>
+          <p className="text-[10px] text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-sm">
+            {discount}% OFF
+          </p>
         </div>
       </CardContent>
     </Card>

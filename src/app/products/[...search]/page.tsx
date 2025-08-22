@@ -134,7 +134,7 @@ const ProductDetails = () => {
             {/* Product Info */}
             <div className="space-y-5">
               <div>
-                <Badge variant="secondary" className="mb-3">
+                <Badge variant="secondary" className="mb-3 text-md bg-gray-100 shadow-xs">
                   {productData.brand}
                 </Badge>
                 <h1 className="text-4xl font-bold text-foreground">
@@ -167,10 +167,10 @@ const ProductDetails = () => {
                       key={size}
                       size="sm"
                       onClick={() => setSelectedSize(size)}
-                      className={`rounded-full px-4 py-1 text-sm transition-all duration-200 ${
+                      className={`px-4 py-1 text-sm transition-all duration-200 ${
                         selectedSize === size
-                          ? "bg-black text-white"
-                          : "bg-white text-black border"
+                          ? "bg-gray-900 text-white shadow-sm"
+                          : "bg-gray-100 border-0 text-black "
                       }`}
                     >
                       {size}
@@ -206,8 +206,9 @@ const ProductDetails = () => {
                     size="sm"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
+                    className="cursor-pointer"
                   >
-                    <Minus className="h-4 w-4" />
+                    <Minus className="h-4 w-4 cursor-pointer" />
                   </Button>
                   <span className="font-medium text-lg w-8 text-center">
                     {quantity}
@@ -216,11 +217,12 @@ const ProductDetails = () => {
                     variant="outline"
                     size="sm"
                     onClick={() => setQuantity(quantity + 1)}
+                    className="cursor-pointer"
                     disabled={
                       !selectedVariant || quantity >= selectedVariant.stock
                     }
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-4 w-4 cursor-pointer" />
                   </Button>
                 </div>
 
