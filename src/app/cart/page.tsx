@@ -20,7 +20,8 @@ import CartShimmer from "@/components/shimmer/Cart_shimmer";
 
 export default function Cart() {
   const cartItems = userStore((state) => state.cartItems);
-  const { removeFromCart, increaseQuantity, decreaseQuantity } = userStore();
+  const { removeFromCart, increaseQuantity, decreaseQuantity, setCartItems } =
+    userStore();
   const timeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const subtotal = cartItems?.reduce(
@@ -38,6 +39,21 @@ export default function Cart() {
     ) ?? 0;
   const deliveryCharges = subtotal! > 1500 ? 0 : 99;
   const total = subtotal! + deliveryCharges - discount;
+
+  const getCart = async () => {
+    try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cart`, {
+        withCredentials: true,
+      });
+      setCartItems(res.data.data.items);
+    } catch (_error) {
+      // Optionally show a toast: toast.error("Failed to load cart");
+    }
+  };
+
+  useEffect(() => {
+    getCart();
+  }, []);
 
   async function removeItem(id: string) {
     removeFromCart(id);

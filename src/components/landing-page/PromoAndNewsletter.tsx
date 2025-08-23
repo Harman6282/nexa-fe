@@ -9,7 +9,7 @@ const PromoAndNewsletter = () => {
   return (
     <div className="space-y-16 ">
       {/* Newsletter Section */}
-      <section className="max-w-5xl mx-auto rounded-3xl border border-black/10 bg-neutral-100 px-6 py-8 md:px-10 md:py-12 text-center shadow-sm">
+      <section className="max-w-7xl  mx-auto rounded-3xl border border-black/10 bg-neutral-100 px-6 py-8 md:px-10 md:py-12 text-center shadow-sm mb-7">
         <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
           SUBSCRIBE OUR NEWSLETTER
         </h2>

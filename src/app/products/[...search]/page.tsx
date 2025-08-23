@@ -100,7 +100,7 @@ const ProductDetails = () => {
         <Button
           variant="outline"
           className="absolute top-5 left-5 flex items-center gap-2"
-          onClick={() => redirect("/products")}
+          onClick={() => redirect("/products?page=1")}
         >
           <ArrowLeft className="h-5 w-5" />
           Back

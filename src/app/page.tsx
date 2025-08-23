@@ -95,7 +95,7 @@ export default function Home() {
               {/* Bottom controls */}
               <div className="absolute left-4 right-4 bottom-4 flex items-center justify-center gap-3">
                 <Link
-                  href="/products"
+                  href="/products?page=1"
                   className="rounded-full bg-white text-black px-5 py-3 text-sm font-semibold shadow-md inline-flex items-center gap-2"
                 >
                   SEE ALL

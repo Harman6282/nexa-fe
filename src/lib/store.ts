@@ -39,13 +39,17 @@ export type ProductSchema = {
 
 type ProductStore = {
   products: ProductSchema[];
+  totalPages: number;
   setProducts: (products: ProductSchema[]) => void;
+  setTotalPages: (totalPages: number) => void;
 };
 
 export const useProductStore = create<ProductStore>((set) => ({
   products: [],
+  totalPages: 0,
 
   setProducts: (products) => set(() => ({ products })),
+  setTotalPages: (totalPages) => set(() => ({ totalPages })),
 }));
 
 type Count = {

@@ -25,17 +25,13 @@ export default function Products() {
     }
   }, [products, category]);
 
-  async function handleLoadmore() {
-    console.log("loadmore called");
-  }
-
   return (
     <div className="flex gap-1">
       <Sidebar className="hidden md:inline-block w-1/4" />
 
       <div className="flex-1 px-2 md:px-4 mx-auto my-3 pb-10 w-full">
         {isLoading ? (
-          <ProdShimmer count={10} />
+          <ProdShimmer />
         ) : filteredProducts.length === 0 ? (
           <NoProductsFound className="mx-auto" category={category} />
         ) : (
@@ -57,12 +53,7 @@ export default function Products() {
             </div>
 
             <div className="flex justify-center mt-6">
-              <button
-                className="px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition"
-                onClick={() => handleLoadmore()}
-              >
-                Load More
-              </button>
+              
             </div>
           </>
         )}
