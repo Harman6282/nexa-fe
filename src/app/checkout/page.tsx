@@ -22,20 +22,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Plus, MapPin, CreditCard } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { userStore } from "@/lib/store";
 import axios from "axios";
 import { redirect } from "next/navigation";
 
-interface Address {
+export interface Address {
   id: string;
   lineOne: string;
   lineTwo?: string;
@@ -49,7 +43,7 @@ interface CheckoutForm {
   selectedAddress: string;
 }
 
-interface AddAddressForm {
+export interface AddAddressForm {
   lineOne: string;
   lineTwo?: string;
   city: string;

@@ -70,31 +70,12 @@ export interface Address {
   userId: string;
 }
 
-export interface AddressBookProps {
-  addresses: Address[];
-}
-
 export default function ProfilePage() {
   const [orders, setOrders] = useState<OrderHistoryProps[]>([]);
-  const [addresses, setAddresses] = useState<Address[]>([]);
 
   const user = userStore((state) => state.user);
 
   // const cartId = userStore((state) => state.user?.cart[0].id);
-
-  const getAddresses = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/address`,
-        {
-          withCredentials: true,
-        }
-      );
-      setAddresses(res.data.data);
-    } catch (_error) {
-      setAddresses([]);
-    }
-  };
 
   const getOrders = async () => {
     try {
@@ -114,7 +95,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     getOrders();
-    getAddresses();
   }, []);
 
   if (user === null || user === undefined) {
@@ -160,7 +140,7 @@ export default function ProfilePage() {
             </TabsContent>
 
             <TabsContent value="addresses">
-              <AddressBook addresses={addresses} />
+              <AddressBook />
             </TabsContent>
           </Tabs>
         </div>
