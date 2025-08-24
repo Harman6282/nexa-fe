@@ -24,7 +24,7 @@ const categories = [
 
 export const Navbar = () => {
   const { setProducts, setTotalPages } = useProductStore();
-  const { cartItems, setUser, user } = userStore();
+  const { cartItems, setUser, user, setAddresses } = userStore();
 
   const router = useRouter();
   const getProducts = async () => {
@@ -43,6 +43,7 @@ export const Navbar = () => {
       if (res.status === 200 && res.data?.user) {
         const payload = res.data.user?.data ?? res.data.user;
         setUser(payload);
+        setAddresses(payload?.address);
       } else {
         setUser(null as any);
       }

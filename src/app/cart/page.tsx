@@ -17,6 +17,7 @@ import axios from "axios";
 import Image from "next/image";
 import { toast } from "sonner";
 import CartShimmer from "@/components/shimmer/Cart_shimmer";
+import OrderSummary from "@/components/OrderSummary";
 
 export default function Cart() {
   const cartItems = userStore((state) => state.cartItems);
@@ -281,53 +282,14 @@ export default function Cart() {
           </div>
 
           {/* Price Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
-              <h2 className="text-lg font-semibold mb-4">
-                Price Details ({cartItems.length} items)
-              </h2>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between">
-                  <span>Total MRP</span>
-                  <span>₹{originalTotal!.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-green-600">
-                  <span>Discount on MRP</span>
-                  <span>-₹{discount.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Convenience Fee</span>
-                  <span className="text-green-600">FREE</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping Fee</span>
-                  <span
-                    className={deliveryCharges === 0 ? "text-green-600" : ""}
-                  >
-                    {deliveryCharges === 0 ? "FREE" : `₹${deliveryCharges}`}
-                  </span>
-                </div>
-                <hr className="my-4" />
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total Amount</span>
-                  <span>₹{total.toLocaleString()}</span>
-                </div>
-              </div>
-
-              <Link href="/checkout">
-                <Button className="w-full cursor-pointer bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
-                  CHECKOUT
-                </Button>
-              </Link>
-
-              <div className="text-center">
-                <p className="text-sm text-gray-600">
-                  You will save ₹{discount.toLocaleString()} on this order
-                </p>
-              </div>
-            </div>
-          </div>
+          <OrderSummary
+            cartItems={cartItems}
+            originalTotal={originalTotal!}
+            discount={discount}
+            deliveryCharges={deliveryCharges}
+            total={total}
+            btnName="Checkout"
+          />
         </div>
       </div>
     </div>

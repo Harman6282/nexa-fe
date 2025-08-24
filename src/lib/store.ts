@@ -74,6 +74,16 @@ type User = {
   updateAt: Date;
 };
 
+type Addresses = {
+  id?: string;
+  lineOne: string;
+  lineTwo?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+};
+
 export interface CartItems {
   id: string;
   productId: string;
@@ -86,9 +96,11 @@ export interface CartItems {
 type UserStore = {
   user: User | null;
   cartItems: CartItems[] | null;
+  addresses: Addresses[] | null;
   setUser: (user: User) => void;
   setCartItems: (cart: CartItems[]) => void;
   removeFromCart: (id: string) => void;
+  setAddresses: (address: Addresses[]) => void;
   clearCart: () => void;
   increaseQuantity: (id: string, qty: number) => void;
   decreaseQuantity: (id: string, qty: number) => void;
@@ -97,9 +109,11 @@ type UserStore = {
 export const userStore = create<UserStore>((set) => ({
   user: null,
   cartItems: null,
+  addresses: null,
 
   setUser: (user) => set(() => ({ user })),
   setCartItems: (cartItems) => set(() => ({ cartItems })),
+  setAddresses: (addresses) => set(() => ({ addresses })),
   removeFromCart: (id) =>
     set((state) => ({
       cartItems: state.cartItems?.filter((item) => item.id != id),
