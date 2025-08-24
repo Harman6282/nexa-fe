@@ -23,11 +23,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Plus, MapPin, CreditCard } from "lucide-react";
+import { Plus, MapPin, CreditCard, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { userStore } from "@/lib/store";
 import axios from "axios";
 import { redirect } from "next/navigation";
+import { toast } from "sonner";
+import AddressShimmer from "@/components/shimmer/Address_shimmer";
 
 export interface Address {
   id: string;
@@ -54,14 +56,29 @@ export interface AddAddressForm {
 
 const Checkout = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
 
   const userAddresses = userStore((state) => state.user?.address);
   const cartId = userStore((state) => state?.user?.cart[0].id);
 
-  useEffect(() => {
-    if (userAddresses) {
-      setAddresses(userAddresses);
+  const getAddresses = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/address`,
+        {
+          withCredentials: true,
+        }
+      );
+      setAddresses(response.data.data);
+      setIsFetching(false);
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  useEffect(() => {
+    getAddresses();
   }, []);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -84,13 +101,32 @@ const Checkout = () => {
     },
   });
 
-  const onSubmitNewAddress = (data: AddAddressForm) => {
-    const newAddr: Address = {
-      id: Date.now().toString(),
-      ...data,
+  const onSubmitNewAddress = async (data: AddAddressForm) => {
+    const newAddr: AddAddressForm = {
+      lineOne: data.lineOne.trim(),
+      lineTwo: data.lineTwo?.trim(),
+      city: data.city.trim(),
+      state: data.state.trim(),
+      pincode: data.pincode.trim(),
+      country: data.country.trim(),
     };
-    setAddresses((prev) => [...prev, newAddr]);
-    checkoutForm.setValue("selectedAddress", newAddr.id);
+    console.log(newAddr);
+    try {
+      setIsLoading(true);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/address`,
+        newAddr,
+        { withCredentials: true }
+      );
+      setAddresses((prev) => [...prev, res?.data?.address]);
+      console.log(res.data.address);
+      toast.success(res?.data?.message || "Address added successfully");
+      setIsLoading(false);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Failed to add address");
+      setIsLoading(false);
+    }
     addAddressForm.reset();
     setIsDialogOpen(false);
   };
@@ -141,58 +177,62 @@ const Checkout = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Form {...checkoutForm}>
-                  <form className="space-y-4">
-                    <FormField
-                      control={checkoutForm.control}
-                      name="selectedAddress"
-                      rules={{ required: true }}
-                      render={({ field }) => (
-                        <RadioGroup
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          className="space-y-3"
-                        >
-                          {addresses.map((address) => (
-                            <div
-                              key={address.id}
-                              className="flex items-start space-x-3"
-                            >
-                              <RadioGroupItem
-                                value={address.id}
-                                id={address.id}
-                                className="mt-1"
-                              />
-                              <Label
-                                htmlFor={address.id}
-                                className="flex-1 cursor-pointer"
+                {isFetching ? (
+                  <AddressShimmer />
+                ) : (
+                  <Form {...checkoutForm}>
+                    <form className="space-y-4">
+                      <FormField
+                        control={checkoutForm.control}
+                        name="selectedAddress"
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <RadioGroup
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            className="space-y-3"
+                          >
+                            {addresses.map((address) => (
+                              <div
+                                key={address.id}
+                                className="flex items-start space-x-3"
                               >
-                                <div className="p-4 border rounded-lg hover:bg-accent transition-colors">
-                                  <div className="font-medium flex items-center gap-2">
-                                    {address.lineOne}
-                                    {/* {address.isDefault && (
+                                <RadioGroupItem
+                                  value={address.id}
+                                  id={address.id}
+                                  className="mt-1"
+                                />
+                                <Label
+                                  htmlFor={address.id}
+                                  className="flex-1 cursor-pointer"
+                                >
+                                  <div className="p-4 border rounded-lg hover:bg-accent transition-colors">
+                                    <div className="font-medium flex items-center gap-2">
+                                      {address.lineOne}
+                                      {/* {address.isDefault && (
                                       <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
                                         Default
                                       </span>
                                     )} */}
+                                    </div>
+                                    <div className="text-sm text-muted-foreground mt-1">
+                                      {address.lineTwo}
+                                      <br />
+                                      {address.city}, {address.state}{" "}
+                                      {address.pincode}
+                                      <br />
+                                      {address.country}
+                                    </div>
                                   </div>
-                                  <div className="text-sm text-muted-foreground mt-1">
-                                    {address.lineTwo}
-                                    <br />
-                                    {address.city}, {address.state}{" "}
-                                    {address.pincode}
-                                    <br />
-                                    {address.country}
-                                  </div>
-                                </div>
-                              </Label>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      )}
-                    />
-                  </form>
-                </Form>
+                                </Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        )}
+                      />
+                    </form>
+                  </Form>
+                )}
 
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
@@ -311,8 +351,13 @@ const Checkout = () => {
                           <Button
                             type="submit"
                             className="flex-1 bg-black text-white "
+                            disabled={isLoading}
                           >
-                            Add Address
+                            {isLoading ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              "Add Address"
+                            )}
                           </Button>
                           <Button
                             type="button"

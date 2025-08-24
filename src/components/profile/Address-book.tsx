@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { userStore } from "@/lib/store";
+import AddressShimmer from "../shimmer/Address_shimmer";
 
 export interface NewAddressSchema {
   lineOne: string;
@@ -461,7 +462,7 @@ export function AddressBook() {
       </Dialog>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-        {addresses &&
+        {addresses ? (
           addresses.map((address, index) => (
             <Card key={index} className="border-gray-200">
               <CardContent className="">
@@ -495,7 +496,10 @@ export function AddressBook() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          ))
+        ) : (
+          <AddressShimmer />
+        )}
       </div>
     </div>
   );
