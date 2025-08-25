@@ -112,13 +112,6 @@ export const Navbar = () => {
 
           {user ? (
             <>
-              {/* Wishlist */}
-              <Link href="/whishlist">
-                <Button variant="ghost" size="icon" className="cursor-pointer">
-                  <Heart className="h-5 w-5" />
-                </Button>
-              </Link>
-
               {/* Bag */}
               <Link href="/cart" className="relative">
                 <Button variant="ghost" size="icon" className="cursor-pointer">

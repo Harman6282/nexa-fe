@@ -27,8 +27,14 @@ import OrderSummary from "@/components/OrderSummary";
 
 export default function Cart() {
   const cartItems = userStore((state) => state.cartItems);
-  const { removeFromCart, increaseQuantity, decreaseQuantity, setCartItems } =
-    userStore();
+  const {
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    setCartItems,
+    setWishlist,
+    wishlist,
+  } = userStore();
   const timeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { setOrderDetails } = useCartStore();
 
@@ -181,6 +187,25 @@ export default function Cart() {
     );
   }
 
+  const handleAddToWishlist = async (id: string) => {
+    if (id) {
+      try {
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/wishlist`,
+          {
+            productId: id,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        toast.success(res?.data?.message);
+      } catch (error) {
+        toast.error("Something went wrong, try again");
+      }
+    }
+  };
+
   return cartItems ? (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -283,7 +308,10 @@ export default function Cart() {
                           </div>
 
                           <div className="flex gap-4">
-                            <Button className="flex items-center text-sm text-gray-600 hover:text-gray-900">
+                            <Button
+                              className="flex items-center text-sm text-gray-600 hover:text-gray-900"
+                              onClick={() => handleAddToWishlist(item?.id)}
+                            >
                               <Heart className="w-4 h-4 mr-1" />
                               <span className="hidden md:inline">WISHLIST</span>
                             </Button>

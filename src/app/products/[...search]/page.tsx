@@ -23,10 +23,9 @@ const ProductDetails = () => {
   const params = useParams();
   const [productData, setProductData] = useState<ProductSchema>();
   const products = useProductStore((state) => state.products);
-  const {user} = userStore()
+  const { user } = userStore();
 
   const slug = params?.search?.toString();
-  
 
   function getProduct() {
     const item = products.find((item) => item.slug == slug);
@@ -70,8 +69,8 @@ const ProductDetails = () => {
     quantity: quantity,
   };
 
-  console.log(user)
-  
+  console.log(user);
+
   async function handleAddToCart() {
     setAddingState(true);
     try {
@@ -82,7 +81,7 @@ const ProductDetails = () => {
           withCredentials: true,
         }
       );
-      
+
       toast.success("Added to cart", {
         className: "bg-red text-black border border-gray-200",
       });
@@ -92,6 +91,23 @@ const ProductDetails = () => {
       setAddingState(false);
     }
   }
+
+  const handleAddToWishlist = async (id: string) => {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/wishlist`,
+        {
+          productId: id,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success(res?.data?.message);
+    } catch (error) {
+      toast.error("Something went wrong, try again");
+    }
+  };
 
   return (
     productData && (
@@ -139,7 +155,10 @@ const ProductDetails = () => {
             {/* Product Info */}
             <div className="space-y-5">
               <div>
-                <Badge variant="secondary" className="mb-3 text-md bg-gray-100 shadow-xs">
+                <Badge
+                  variant="secondary"
+                  className="mb-3 text-md bg-gray-100 shadow-xs"
+                >
                   {productData.brand}
                 </Badge>
                 <h1 className="text-4xl font-bold text-foreground">
@@ -252,7 +271,7 @@ const ProductDetails = () => {
                 <Button
                   variant="outline"
                   className="w-full py-5 text-lg"
-                  onClick={() => setIsWishlisted(!isWishlisted)}
+                  onClick={() => handleAddToWishlist(productData.id)}
                 >
                   <Heart
                     className={`mr-3 h-5 w-5 transition-transform duration-200 ${

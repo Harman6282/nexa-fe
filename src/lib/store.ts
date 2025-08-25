@@ -97,10 +97,20 @@ export interface CartItems {
   inStock: boolean;
 }
 
+export type Wishlist = {
+  id: string;
+  name: string;
+  image: string;
+  productId: string;
+  slug: string;
+  price: string;
+};
+
 type UserStore = {
   user: User | null;
   cartItems: CartItems[] | null;
   addresses: Addresses[] | null;
+  wishlist: Wishlist[] | null;
   setUser: (user: User) => void;
   setCartItems: (cart: CartItems[]) => void;
   removeFromCart: (id: string) => void;
@@ -108,12 +118,14 @@ type UserStore = {
   clearCart: () => void;
   increaseQuantity: (id: string, qty: number) => void;
   decreaseQuantity: (id: string, qty: number) => void;
+  setWishlist: (wishlist: Wishlist[]) => void;
 };
 
 export const userStore = create<UserStore>((set) => ({
   user: null,
   cartItems: null,
   addresses: null,
+  wishlist: null,
 
   setUser: (user) => set(() => ({ user })),
   setCartItems: (cartItems) => set(() => ({ cartItems })),
@@ -144,6 +156,11 @@ export const userStore = create<UserStore>((set) => ({
             : item
         )
         .filter((item) => item.quantity > 0),
+    })),
+
+  setWishlist: (wishlist) =>
+    set((state) => ({
+      wishlist,
     })),
 }));
 
