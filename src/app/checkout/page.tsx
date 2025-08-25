@@ -22,14 +22,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { Plus, MapPin, CreditCard, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { userStore } from "@/lib/store";
+import { useCartStore, userStore } from "@/lib/store";
 import axios from "axios";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import AddressShimmer from "@/components/shimmer/Address_shimmer";
+import OrderSummary from "@/components/OrderSummary";
 
 export interface Address {
   id: string;
@@ -59,8 +59,12 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
 
-  const userAddresses = userStore((state) => state.user?.address);
+  const { orderDetails, clearPersistedData } = useCartStore();
+
+  // const userAddresses = userStore((state) => state.user?.address);
   const cartId = userStore((state) => state?.user?.cart[0].id);
+
+  const router = useRouter();
 
   const getAddresses = async () => {
     try {
@@ -142,19 +146,19 @@ const Checkout = () => {
       cartId: cartId,
       addressId: selectedId,
     };
-
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders`,
-        data,
-        { withCredentials: true }
-      );
-
-      redirect("/profile");
-
-      console.log(res.data.data);
-    } catch (_error) {
-      // Optionally show a toast: toast.error("Payment failed");
+    if (data.cartId && data.addressId) {
+      try {
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/orders`,
+          data,
+          { withCredentials: true }
+        );
+        toast.success("Order placed");
+        clearPersistedData();
+        router.push("/profile");
+      } catch (_error) {
+        // Optionally show a toast: toast.error("Payment failed");
+      }
     }
   }
 
@@ -376,64 +380,15 @@ const Checkout = () => {
           </div>
 
           {/* Right Column - Order Summary */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Order Summary
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span>${shipping.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Tax</span>
-                    <span>${tax.toFixed(2)}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between font-semibold">
-                    <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
-                  </div>
-                </div>
-
-                <Button
-                  className="w-full bg-black text-white"
-                  size="lg"
-                  disabled={!checkoutForm.watch("selectedAddress")}
-                  onClick={() => onPayNow()}
-                >
-                  Pay Now
-                </Button>
-
-                {!checkoutForm.watch("selectedAddress") && (
-                  <p className="text-sm text-muted-foreground text-center">
-                    Please select a shipping address to continue
-                  </p>
-                )}
-
-                <div className="pt-4 space-y-2">
-                  <div className="text-xs text-muted-foreground">
-                    • Secure SSL encryption
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    • 30-day money-back guarantee
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    • Free returns on all orders
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <OrderSummary
+            cartItems={orderDetails?.cartItems!}
+            originalTotal={orderDetails?.originalTotal!}
+            discount={orderDetails?.discount}
+            deliveryCharges={orderDetails?.deliveryCharges}
+            total={orderDetails?.total || 0}
+            btnName="Pay now"
+            onPayNow={onPayNow}
+          />
         </div>
       </div>
     </div>

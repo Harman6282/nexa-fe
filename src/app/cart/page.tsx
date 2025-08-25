@@ -12,18 +12,33 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ProductSchema, useProductStore, userStore } from "@/lib/store";
+import {
+  CartItems,
+  ProductSchema,
+  useCartStore,
+  useProductStore,
+  userStore,
+} from "@/lib/store";
 import axios from "axios";
 import Image from "next/image";
 import { toast } from "sonner";
 import CartShimmer from "@/components/shimmer/Cart_shimmer";
 import OrderSummary from "@/components/OrderSummary";
 
+type orderDetailsSchema = {
+  cartItems: CartItems[];
+  originalTotal: number;
+  discount: number;
+  deliveryCharges: number;
+  total: number;
+};
+
 export default function Cart() {
   const cartItems = userStore((state) => state.cartItems);
   const { removeFromCart, increaseQuantity, decreaseQuantity, setCartItems } =
     userStore();
   const timeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { setOrderDetails } = useCartStore();
 
   const subtotal = cartItems?.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
@@ -38,7 +53,7 @@ export default function Cart() {
       (sum, item) => sum + (item.product.discount ?? 0) * item.quantity,
       0
     ) ?? 0;
-  const deliveryCharges = subtotal! > 1500 ? 0 : 99;
+  const deliveryCharges = subtotal! > 500 ? 0 : 60;
   const total = subtotal! + deliveryCharges - discount;
 
   const getCart = async () => {
@@ -55,6 +70,33 @@ export default function Cart() {
   useEffect(() => {
     getCart();
   }, []);
+
+  const orderDetails = {
+    cartItems,
+    originalTotal: originalTotal ?? 0,
+    discount,
+    deliveryCharges,
+    total,
+  };
+
+  useEffect(() => {
+    if (
+      cartItems?.length &&
+      originalTotal !== null &&
+      discount !== null &&
+      deliveryCharges !== null &&
+      total !== null
+    ) {
+      setOrderDetails(orderDetails);
+    }
+  }, [
+    cartItems,
+    originalTotal,
+    discount,
+    deliveryCharges,
+    total,
+    setOrderDetails,
+  ]);
 
   async function removeItem(id: string) {
     removeFromCart(id);
@@ -225,7 +267,7 @@ export default function Cart() {
                                   item.variantId
                                 );
                               }}
-                              className="p-2 hover:bg-gray-100 disabled:opacity-50"
+                              className="p-2 hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
                               disabled={item.quantity <= 1}
                             >
                               <Minus className="w-4 h-4" />
@@ -242,7 +284,7 @@ export default function Cart() {
                                 )
                               }
                               disabled={item.quantity === item.variant.stock}
-                              className="p-2 hover:bg-gray-100"
+                              className="p-2 hover:bg-gray-100 cursor-pointer"
                             >
                               <Plus className="w-4 h-4" />
                             </Button>
@@ -286,7 +328,6 @@ export default function Cart() {
             cartItems={cartItems}
             originalTotal={originalTotal!}
             discount={discount}
-            deliveryCharges={deliveryCharges}
             total={total}
             btnName="Checkout"
           />

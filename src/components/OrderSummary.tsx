@@ -10,41 +10,48 @@ const OrderSummary = ({
   deliveryCharges,
   total,
   btnName,
+  onPayNow,
 }: {
   cartItems: CartItems[];
   originalTotal: number;
-  discount: number;
-  deliveryCharges: number;
+  discount?: number;
+  deliveryCharges?: number;
   total: number;
   btnName: string;
+  onPayNow?: () => void;
 }) => {
   return (
     <>
       <div className="lg:col-span-1">
         <div className="bg-white rounded-lg shadow-sm p-6 sticky top-8">
           <h2 className="text-lg font-semibold mb-4">
-            Price Details ({cartItems.length} items)
+            {btnName !== "checkout" ? "Subtotal" : "Order Summary"} (
+            {cartItems?.length} items)
           </h2>
 
           <div className="space-y-3 mb-6">
             <div className="flex justify-between">
               <span>Total MRP</span>
-              <span>₹{originalTotal!.toLocaleString()}</span>
+              <span>₹{originalTotal!}</span>
             </div>
-            <div className="flex justify-between text-green-600">
-              <span>Discount on MRP</span>
-              <span>-₹{discount.toLocaleString()}</span>
-            </div>
+            {discount && (
+              <div className="flex justify-between text-green-600">
+                <span>Discount on MRP</span>
+                <span>-₹{discount}</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span>Convenience Fee</span>
               <span className="text-green-600">FREE</span>
             </div>
-            <div className="flex justify-between">
-              <span>Shipping Fee</span>
-              <span className={deliveryCharges === 0 ? "text-green-600" : ""}>
-                {deliveryCharges === 0 ? "FREE" : `₹${deliveryCharges}`}
-              </span>
-            </div>
+            {btnName !== "Checkout" && (
+              <div className="flex justify-between">
+                <span>Shipping Fee</span>
+                <span className={deliveryCharges === 0 ? "text-green-600" : ""}>
+                  {deliveryCharges === 0 ? "FREE" : `₹${deliveryCharges}`}
+                </span>
+              </div>
+            )}
             <hr className="my-4" />
             <div className="flex justify-between font-bold text-lg">
               <span>Total Amount</span>
@@ -52,17 +59,28 @@ const OrderSummary = ({
             </div>
           </div>
 
-          <Link href="/checkout">
-            <Button className="w-full cursor-pointer bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
+          {btnName === "Checkout" ? (
+            <Link href="/checkout">
+              <Button className="w-full cursor-pointer bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
+                {btnName}
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              className="w-full cursor-pointer bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4"
+              onClick={onPayNow}
+            >
               {btnName}
             </Button>
-          </Link>
+          )}
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              You will save ₹{discount.toLocaleString()} on this order
-            </p>
-          </div>
+          {discount && (
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                You will save ₹{discount.toLocaleString()} on this order
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </>

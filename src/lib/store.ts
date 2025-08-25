@@ -1,5 +1,7 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
+// ? Product store starts here
 export type ImageSchema = {
   id: string;
   publicId: string;
@@ -51,6 +53,8 @@ export const useProductStore = create<ProductStore>((set) => ({
   setProducts: (products) => set(() => ({ products })),
   setTotalPages: (totalPages) => set(() => ({ totalPages })),
 }));
+
+// ? user store starts here
 
 type Count = {
   cart: number;
@@ -142,3 +146,35 @@ export const userStore = create<UserStore>((set) => ({
         .filter((item) => item.quantity > 0),
     })),
 }));
+
+// ? user Cart Store starts here
+
+export interface OrderDetails {
+  cartItems: CartItems[] | null;
+  originalTotal: number;
+  discount: number;
+  deliveryCharges: number;
+  total: number;
+}
+
+interface CartState {
+  orderDetails: OrderDetails | null;
+  setOrderDetails: (details: OrderDetails) => void;
+  clearOrderDetails: () => void;
+  clearPersistedData: () => void;
+}
+
+export const useCartStore = create<CartState>()(
+  persist(
+    (set) => ({
+      orderDetails: null,
+      setOrderDetails: (details) => set({ orderDetails: details }),
+      clearOrderDetails: () => set({ orderDetails: null }),
+      clearPersistedData: () => {
+        set({ orderDetails: null });
+        localStorage.removeItem("cart-storage");
+      },
+    }),
+    { name: "cart-storage" }
+  )
+);
