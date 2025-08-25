@@ -25,14 +25,6 @@ import { toast } from "sonner";
 import CartShimmer from "@/components/shimmer/Cart_shimmer";
 import OrderSummary from "@/components/OrderSummary";
 
-type orderDetailsSchema = {
-  cartItems: CartItems[];
-  originalTotal: number;
-  discount: number;
-  deliveryCharges: number;
-  total: number;
-};
-
 export default function Cart() {
   const cartItems = userStore((state) => state.cartItems);
   const { removeFromCart, increaseQuantity, decreaseQuantity, setCartItems } =
