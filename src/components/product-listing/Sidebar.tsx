@@ -16,7 +16,7 @@ export default function Sidebar({
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 }) {
   const [priceRange, setPriceRange] = useState<number[]>([500, 5000]);
-  const [category, setCategory] = useState<string>("men");
+  const [category, setCategory] = useState<string>("all");
   const [sizes, setSizes] = useState<string[]>([]);
 
   const handleSizeChange = (size: string) => {
@@ -26,13 +26,12 @@ export default function Sidebar({
   };
 
   const handleApplyFilters = () => {
-    const filters = {
+    const next = {
       priceRange,
       category,
-      sizes,
+      size: sizes,
     };
-    console.log("Applied Filters:", filters);
-    setFilters(filters);
+    setFilters(next);
   };
 
   return (
@@ -40,8 +39,8 @@ export default function Sidebar({
       className={`lg:w-64 p-6 border-r border-gray-200 bg-white shadow-sm space-y-6 ${className}`}
     >
       {/* PRICE FILTER */}
-      <div className="border-b border-gray-200 pb-4">
-        <h1 className="text-lg font-semibold text-gray-900">Price Filter</h1>
+      <div className="border-b border-gray-200 pb-">
+        <h1 className="text-xl  font-bold  text-gray-900">Filters</h1>
       </div>
       <div className="space-y-4">
         <div className="flex justify-between items-center">
@@ -55,7 +54,7 @@ export default function Sidebar({
         <Slider
           min={100}
           max={10000}
-          step={100}
+          step={200}
           value={priceRange}
           onValueChange={setPriceRange}
           className="w-full [&_[data-slot=slider-track]]:bg-gray-400 [&_[data-slot=slider-range]]:bg-black [&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-black [&_[data-slot=slider-thumb]]:shadow-lg"
@@ -74,6 +73,10 @@ export default function Sidebar({
           onValueChange={setCategory}
           className="mt-3 space-y-2"
         >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="all" id="all" />
+            <Label htmlFor="all">All</Label>
+          </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="men" id="men" />
             <Label htmlFor="men">Men</Label>
@@ -117,8 +120,9 @@ export default function Sidebar({
         variant="outline"
         onClick={() => {
           setPriceRange([500, 5000]);
-          setCategory("men");
+          setCategory("all");
           setSizes([]);
+          setFilters({ priceRange: [500, 5000], category: "all", size: [] });
         }}
         className="w-full border-black text-black hover:bg-gray-100"
       >

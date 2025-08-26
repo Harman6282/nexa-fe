@@ -21,23 +21,47 @@ export default function Products() {
     size: [],
   });
 
-  console.log(filters);
-
   const [filteredProducts, setFilteredProducts] = useState<ProductSchema[]>([]);
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const isLoading = products.length === 0;
-
   useEffect(() => {
-    if (products && category) {
-      const filtered = products.filter(
-        (product) => product.categoryName === category
+    console.log(products);
+    const list: ProductSchema[] = Array.isArray(products) ? [...products] : [];
+
+    let result = list;
+
+    // Category: prefer sidebar category if set, otherwise use URL param
+    const selectedCategory =
+      filters.category && filters.category !== ""
+        ? filters.category
+        : category || "";
+
+    if (selectedCategory && selectedCategory.toLowerCase() !== "all") {
+      const catLower = selectedCategory.toLowerCase();
+      result = result.filter((p) =>
+        (p.categoryName || "").toLowerCase().startsWith(catLower)
       );
-      setFilteredProducts(filtered);
-    } else {
-      setFilteredProducts(products);
     }
-  }, [products, category]);
+
+    // Price range
+    if (filters.priceRange && filters.priceRange.length === 2) {
+      const [min, max] = filters.priceRange;
+      result = result.filter((p) => p.price >= min && p.price <= max);
+    }
+
+    // Sizes via variants
+    if (filters.size && filters.size.length > 0) {
+      const sizesSet = new Set(filters.size);
+      result = result.filter(
+        (p) =>
+          Array.isArray(p.variants) &&
+          p.variants.some((v) => sizesSet.has(v.size))
+      );
+    }
+
+    setFilteredProducts(result);
+  }, [products, filters, category]);
 
   return (
     <div className="flex gap-1">
