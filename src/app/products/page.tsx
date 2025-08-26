@@ -7,8 +7,22 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProdShimmer from "@/components/shimmer/Prod_shimmer";
 
+export type Filters = {
+  priceRange?: number[] | null;
+  category?: string | null;
+  size?: string[] | null;
+};
+
 export default function Products() {
   const products = useProductStore((state) => state.products);
+  const [filters, setFilters] = useState<Filters>({
+    priceRange: [500, 5000],
+    category: "",
+    size: [],
+  });
+
+  console.log(filters);
+
   const [filteredProducts, setFilteredProducts] = useState<ProductSchema[]>([]);
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
@@ -27,7 +41,10 @@ export default function Products() {
 
   return (
     <div className="flex gap-1">
-      <Sidebar className="hidden md:inline-block w-1/4" />
+      <Sidebar
+        className="hidden md:inline-block w-1/4"
+        setFilters={setFilters}
+      />
 
       <div className="flex-1 px-2 md:px-4 mx-auto my-3 pb-10 w-full">
         {isLoading ? (
@@ -52,9 +69,7 @@ export default function Products() {
               ))}
             </div>
 
-            <div className="flex justify-center mt-6">
-              
-            </div>
+            <div className="flex justify-center mt-6"></div>
           </>
         )}
       </div>
