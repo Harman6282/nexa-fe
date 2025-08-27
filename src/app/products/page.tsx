@@ -3,9 +3,19 @@ import NoProductsFound from "@/components/product-listing/NoProductsFound";
 import { ProductCard } from "@/components/product-listing/ProductCard";
 import Sidebar from "@/components/product-listing/Sidebar";
 import { ProductSchema, useProductStore } from "@/lib/store";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProdShimmer from "@/components/shimmer/Prod_shimmer";
+import axios from "axios";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export type Filters = {
   priceRange?: number[] | null;
@@ -14,7 +24,11 @@ export type Filters = {
 };
 
 export default function Products() {
-  const products = useProductStore((state) => state.products);
+  const { products, setProducts, totalPages, setTotalPages } =
+    useProductStore();
+  const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
+
   const [filters, setFilters] = useState<Filters>({
     priceRange: [500, 5000],
     category: "",
@@ -25,8 +39,29 @@ export default function Products() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const isLoading = products.length === 0;
+
   useEffect(() => {
-    console.log(products);
+    const pageParam = Number(searchParams.get("page")) || 1;
+    setCurrentPage(pageParam);
+  }, [searchParams]);
+
+  const getProducts = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/api/products?page=${currentPage}&limit=5`
+      );
+      setProducts(response.data.data.products);
+      setTotalPages(response.data.data.totalPages);
+    } catch (_error) {}
+  };
+
+  useEffect(() => {
+    if (currentPage) {
+      getProducts();
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
     const list: ProductSchema[] = Array.isArray(products) ? [...products] : [];
 
     let result = list;
@@ -63,6 +98,11 @@ export default function Products() {
     setFilteredProducts(result);
   }, [products, filters, category]);
 
+  const handlePageClick = (page: number) => {
+    console.log(page);
+    router.push(`/products?page=${page}`);
+  };
+
   return (
     <div className="flex gap-1">
       <Sidebar
@@ -96,6 +136,24 @@ export default function Products() {
             <div className="flex justify-center mt-6"></div>
           </>
         )}
+
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink onClick={() => handlePageClick(i + 1)} href="#">
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext href="" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

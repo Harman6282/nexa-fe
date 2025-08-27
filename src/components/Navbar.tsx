@@ -27,15 +27,6 @@ export const Navbar = () => {
   const { cartItems, setUser, user, setAddresses } = userStore();
 
   const router = useRouter();
-  const getProducts = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3001/api/products?page=1&limit=5"
-      );
-      setProducts(response.data.data.products);
-      setTotalPages(response.data.data.totalPages);
-    } catch (_error) {}
-  };
 
   const getUser = async () => {
     try {
@@ -54,7 +45,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     getUser();
-    getProducts();
+    // getProducts();
   }, []);
 
   const handleLogout = async () => {
