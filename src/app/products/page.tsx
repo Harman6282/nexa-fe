@@ -28,6 +28,7 @@ export default function Products() {
     useProductStore();
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
+  const [isFetching, setIsFetching] = useState(false);
 
   const [filters, setFilters] = useState<Filters>({
     priceRange: [500, 5000],
@@ -38,7 +39,6 @@ export default function Products() {
   const [filteredProducts, setFilteredProducts] = useState<ProductSchema[]>([]);
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
-  const isLoading = products.length === 0;
 
   useEffect(() => {
     const pageParam = Number(searchParams.get("page")) || 1;
@@ -47,12 +47,16 @@ export default function Products() {
 
   const getProducts = async () => {
     try {
+      setIsFetching(true);
       const response = await axios.get(
         `http://localhost:3001/api/products?page=${currentPage}&limit=5`
       );
       setProducts(response.data.data.products);
       setTotalPages(response.data.data.totalPages);
-    } catch (_error) {}
+    } catch (_error) {
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   useEffect(() => {
@@ -111,7 +115,7 @@ export default function Products() {
       />
 
       <div className="flex-1 px-2 md:px-4 mx-auto my-3 pb-10 w-full">
-        {isLoading ? (
+        {isFetching ? (
           <ProdShimmer />
         ) : filteredProducts.length === 0 ? (
           <NoProductsFound className="mx-auto" category={category} />
@@ -144,13 +148,13 @@ export default function Products() {
             </PaginationItem>
             {Array.from({ length: totalPages }).map((_, i) => (
               <PaginationItem key={i}>
-                <PaginationLink onClick={() => handlePageClick(i + 1)} href="#">
+                <PaginationLink onClick={() => handlePageClick(i + 1)} href="#"  isActive={currentPage === i + 1}>
                   {i + 1}
                 </PaginationLink>
               </PaginationItem>
             ))}
             <PaginationItem>
-              <PaginationNext href="" />
+              <PaginationNext href="#" />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
