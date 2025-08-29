@@ -38,18 +38,18 @@ export default function Products() {
 
   const [filteredProducts, setFilteredProducts] = useState<ProductSchema[]>([]);
   const searchParams = useSearchParams();
+  const limit = searchParams.get("limit");
   const category = searchParams.get("category");
-
-  useEffect(() => {
-    const pageParam = Number(searchParams.get("page")) || 1;
-    setCurrentPage(pageParam);
-  }, [searchParams]);
+  const q = searchParams.get("q");
+  console.log("rendered");
 
   const getProducts = async () => {
     try {
       setIsFetching(true);
       const response = await axios.get(
-        `http://localhost:3001/api/products?page=${currentPage}&limit=5`
+        `${
+          process.env.NEXT_PUBLIC_API_URL
+        }/products?page=${currentPage}&limit=${limit || 5}`
       );
       setProducts(response.data.data.products);
       setTotalPages(response.data.data.totalPages);
@@ -58,6 +58,41 @@ export default function Products() {
       setIsFetching(false);
     }
   };
+
+  const searchProducts = async () => {
+    try {
+      setIsFetching(true);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${q}`
+      );
+      console.log(response.data?.data?.products);
+      const searchedProducts = response.data?.data?.products;
+      console.log("totalPages: ", response.data?.data?.totalPages);
+      setTotalPages(response.data?.data?.totalPages);
+      if (
+        searchedProducts.length != 0 &&
+        searchedProducts != null &&
+        searchProducts != undefined
+      ) {
+        setProducts(searchedProducts);
+      }
+    } catch (_error) {
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    const pageParam = Number(searchParams.get("page")) || 1;
+    setCurrentPage(pageParam);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (q != null) {
+      console.log(q);
+      searchProducts();
+    }
+  }, [q]);
 
   useEffect(() => {
     if (currentPage) {
@@ -141,23 +176,29 @@ export default function Products() {
           </>
         )}
 
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink onClick={() => handlePageClick(i + 1)} href="#"  isActive={currentPage === i + 1}>
-                  {i + 1}
-                </PaginationLink>
+        {totalPages > 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" />
               </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    onClick={() => handlePageClick(i + 1)}
+                    href="#"
+                    isActive={currentPage === i + 1}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </div>
   );

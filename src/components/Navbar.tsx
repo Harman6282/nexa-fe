@@ -15,6 +15,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useProductStore, userStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
+import Searchbar from "./Searchbar";
 
 const categories = [
   { name: "MEN", href: "/products?category=men" },
@@ -91,15 +92,7 @@ export const Navbar = () => {
         {/* Right Icons / Auth */}
         <div className="flex items-center gap-4">
           {/* Search bar (hidden on small) */}
-          <div className="hidden md:block w-64">
-            <div className="relative">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
-              <Input
-                placeholder="Search for products, brands and more"
-                className="pl-10 text-sm rounded-sm border-gray-300"
-              />
-            </div>
-          </div>
+          <Searchbar />
 
           {user ? (
             <>
