@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import Searchbar from "./Searchbar";
 
 const categories = [
+  { name: "ALL", href: "/products?category=all" },
   { name: "MEN", href: "/products?category=men" },
   { name: "WOMEN", href: "/products?category=women" },
   { name: "KIDS", href: "/products?category=kids" },
