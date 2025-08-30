@@ -203,7 +203,7 @@ export function AddressBook() {
       <div className="flex justify-between items-center">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant={"secondary"} className=" bg-black text-white mt-4">
+            <Button variant={"default"} className=" mt-4">
               <Plus className="h-4 w-4 mr-2" />
               Add New Address
             </Button>
@@ -320,7 +320,7 @@ export function AddressBook() {
                   </Button>
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="default"
                     onClick={() => setIsDialogOpen(false)}
                   >
                     Cancel
@@ -446,7 +446,7 @@ export function AddressBook() {
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="default"
                   onClick={() => {
                     setIsEditDialogOpen(false);
                     setEditingAddress(null);
@@ -472,7 +472,7 @@ export function AddressBook() {
                 <p className="text-gray-600">{address?.state}</p>
                 <div className="flex gap-2 pt-4">
                   <Button
-                    variant="outline"
+                    variant="default"
                     size="sm"
                     className="border-gray-300 text-gray-700 bg-transparent cursor-pointer hover:bg-gray-200"
                     onClick={() => handleEditClick(address)}
@@ -481,7 +481,7 @@ export function AddressBook() {
                     Edit
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="default"
                     size="sm"
                     className="border-gray-300 text-gray-700 bg-transparent cursor-pointer hover:bg-gray-200"
                     onClick={() => deleteAddress(address?.id)}

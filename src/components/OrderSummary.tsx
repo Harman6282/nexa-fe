@@ -61,13 +61,13 @@ const OrderSummary = ({
 
           {btnName === "Checkout" ? (
             <Link href="/checkout">
-              <Button className="w-full cursor-pointer bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
+              <Button className="w-full cursor-pointer py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4">
                 {btnName}
               </Button>
             </Link>
           ) : (
             <Button
-              className="w-full cursor-pointer bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4"
+              className="w-full cursor-pointer py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4"
               onClick={onPayNow}
             >
               {btnName}

@@ -178,7 +178,7 @@ export default function Cart() {
             <ShoppingBag className="w-24 h-24 text-gray-300 mb-6" />
             <h2 className="text-2xl font-semibold mb-2">Your bag is empty</h2>
             <p className="text-gray-600 mb-6">Add items to it now.</p>
-            <Button className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors">
+            <Button className=" px-8 py-3 rounded-lg transition-colors">
               Shop Now
             </Button>
           </div>
@@ -260,7 +260,7 @@ export default function Cart() {
                           </div>
                           <Button
                             onClick={() => removeItem(item.id)}
-                            className="text-gray-400 hover:text-gray-600 p-1"
+                            className=" p-1"
                           >
                             <X className="w-5 h-5" />
                           </Button>
@@ -284,7 +284,7 @@ export default function Cart() {
                                   item.variantId
                                 );
                               }}
-                              className="p-2 hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
+                              className="p-2 disabled:opacity-50 cursor-pointer"
                               disabled={item.quantity <= 1}
                             >
                               <Minus className="w-4 h-4" />
@@ -301,7 +301,7 @@ export default function Cart() {
                                 )
                               }
                               disabled={item.quantity === item.variant.stock}
-                              className="p-2 hover:bg-gray-100 cursor-pointer"
+                              className="p-2  cursor-pointer"
                             >
                               <Plus className="w-4 h-4" />
                             </Button>
@@ -309,7 +309,7 @@ export default function Cart() {
 
                           <div className="flex gap-4">
                             <Button
-                              className="flex items-center text-sm text-gray-600 hover:text-gray-900"
+                              className="flex items-center text-sm "
                               onClick={() => handleAddToWishlist(item?.id)}
                             >
                               <Heart className="w-4 h-4 mr-1" />
@@ -317,7 +317,7 @@ export default function Cart() {
                             </Button>
                             <Button
                               onClick={() => removeItem(item.id)}
-                              className="text-sm text-gray-600 hover:text-gray-900 flex items-center"
+                              className="text-sm   flex items-center"
                             >
                               <Trash2 className="w-4 h-4 mr-1" />
                               <span className="hidden md:inline">REMOVE</span>

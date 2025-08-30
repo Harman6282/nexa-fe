@@ -1,6 +1,5 @@
 "use client";
 
-import { AccountSettings } from "@/components/profile/Account-settings";
 import { AddressBook } from "@/components/profile/Address-book";
 import { OrderHistory } from "@/components/profile/Order-history";
 import { ProfileHeader } from "@/components/profile/Profile-header";
@@ -29,33 +28,6 @@ export interface OrderHistoryProps {
   stock: number;
   createdAt: Date;
 }
-
-const wishlistData = [
-  {
-    name: "Wireless Headphones",
-    price: "$199.99",
-    image:
-      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/APRIL/12/ipUGC2Eu_d0a66ec6d0ba4849af9742225dfc0040.jpg",
-  },
-  {
-    name: "Smart Watch",
-    price: "$299.99",
-    image:
-      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/APRIL/12/ipUGC2Eu_d0a66ec6d0ba4849af9742225dfc0040.jpg",
-  },
-  {
-    name: "Laptop Stand",
-    price: "$79.99",
-    image:
-      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/APRIL/12/ipUGC2Eu_d0a66ec6d0ba4849af9742225dfc0040.jpg",
-  },
-  {
-    name: "Coffee Maker",
-    price: "$149.99",
-    image:
-      "https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/2025/APRIL/12/ipUGC2Eu_d0a66ec6d0ba4849af9742225dfc0040.jpg",
-  },
-];
 
 export interface Address {
   city: string;
@@ -111,21 +83,21 @@ export default function ProfilePage() {
             <TabsList className="grid w-full grid-cols-3 bg-gray-100 mb-8 ">
               <TabsTrigger
                 value="orders"
-                className="data-[state=active]:bg-white cursor-pointer data-[state=active]:text-gray-900 "
+                className="data-[state=active]:text-white cursor-pointer data-[state=active]:bg-stone-800 "
               >
                 <Package className="w-4 h-4 mr-2" />
                 Orders
               </TabsTrigger>
               <TabsTrigger
                 value="wishlist"
-                className="data-[state=active]:bg-white cursor-pointer data-[state=active]:text-gray-900"
+                className="data-[state=active]:text-white cursor-pointer data-[state=active]:bg-stone-800"
               >
                 <Heart className="w-4 h-4 mr-2" />
                 Wishlist
               </TabsTrigger>
               <TabsTrigger
                 value="addresses"
-                className="data-[state=active]:bg-white cursor-pointer data-[state=active]:text-gray-900"
+                className="data-[state=active]:text-white cursor-pointer data-[state=active]:bg-stone-800"
               >
                 <MapPin className="w-4 h-4 mr-2" />
                 Addresses
@@ -136,7 +108,7 @@ export default function ProfilePage() {
             </TabsContent>
 
             <TabsContent value="wishlist">
-              <Wishlist items={wishlistData} />
+              <Wishlist />
             </TabsContent>
 
             <TabsContent value="addresses">

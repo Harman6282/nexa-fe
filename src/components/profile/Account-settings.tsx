@@ -38,7 +38,7 @@ export function AccountSettings() {
                 <p className="font-medium text-gray-900">{setting.title}</p>
                 <p className="text-sm text-gray-600">{setting.description}</p>
               </div>
-              <Button variant="outline" size="sm" className="border-gray-300 bg-transparent">
+              <Button variant="default" size="sm" className="border-gray-300 bg-transparent">
                 {setting.action === "Settings" ? <Settings className="w-4 h-4" /> : setting.action}
               </Button>
             </div>

@@ -188,6 +188,9 @@ export default function Products() {
                     onClick={() => handlePageClick(i + 1)}
                     href="#"
                     isActive={currentPage === i + 1}
+                    className={`hover:bg-gray-200 ${
+                      currentPage === i + 1 ? "bg-stone-800 text-white" : ""
+                    }`}
                   >
                     {i + 1}
                   </PaginationLink>
