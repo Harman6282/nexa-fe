@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { redirect, usePathname, useRouter } from "next/navigation"; // 🚨 Import router
+import { useRouter } from "next/navigation"; // 🚨 Import router
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -26,6 +26,7 @@ const ProductDetails = () => {
   const { user } = userStore();
 
   const slug = params?.search?.toString();
+  const router = useRouter()
 
   function getProduct() {
     const item = products.find((item) => item.slug == slug);
@@ -116,7 +117,7 @@ const ProductDetails = () => {
         <Button
           variant="outline"
           className="absolute top-5 left-5 flex items-center gap-2"
-          onClick={() => redirect("/products?page=1")}
+          onClick={() => router.back()}
         >
           <ArrowLeft className="h-5 w-5" />
           Back
