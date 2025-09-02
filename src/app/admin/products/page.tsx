@@ -38,100 +38,56 @@ import {
   TrendingUp,
   AlertCircle,
 } from "lucide-react";
-import { adminProductsSchema, useProductStore } from "@/lib/store";
+import {
+  adminProductsSchema,
+  ProductSchema,
+  useProductStore,
+} from "@/lib/store";
+import axios from "axios";
 
-// Mock data for products
-// const mockProducts = [
-//   {
-//     id: "PROD-001",
-//     name: "Wireless Bluetooth Headphones",
-//     category: "Electronics",
-//     price: 2499,
-//     stock: 45,
-//     image:
-//       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop",
-//     sku: "WH-001",
-//     description: "High-quality wireless headphones with noise cancellation",
-//   },
-//   {
-//     id: "PROD-002",
-//     name: "Smart Fitness Watch",
-//     category: "Electronics",
-//     price: 8999,
-//     stock: 23,
-//     image:
-//       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop",
-//     sku: "SW-001",
-//     description: "Advanced fitness tracking with heart rate monitor",
-//   },
-//   {
-//     id: "PROD-003",
-//     name: "Organic Cotton T-Shirt",
-//     category: "Clothing",
-//     price: 899,
-//     stock: 67,
-//     image:
-//       "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop",
-//     sku: "CT-001",
-//     description: "Comfortable organic cotton t-shirt",
-//   },
-//   {
-//     id: "PROD-004",
-//     name: "Stainless Steel Water Bottle",
-//     category: "Home & Garden",
-//     price: 599,
-//     stock: 89,
-//     image:
-//       "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=100&h=100&fit=crop",
-//     sku: "WB-001",
-//     description: "Insulated stainless steel water bottle",
-//   },
-//   {
-//     id: "PROD-005",
-//     name: "Yoga Mat Premium",
-//     category: "Sports",
-//     price: 1299,
-//     stock: 12,
-//     image:
-//       "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=100&h=100&fit=crop",
-//     sku: "YM-001",
-//     description: "Non-slip premium yoga mat",
-//   },
-//   {
-//     id: "PROD-006",
-//     name: "Wireless Charger",
-//     category: "Electronics",
-//     price: 1499,
-//     stock: 0,
-//     image:
-//       "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=100&h=100&fit=crop",
-//     sku: "WC-001",
-//     description: "Fast wireless charging pad for smartphones",
-//   },
-// ];
+function shortDescription(description: string, wordCount: number = 3): string {
+  return description.split(" ").slice(0, wordCount).join(" ") + "...";
+}
+
+const formatProductsData = (products: ProductSchema[]) => {
+  const formated = products.map((item) => ({
+    id: item.id,
+    name: item.name,
+    category: item.categoryName,
+    price: item.price,
+    description: shortDescription(item.description, 3),
+    stock: item.variants.reduce((acc, v) => acc + (v.stock ?? 0), 0),
+    image: item.images[0].url,
+  }));
+
+  return formated;
+};
 
 const ProductsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  // const [statusFilter, setStatusFilter] = useState("all");
-  const [products, setProducts] = useState<adminProductsSchema[]>();
 
-  const { adminProducts, setAdminProducts } = useProductStore();
+  const { setAdminProducts, adminProducts } = useProductStore();
+  const [isFetching, setIsFetching] = useState(false);
+
+  const [productsData, setProductsData] = useState<adminProductsSchema[]>();
+
+  const getProducts = async () => {
+    try {
+      setIsFetching(true);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/products`
+      );
+      setProductsData(response.data.data.products);
+      setAdminProducts(formatProductsData(response.data.data.products));
+    } catch (_error) {
+    } finally {
+      setIsFetching(false);
+    }
+  };
   useEffect(() => {
-    setProducts(adminProducts);
-  }, [products]);
-
-  // const getStatusBadge = (status: string) => {
-  //   const statusConfig = {
-  //     active: { variant: "default", text: "Active" },
-  //     "low-stock": { variant: "secondary", text: "Low Stock" },
-  //     "out-of-stock": { variant: "destructive", text: "Out of Stock" },
-  //     inactive: { variant: "outline", text: "Inactive" },
-  //   };
-
-  //   const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
-  //   return <Badge variant={config.variant as any}>{config.text}</Badge>;
-  // };
+    getProducts();
+  }, []);
 
   const getStockBadge = (stock: number) => {
     if (stock === 0) {
@@ -143,7 +99,7 @@ const ProductsPage: React.FC = () => {
     }
   };
 
-  const filteredProducts = products?.filter((product) => {
+  const filteredProducts = adminProducts?.filter((product) => {
     const matchesSearch =
       product.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -156,17 +112,19 @@ const ProductsPage: React.FC = () => {
   });
 
   const handleDeleteProduct = (productId: string) => {
-    setProducts(products?.filter((product) => product.id !== productId));
+    setProductsData(
+      filteredProducts?.filter((product) => product.id !== productId)
+    );
   };
 
-  const totalValue = products?.reduce(
+  const totalValue = filteredProducts?.reduce(
     (sum, product) => sum + product.price * product.stock,
     0
   );
-  const lowStockCount = products?.filter(
+  const lowStockCount = filteredProducts?.filter(
     (p) => p.stock <= 20 && p.stock > 0
   ).length;
-  const outOfStockCount = products?.filter((p) => p.stock === 0).length;
+  const outOfStockCount = filteredProducts?.filter((p) => p.stock === 0).length;
 
   return (
     <div className="p-6 space-y-6">
@@ -187,7 +145,7 @@ const ProductsPage: React.FC = () => {
               <Package className="w-8 h-8 text-blue-600" />
               <div>
                 <div className="text-2xl font-bold text-blue-600">
-                  {products?.length}
+                  {filteredProducts?.length}
                 </div>
                 <div className="text-sm text-gray-500">Total Products</div>
               </div>
@@ -274,10 +232,6 @@ const ProductsPage: React.FC = () => {
                   <SelectItem value="inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select> */}
-              <Button variant="outline">
-                <Filter className="w-4 h-4 mr-2" />
-                More Filters
-              </Button>
             </div>
           </div>
         </CardContent>
@@ -318,7 +272,7 @@ const ProductsPage: React.FC = () => {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>{product.category}</TableCell>
+                    <TableCell>{product?.category}</TableCell>
                     <TableCell>₹{product.price.toLocaleString()}</TableCell>
                     <TableCell>{getStockBadge(product.stock)}</TableCell>
                     <TableCell>

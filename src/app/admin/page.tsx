@@ -17,50 +17,9 @@ import {
 } from "@/lib/store";
 import axios from "axios";
 
-function shortDescription(description: string, wordCount: number = 3): string {
-  return description.split(" ").slice(0, wordCount).join(" ") + "...";
-}
 
-const formatProductsData = (products: ProductSchema[]) => {
-  const formated = products.map((item) => ({
-    id: item.id,
-    name: item.name,
-    category: item.categoryName,
-    price: item.price,
-    description: shortDescription(item.description, 3),
-    stock: item.variants.reduce((acc, v) => acc + (v.stock ?? 0), 0),
-    image: item.images[0].url,
-  }));
-
-  return formated;
-};
 
 const AdminDashboard: React.FC = () => {
-  const { products, setProducts, setAdminProducts } = useProductStore();
-  const [isFetching, setIsFetching] = useState(false);
-
-  const getProducts = async () => {
-    try {
-      setIsFetching(true);
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/products`
-      );
-      setProducts(response.data.data.products);
-    } catch (_error) {
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
-  useEffect(() => {
-    getProducts();
-  }, []);
-
-  useEffect(() => {
-    setAdminProducts(formatProductsData(products));
-    console.log(formatProductsData(products));
-  }, [products]);
-
   return (
     <div className="p-6">
       {/* Header */}
