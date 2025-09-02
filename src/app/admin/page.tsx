@@ -1,21 +1,66 @@
-"use client"
+"use client";
 
-import React from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   LayoutDashboard,
   ShoppingCart,
   Users,
   Box,
+  CircleGauge,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import {
+  adminProductsSchema,
+  ProductSchema,
+  useProductStore,
+} from "@/lib/store";
+import axios from "axios";
+
+function shortDescription(description: string, wordCount: number = 3): string {
+  return description.split(" ").slice(0, wordCount).join(" ") + "...";
+}
+
+const formatProductsData = (products: ProductSchema[]) => {
+  const formated = products.map((item) => ({
+    id: item.id,
+    name: item.name,
+    category: item.categoryName,
+    price: item.price,
+    description: shortDescription(item.description, 3),
+    stock: item.variants.reduce((acc, v) => acc + (v.stock ?? 0), 0),
+    image: item.images[0].url,
+  }));
+
+  return formated;
+};
 
 const AdminDashboard: React.FC = () => {
+  const { products, setProducts, setAdminProducts } = useProductStore();
+  const [isFetching, setIsFetching] = useState(false);
+
+  const getProducts = async () => {
+    try {
+      setIsFetching(true);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/products`
+      );
+      setProducts(response.data.data.products);
+    } catch (_error) {
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  useEffect(() => {
+    setAdminProducts(formatProductsData(products));
+    console.log(formatProductsData(products));
+  }, [products]);
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -89,13 +134,15 @@ const AdminDashboard: React.FC = () => {
                       <ShoppingCart className="w-8 h-8 text-blue-600" />
                       <div>
                         <div className="font-medium">Manage Orders</div>
-                        <div className="text-sm text-gray-500">View and process orders</div>
+                        <div className="text-sm text-gray-500">
+                          View and process orders
+                        </div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
-              
+
               <Link href="/admin/products">
                 <Card className="hover:shadow-md transition-shadow cursor-pointer">
                   <CardContent className="p-4">
@@ -103,13 +150,15 @@ const AdminDashboard: React.FC = () => {
                       <Box className="w-8 h-8 text-green-600" />
                       <div>
                         <div className="font-medium">Manage Products</div>
-                        <div className="text-sm text-gray-500">Add, edit, or remove products</div>
+                        <div className="text-sm text-gray-500">
+                          Add, edit, or remove products
+                        </div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
-              
+
               <Link href="/admin/customers">
                 <Card className="hover:shadow-md transition-shadow cursor-pointer">
                   <CardContent className="p-4">
@@ -117,7 +166,9 @@ const AdminDashboard: React.FC = () => {
                       <Users className="w-8 h-8 text-purple-600" />
                       <div>
                         <div className="font-medium">Manage Customers</div>
-                        <div className="text-sm text-gray-500">View customer information</div>
+                        <div className="text-sm text-gray-500">
+                          View customer information
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -139,8 +190,12 @@ const AdminDashboard: React.FC = () => {
               <table className="w-full text-left border-collapse">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-2 text-sm font-semibold">Order ID</th>
-                    <th className="px-4 py-2 text-sm font-semibold">Customer</th>
+                    <th className="px-4 py-2 text-sm font-semibold">
+                      Order ID
+                    </th>
+                    <th className="px-4 py-2 text-sm font-semibold">
+                      Customer
+                    </th>
                     <th className="px-4 py-2 text-sm font-semibold">Amount</th>
                     <th className="px-4 py-2 text-sm font-semibold">Status</th>
                   </tr>

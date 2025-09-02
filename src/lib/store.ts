@@ -39,19 +39,34 @@ export type ProductSchema = {
   variants: Variant[];
 };
 
+export type adminProductsSchema = {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  image: string;
+  description: string;
+};
+
 type ProductStore = {
   products: ProductSchema[];
+  adminProducts: adminProductsSchema[];
   totalPages: number;
   setProducts: (products: ProductSchema[]) => void;
+  setAdminProducts: (products: adminProductsSchema[]) => void;
+
   setTotalPages: (totalPages: number) => void;
 };
 
 export const useProductStore = create<ProductStore>((set) => ({
   products: [],
+  adminProducts: [],
   totalPages: 0,
 
   setProducts: (products) => set(() => ({ products })),
   setTotalPages: (totalPages) => set(() => ({ totalPages })),
+  setAdminProducts: (adminProducts) => set(() => ({ adminProducts })),
 }));
 
 // ? user store starts here

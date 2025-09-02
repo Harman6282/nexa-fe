@@ -11,7 +11,13 @@ import {
   Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -82,7 +88,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen relative bg-gray-100">
       {/* Sidebar for large screens */}
       <aside className="hidden lg:flex flex-col w-64 bg-white border-r shadow">
         <SidebarContent />
@@ -92,20 +98,22 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetTrigger asChild>
           <Button
-            variant="ghost"
-            className="absolute top-4 left-4 lg:hidden z-50"
+            variant="outline"
+            className="absolute  left-4 lg:hidden z-50"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="w-6 h-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64">
+        <SheetContent side="left" className="w-64 ">
+          <SheetTitle />
           <SidebarContent />
+          <SheetDescription />
         </SheetContent>
       </Sheet>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main className="flex-1 overflow-y-auto mt-9 lg:mt-0">{children}</main>
     </div>
   );
 };

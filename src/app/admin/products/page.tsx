@@ -1,12 +1,7 @@
-"use client"
+"use client";
 
-import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -31,106 +26,112 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  MoreHorizontal, 
-  Search, 
-  Filter, 
-  Plus, 
-  Eye, 
-  Edit, 
+import {
+  MoreHorizontal,
+  Search,
+  Filter,
+  Plus,
+  Eye,
+  Edit,
   Trash2,
   Package,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
+import { adminProductsSchema, useProductStore } from "@/lib/store";
 
 // Mock data for products
-const mockProducts = [
-  {
-    id: "PROD-001",
-    name: "Wireless Bluetooth Headphones",
-    category: "Electronics",
-    price: 2499,
-    stock: 45,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop",
-    sku: "WH-001",
-    description: "High-quality wireless headphones with noise cancellation",
-  },
-  {
-    id: "PROD-002",
-    name: "Smart Fitness Watch",
-    category: "Electronics",
-    price: 8999,
-    stock: 23,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop",
-    sku: "SW-001",
-    description: "Advanced fitness tracking with heart rate monitor",
-  },
-  {
-    id: "PROD-003",
-    name: "Organic Cotton T-Shirt",
-    category: "Clothing",
-    price: 899,
-    stock: 67,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop",
-    sku: "CT-001",
-    description: "Comfortable organic cotton t-shirt",
-  },
-  {
-    id: "PROD-004",
-    name: "Stainless Steel Water Bottle",
-    category: "Home & Garden",
-    price: 599,
-    stock: 89,
-    status: "active",
-    image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=100&h=100&fit=crop",
-    sku: "WB-001",
-    description: "Insulated stainless steel water bottle",
-  },
-  {
-    id: "PROD-005",
-    name: "Yoga Mat Premium",
-    category: "Sports",
-    price: 1299,
-    stock: 12,
-    status: "low-stock",
-    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=100&h=100&fit=crop",
-    sku: "YM-001",
-    description: "Non-slip premium yoga mat",
-  },
-  {
-    id: "PROD-006",
-    name: "Wireless Charger",
-    category: "Electronics",
-    price: 1499,
-    stock: 0,
-    status: "out-of-stock",
-    image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=100&h=100&fit=crop",
-    sku: "WC-001",
-    description: "Fast wireless charging pad for smartphones",
-  },
-];
+// const mockProducts = [
+//   {
+//     id: "PROD-001",
+//     name: "Wireless Bluetooth Headphones",
+//     category: "Electronics",
+//     price: 2499,
+//     stock: 45,
+//     image:
+//       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop",
+//     sku: "WH-001",
+//     description: "High-quality wireless headphones with noise cancellation",
+//   },
+//   {
+//     id: "PROD-002",
+//     name: "Smart Fitness Watch",
+//     category: "Electronics",
+//     price: 8999,
+//     stock: 23,
+//     image:
+//       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop",
+//     sku: "SW-001",
+//     description: "Advanced fitness tracking with heart rate monitor",
+//   },
+//   {
+//     id: "PROD-003",
+//     name: "Organic Cotton T-Shirt",
+//     category: "Clothing",
+//     price: 899,
+//     stock: 67,
+//     image:
+//       "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop",
+//     sku: "CT-001",
+//     description: "Comfortable organic cotton t-shirt",
+//   },
+//   {
+//     id: "PROD-004",
+//     name: "Stainless Steel Water Bottle",
+//     category: "Home & Garden",
+//     price: 599,
+//     stock: 89,
+//     image:
+//       "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=100&h=100&fit=crop",
+//     sku: "WB-001",
+//     description: "Insulated stainless steel water bottle",
+//   },
+//   {
+//     id: "PROD-005",
+//     name: "Yoga Mat Premium",
+//     category: "Sports",
+//     price: 1299,
+//     stock: 12,
+//     image:
+//       "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=100&h=100&fit=crop",
+//     sku: "YM-001",
+//     description: "Non-slip premium yoga mat",
+//   },
+//   {
+//     id: "PROD-006",
+//     name: "Wireless Charger",
+//     category: "Electronics",
+//     price: 1499,
+//     stock: 0,
+//     image:
+//       "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=100&h=100&fit=crop",
+//     sku: "WC-001",
+//     description: "Fast wireless charging pad for smartphones",
+//   },
+// ];
 
 const ProductsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [products, setProducts] = useState(mockProducts);
+  // const [statusFilter, setStatusFilter] = useState("all");
+  const [products, setProducts] = useState<adminProductsSchema[]>();
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      active: { variant: "default", text: "Active" },
-      "low-stock": { variant: "secondary", text: "Low Stock" },
-      "out-of-stock": { variant: "destructive", text: "Out of Stock" },
-      inactive: { variant: "outline", text: "Inactive" },
-    };
-    
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
-    return <Badge variant={config.variant as any}>{config.text}</Badge>;
-  };
+  const { adminProducts, setAdminProducts } = useProductStore();
+  useEffect(() => {
+    setProducts(adminProducts);
+  }, [products]);
+
+  // const getStatusBadge = (status: string) => {
+  //   const statusConfig = {
+  //     active: { variant: "default", text: "Active" },
+  //     "low-stock": { variant: "secondary", text: "Low Stock" },
+  //     "out-of-stock": { variant: "destructive", text: "Out of Stock" },
+  //     inactive: { variant: "outline", text: "Inactive" },
+  //   };
+
+  //   const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
+  //   return <Badge variant={config.variant as any}>{config.text}</Badge>;
+  // };
 
   const getStockBadge = (stock: number) => {
     if (stock === 0) {
@@ -142,25 +143,30 @@ const ProductsPage: React.FC = () => {
     }
   };
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = 
+  const filteredProducts = products?.filter((product) => {
+    const matchesSearch =
       product.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.sku.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesCategory = categoryFilter === "all" || product.category === categoryFilter;
-    const matchesStatus = statusFilter === "all" || product.status === statusFilter;
-    
-    return matchesSearch && matchesCategory && matchesStatus;
+      product.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesCategory =
+      categoryFilter === "all" || product.category === categoryFilter;
+    // const matchesStatus = statusFilter === "all" || product.status === statusFilter;
+
+    return matchesSearch && matchesCategory;
   });
 
   const handleDeleteProduct = (productId: string) => {
-    setProducts(products.filter(product => product.id !== productId));
+    setProducts(products?.filter((product) => product.id !== productId));
   };
 
-  const totalValue = products.reduce((sum, product) => sum + (product.price * product.stock), 0);
-  const lowStockCount = products.filter(p => p.stock <= 20 && p.stock > 0).length;
-  const outOfStockCount = products.filter(p => p.stock === 0).length;
+  const totalValue = products?.reduce(
+    (sum, product) => sum + product.price * product.stock,
+    0
+  );
+  const lowStockCount = products?.filter(
+    (p) => p.stock <= 20 && p.stock > 0
+  ).length;
+  const outOfStockCount = products?.filter((p) => p.stock === 0).length;
 
   return (
     <div className="p-6 space-y-6">
@@ -180,7 +186,9 @@ const ProductsPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Package className="w-8 h-8 text-blue-600" />
               <div>
-                <div className="text-2xl font-bold text-blue-600">{products.length}</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {products?.length}
+                </div>
                 <div className="text-sm text-gray-500">Total Products</div>
               </div>
             </div>
@@ -192,7 +200,7 @@ const ProductsPage: React.FC = () => {
               <TrendingUp className="w-8 h-8 text-green-600" />
               <div>
                 <div className="text-2xl font-bold text-green-600">
-                  ₹{totalValue.toLocaleString()}
+                  ₹{totalValue?.toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-500">Inventory Value</div>
               </div>
@@ -204,7 +212,9 @@ const ProductsPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <AlertCircle className="w-8 h-8 text-yellow-600" />
               <div>
-                <div className="text-2xl font-bold text-yellow-600">{lowStockCount}</div>
+                <div className="text-2xl font-bold text-yellow-600">
+                  {lowStockCount}
+                </div>
                 <div className="text-sm text-gray-500">Low Stock</div>
               </div>
             </div>
@@ -215,7 +225,9 @@ const ProductsPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <AlertCircle className="w-8 h-8 text-red-600" />
               <div>
-                <div className="text-2xl font-bold text-red-600">{outOfStockCount}</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {outOfStockCount}
+                </div>
                 <div className="text-sm text-gray-500">Out of Stock</div>
               </div>
             </div>
@@ -244,14 +256,13 @@ const ProductsPage: React.FC = () => {
                   <SelectValue placeholder="Filter by category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="Electronics">Electronics</SelectItem>
-                  <SelectItem value="Clothing">Clothing</SelectItem>
-                  <SelectItem value="Home & Garden">Home & Garden</SelectItem>
-                  <SelectItem value="Sports">Sports</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="men">men</SelectItem>
+                  <SelectItem value="women">women</SelectItem>
+                  <SelectItem value="kids">kids</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              {/* <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
@@ -262,7 +273,7 @@ const ProductsPage: React.FC = () => {
                   <SelectItem value="out-of-stock">Out of Stock</SelectItem>
                   <SelectItem value="inactive">Inactive</SelectItem>
                 </SelectContent>
-              </Select>
+              </Select> */}
               <Button variant="outline">
                 <Filter className="w-4 h-4 mr-2" />
                 More Filters
@@ -283,16 +294,14 @@ const ProductsPage: React.FC = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Product</TableHead>
-                  <TableHead>SKU</TableHead>
                   <TableHead>Category</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Stock</TableHead>
-                  <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredProducts.map((product) => (
+                {filteredProducts?.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell>
                       <div className="flex items-center space-x-3">
@@ -303,15 +312,15 @@ const ProductsPage: React.FC = () => {
                         />
                         <div>
                           <div className="font-medium">{product.name}</div>
-                          <div className="text-sm text-gray-500">{product.description}</div>
+                          <div className="text-sm text-gray-500">
+                            {product.description.slice(0, 10)}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="font-mono text-sm">{product.sku}</TableCell>
                     <TableCell>{product.category}</TableCell>
                     <TableCell>₹{product.price.toLocaleString()}</TableCell>
                     <TableCell>{getStockBadge(product.stock)}</TableCell>
-                    <TableCell>{getStatusBadge(product.status)}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -343,8 +352,8 @@ const ProductsPage: React.FC = () => {
               </TableBody>
             </Table>
           </div>
-          
-          {filteredProducts.length === 0 && (
+
+          {filteredProducts?.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               No products found matching your criteria.
             </div>
