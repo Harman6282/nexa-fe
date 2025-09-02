@@ -1,12 +1,7 @@
-"use client"
+"use client";
 
-import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -32,71 +27,75 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Search, Filter, Eye, Edit, Trash2, CheckCircle, Clock, Truck, XCircle } from "lucide-react";
+import {
+  MoreHorizontal,
+  Search,
+  Filter,
+  Eye,
+  Edit,
+  Trash2,
+  CheckCircle,
+  Clock,
+  Truck,
+  XCircle,
+} from "lucide-react";
+import { OrderHistoryProps } from "@/app/profile/page";
+import { ProductSchema, userStore } from "@/lib/store";
+import axios from "axios";
 
 // Mock data for orders
 const mockOrders = [
   {
-    id: "ORD-001",
-    customer: "John Doe",
-    email: "john@example.com",
-    phone: "+91 98765 43210",
-    items: 3,
-    total: 2499,
-    status: "completed",
-    date: "2024-01-15",
-    payment: "paid",
-  },
-  {
-    id: "ORD-002",
-    customer: "Jane Smith",
-    email: "jane@example.com",
-    phone: "+91 98765 43211",
-    items: 2,
-    total: 1199,
-    status: "pending",
-    date: "2024-01-16",
-    payment: "pending",
-  },
-  {
-    id: "ORD-003",
-    customer: "Mike Johnson",
-    email: "mike@example.com",
-    phone: "+91 98765 43212",
-    items: 1,
-    total: 899,
-    status: "processing",
-    date: "2024-01-17",
-    payment: "paid",
-  },
-  {
-    id: "ORD-004",
-    customer: "Sarah Wilson",
-    email: "sarah@example.com",
-    phone: "+91 98765 43213",
-    items: 4,
-    total: 3599,
-    status: "shipped",
-    date: "2024-01-18",
-    payment: "paid",
-  },
-  {
     id: "ORD-005",
-    customer: "David Brown",
+    name: "David Brown",
     email: "david@example.com",
-    phone: "+91 98765 43214",
     items: 2,
     total: 1799,
-    status: "cancelled",
+    status: "PENDING",
     date: "2024-01-19",
     payment: "refunded",
   },
 ];
 
+export type ordersSchema = {
+  id: string;
+  name: string;
+  email: string;
+  items: ProductSchema[];
+  total: string;
+  status: string;
+  createdAt: string;
+};
+
 const OrdersPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [orders, setOrders] = useState(mockOrders);
+  const [orders, setOrders] = useState<ordersSchema[]>();
+
+  // const [orders, setOrders] = useState<OrderHistoryProps[]>([]);
+  // const cartId = userStore((state) => state.user?.cart[0].id);
+
+  const getallOrders = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/getAllOrders`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res.data.data);
+      if (res.data.success === true) {
+        setOrders(res.data.data);
+      }
+    } catch (error) {
+      // setOrders([]);
+    }
+    return;
+  };
+
+  useEffect(() => {
+    getallOrders();
+  }, []);
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
@@ -106,8 +105,9 @@ const OrdersPage: React.FC = () => {
       shipped: { variant: "outline", text: "Shipped" },
       cancelled: { variant: "destructive", text: "Cancelled" },
     };
-    
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+
+    const config =
+      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
     return <Badge variant={config.variant as any}>{config.text}</Badge>;
   };
 
@@ -117,8 +117,10 @@ const OrdersPage: React.FC = () => {
       pending: { variant: "secondary", text: "Pending" },
       refunded: { variant: "destructive", text: "Refunded" },
     };
-    
-    const config = paymentConfig[payment as keyof typeof paymentConfig] || paymentConfig.pending;
+
+    const config =
+      paymentConfig[payment as keyof typeof paymentConfig] ||
+      paymentConfig.pending;
     return <Badge variant={config.variant as any}>{config.text}</Badge>;
   };
 
@@ -139,38 +141,61 @@ const OrdersPage: React.FC = () => {
     }
   };
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = 
+  const filteredOrders = orders?.filter((order) => {
+    const matchesSearch =
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === "all" || order.status === statusFilter;
-    
+
+    const matchesStatus =
+      statusFilter === "all" || order.status === statusFilter;
+
     return matchesSearch && matchesStatus;
   });
 
   const handleStatusChange = (orderId: string, newStatus: string) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
-    ));
+    setOrders(
+      orders?.map((order) =>
+        order.id === orderId ? { ...order, status: newStatus } : order
+      )
+    );
   };
 
   const handleDeleteOrder = (orderId: string) => {
-    setOrders(orders.filter(order => order.id !== orderId));
+    setOrders(orders?.filter((order) => order.id !== orderId));
   };
 
   const getAvailableStatuses = (currentStatus: string) => {
     const allStatuses = [
-      { value: "pending", label: "Pending", icon: <Clock className="w-4 h-4" /> },
-      { value: "processing", label: "Processing", icon: <Clock className="w-4 h-4" /> },
-      { value: "shipped", label: "Shipped", icon: <Truck className="w-4 h-4" /> },
-      { value: "completed", label: "Completed", icon: <CheckCircle className="w-4 h-4" /> },
-      { value: "cancelled", label: "Cancelled", icon: <XCircle className="w-4 h-4" /> },
+      {
+        value: "pending",
+        label: "Pending",
+        icon: <Clock className="w-4 h-4" />,
+      },
+      {
+        value: "processing",
+        label: "Processing",
+        icon: <Clock className="w-4 h-4" />,
+      },
+      {
+        value: "shipped",
+        label: "Shipped",
+        icon: <Truck className="w-4 h-4" />,
+      },
+      {
+        value: "completed",
+        label: "Completed",
+        icon: <CheckCircle className="w-4 h-4" />,
+      },
+      {
+        value: "cancelled",
+        label: "Cancelled",
+        icon: <XCircle className="w-4 h-4" />,
+      },
     ];
-    
+
     // Filter out current status and show only valid transitions
-    return allStatuses.filter(status => status.value !== currentStatus);
+    return allStatuses.filter((status) => status.value !== currentStatus);
   };
 
   return (
@@ -185,17 +210,22 @@ const OrdersPage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-blue-600">{orders.length}</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {orders.length}
+            </div>
             <div className="text-sm text-gray-500">Total Orders</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-green-600">
-              ₹{orders.reduce((sum, order) => sum + order.total, 0).toLocaleString()}
+              ₹
+              {orders
+                .reduce((sum, order) => sum + order.total, 0)
+                .toLocaleString()}
             </div>
             <div className="text-sm text-gray-500">Total Revenue</div>
           </CardContent>
@@ -203,7 +233,7 @@ const OrdersPage: React.FC = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-yellow-600">
-              {orders.filter(o => o.status === "pending").length}
+              {orders.filter((o) => o.status === "pending").length}
             </div>
             <div className="text-sm text-gray-500">Pending Orders</div>
           </CardContent>
@@ -211,15 +241,15 @@ const OrdersPage: React.FC = () => {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-purple-600">
-              {orders.filter(o => o.status === "completed").length}
+              {orders.filter((o) => o.status === "completed").length}
             </div>
             <div className="text-sm text-gray-500">Completed Orders</div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
 
       {/* Filters and Search */}
-      <Card>
+      {/* <Card>
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
@@ -254,7 +284,7 @@ const OrdersPage: React.FC = () => {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Orders Table */}
       <Card>
@@ -278,21 +308,21 @@ const OrdersPage: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredOrders.map((order) => (
+                {filteredOrders?.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell className="font-medium">{order.id}</TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{order.customer}</div>
+                        <div className="font-medium">{order.name}</div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
                         <div>{order.email}</div>
-                        <div className="text-gray-500">{order.phone}</div>
+                        {/* <div className="text-gray-500">{order.phone}</div> */}
                       </div>
                     </TableCell>
-                    <TableCell>{order.items}</TableCell>
+                    <TableCell>{order.items.length}</TableCell>
                     <TableCell>₹{order.total.toLocaleString()}</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
@@ -300,8 +330,8 @@ const OrdersPage: React.FC = () => {
                         {getStatusBadge(order.status)}
                       </div>
                     </TableCell>
-                    <TableCell>{getPaymentBadge(order.payment)}</TableCell>
-                    <TableCell>{order.date}</TableCell>
+                    <TableCell>{getPaymentBadge("paid")}</TableCell>
+                    <TableCell>{order?.createdAt}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -318,26 +348,30 @@ const OrdersPage: React.FC = () => {
                             <Edit className="mr-2 h-4 w-4" />
                             Edit Order
                           </DropdownMenuItem>
-                          
+
                           <DropdownMenuSeparator />
-                          
+
                           <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">
                             Change Status
                           </div>
-                          
+
                           {getAvailableStatuses(order.status).map((status) => (
                             <DropdownMenuItem
                               key={status.value}
-                              onClick={() => handleStatusChange(order.id, status.value)}
+                              onClick={() =>
+                                handleStatusChange(order.id, status.value)
+                              }
                               className="flex items-center"
                             >
                               {status.icon}
-                              <span className="ml-2">Mark as {status.label}</span>
+                              <span className="ml-2">
+                                Mark as {status.label}
+                              </span>
                             </DropdownMenuItem>
                           ))}
-                          
+
                           <DropdownMenuSeparator />
-                          
+
                           <DropdownMenuItem
                             onClick={() => handleDeleteOrder(order.id)}
                             className="text-red-600"
@@ -353,8 +387,8 @@ const OrdersPage: React.FC = () => {
               </TableBody>
             </Table>
           </div>
-          
-          {filteredOrders.length === 0 && (
+
+          {filteredOrders?.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               No orders found matching your criteria.
             </div>
