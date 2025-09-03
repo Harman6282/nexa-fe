@@ -28,9 +28,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const handleLogout = () => {
     // Clear cookies and redirect to login
-    document.cookie =
-      "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    router.push("/login");
+    alert("admin logged out")
   };
 
   const SidebarContent = () => (

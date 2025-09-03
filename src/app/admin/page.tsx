@@ -1,38 +1,44 @@
 "use client";
 
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  Users,
-  Box,
-  CircleGauge,
-} from "lucide-react";
+import { ShoppingCart, Users, Box } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import {
-  adminProductsSchema,
-  ProductSchema,
-  useProductStore,
-} from "@/lib/store";
 import axios from "axios";
 
-
+type DashboardDataSchema = {
+  totalOrders: number;
+  totalSales: number;
+  totalCustomers: number;
+  totalProducts: number;
+};
 
 const AdminDashboard: React.FC = () => {
+  const [dashboardData, setDashboardData] = useState<DashboardDataSchema>();
+
+  const getDashboard = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/dashboard`,
+        {
+          withCredentials: true,
+        }
+      );
+      setDashboardData(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getDashboard();
+  }, []);
+
   return (
     <div className="p-6">
       {/* Header */}
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <div className="flex items-center space-x-4">
-          <span className="font-medium">Admin</span>
-          <img
-            src="https://i.pravatar.cc/40"
-            alt="Admin Avatar"
-            className="w-10 h-10 rounded-full border"
-          />
-        </div>
       </header>
 
       {/* Stats Cards */}
@@ -42,7 +48,7 @@ const AdminDashboard: React.FC = () => {
             <CardTitle>Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">1,245</p>
+            <p className="text-2xl font-bold">{dashboardData?.totalOrders}</p>
             <p className="text-sm text-gray-500">+5% this week</p>
           </CardContent>
         </Card>
@@ -52,7 +58,7 @@ const AdminDashboard: React.FC = () => {
             <CardTitle>Sales</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">₹82,500</p>
+            <p className="text-2xl font-bold">{dashboardData?.totalSales}</p>
             <p className="text-sm text-gray-500">+12% this week</p>
           </CardContent>
         </Card>
@@ -62,7 +68,9 @@ const AdminDashboard: React.FC = () => {
             <CardTitle>Customers</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">324</p>
+            <p className="text-2xl font-bold">
+              {dashboardData?.totalCustomers}
+            </p>
             <p className="text-sm text-gray-500">+3% this week</p>
           </CardContent>
         </Card>
@@ -72,7 +80,7 @@ const AdminDashboard: React.FC = () => {
             <CardTitle>Products</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">58</p>
+            <p className="text-2xl font-bold">{dashboardData?.totalProducts}</p>
             <p className="text-sm text-gray-500">+1 new added</p>
           </CardContent>
         </Card>
