@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -29,33 +28,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   MoreHorizontal,
-  Search,
-  Filter,
   Eye,
-  Edit,
   Trash2,
   CheckCircle,
   Clock,
   Truck,
   XCircle,
+  Loader2,
 } from "lucide-react";
-import { OrderHistoryProps } from "@/app/profile/page";
-import { ProductSchema, userStore } from "@/lib/store";
+import { ProductSchema } from "@/lib/store";
 import axios from "axios";
+import { toast } from "sonner";
 
 // Mock data for orders
-const mockOrders = [
-  {
-    id: "ORD-005",
-    name: "David Brown",
-    email: "david@example.com",
-    items: 2,
-    total: 1799,
-    status: "PENDING",
-    date: "2024-01-19",
-    payment: "refunded",
-  },
-];
 
 export type ordersSchema = {
   id: string;
@@ -71,9 +56,12 @@ const OrdersPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [orders, setOrders] = useState<ordersSchema[]>();
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   // const [orders, setOrders] = useState<OrderHistoryProps[]>([]);
   // const cartId = userStore((state) => state.user?.cart[0].id);
+
+  const normalizeStatus = (status: string) => status?.trim().toLowerCase();
 
   const getallOrders = async () => {
     try {
@@ -85,7 +73,12 @@ const OrdersPage: React.FC = () => {
       );
       console.log(res.data.data);
       if (res.data.success === true) {
-        setOrders(res.data.data);
+        setOrders(
+          res.data.data?.map((order: ordersSchema) => ({
+            ...order,
+            status: normalizeStatus(order.status),
+          }))
+        );
       }
     } catch (error) {
       // setOrders([]);
@@ -99,15 +92,17 @@ const OrdersPage: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      completed: { variant: "default", text: "Completed" },
+      delivered: { variant: "primary", text: "Delivered" },
       pending: { variant: "secondary", text: "Pending" },
       processing: { variant: "outline", text: "Processing" },
       shipped: { variant: "outline", text: "Shipped" },
       cancelled: { variant: "destructive", text: "Cancelled" },
     };
 
+    const normalized = normalizeStatus(status);
     const config =
-      statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+      statusConfig[normalized as keyof typeof statusConfig] ||
+      statusConfig.pending;
     return <Badge variant={config.variant as any}>{config.text}</Badge>;
   };
 
@@ -125,8 +120,9 @@ const OrdersPage: React.FC = () => {
   };
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "completed":
+    const normalized = normalizeStatus(status);
+    switch (normalized) {
+      case "delivered":
         return <CheckCircle className="w-4 h-4 text-green-600" />;
       case "pending":
         return <Clock className="w-4 h-4 text-yellow-600" />;
@@ -148,17 +144,41 @@ const OrdersPage: React.FC = () => {
       order.email.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus =
-      statusFilter === "all" || order.status === statusFilter;
+      statusFilter === "all" ||
+      normalizeStatus(order.status) === normalizeStatus(statusFilter);
 
     return matchesSearch && matchesStatus;
   });
 
-  const handleStatusChange = (orderId: string, newStatus: string) => {
-    setOrders(
-      orders?.map((order) =>
-        order.id === orderId ? { ...order, status: newStatus } : order
-      )
-    );
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      setIsUpdatingStatus(true);
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/updateStatus/${orderId}`,
+        { status: normalizeStatus(newStatus) },
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (res.data.success === true) {
+        toast.success("status updated");
+      }
+
+      setOrders(
+        orders?.map((order) =>
+          order.id === orderId
+            ? { ...order, status: normalizeStatus(newStatus) }
+            : order
+        )
+      );
+
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsUpdatingStatus(false);
+    }
   };
 
   const handleDeleteOrder = (orderId: string) => {
@@ -169,22 +189,22 @@ const OrdersPage: React.FC = () => {
     const allStatuses = [
       {
         value: "pending",
-        label: "Pending",
+        label: "pending",
         icon: <Clock className="w-4 h-4" />,
       },
       {
         value: "processing",
-        label: "Processing",
+        label: "processing",
         icon: <Clock className="w-4 h-4" />,
       },
       {
         value: "shipped",
-        label: "Shipped",
+        label: "shipped",
         icon: <Truck className="w-4 h-4" />,
       },
       {
-        value: "completed",
-        label: "Completed",
+        value: "delivered",
+        label: "delivered",
         icon: <CheckCircle className="w-4 h-4" />,
       },
       {
@@ -195,7 +215,9 @@ const OrdersPage: React.FC = () => {
     ];
 
     // Filter out current status and show only valid transitions
-    return allStatuses.filter((status) => status.value !== currentStatus);
+    return allStatuses.filter(
+      (status) => status.value !== normalizeStatus(currentStatus)
+    );
   };
 
   return (
@@ -325,10 +347,14 @@ const OrdersPage: React.FC = () => {
                     <TableCell>{order.items.length}</TableCell>
                     <TableCell>₹{order.total.toLocaleString()}</TableCell>
                     <TableCell>
-                      <div className="flex items-center space-x-2">
-                        {getStatusIcon(order.status)}
-                        {getStatusBadge(order.status)}
-                      </div>
+                      {isUpdatingStatus ? (
+                        <Loader2 className="animate-spin [animation-duration:0.5s]" />
+                      ) : (
+                        <div className="flex items-center space-x-2">
+                          {getStatusIcon(order.status)}
+                          {getStatusBadge(order.status)}
+                        </div>
+                      )}
                     </TableCell>
                     <TableCell>{getPaymentBadge("paid")}</TableCell>
                     <TableCell>{order?.createdAt}</TableCell>
@@ -340,17 +366,6 @@ const OrdersPage: React.FC = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem>
-                            <Eye className="mr-2 h-4 w-4" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit Order
-                          </DropdownMenuItem>
-
-                          <DropdownMenuSeparator />
-
                           <div className="px-2 py-1.5 text-sm font-semibold text-gray-700">
                             Change Status
                           </div>
