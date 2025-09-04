@@ -78,6 +78,9 @@ const Checkout = () => {
       setIsFetching(false);
     } catch (error) {
       console.log(error);
+      setIsFetching(false);
+    } finally {
+      setIsFetching(false);
     }
   };
 
@@ -185,56 +188,66 @@ const Checkout = () => {
                   <AddressShimmer />
                 ) : (
                   <Form {...checkoutForm}>
-                    <form className="space-y-4">
-                      <FormField
-                        control={checkoutForm.control}
-                        name="selectedAddress"
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                          <RadioGroup
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            className="space-y-3"
-                          >
-                            {addresses.map((address) => (
-                              <div
-                                key={address.id}
-                                className="flex items-start space-x-3"
-                              >
-                                <RadioGroupItem
-                                  value={address.id}
-                                  id={address.id}
-                                  className="mt-1"
-                                />
-                                <Label
-                                  htmlFor={address.id}
-                                  className="flex-1 cursor-pointer"
+                    {addresses && addresses.length > 0 ? (
+                      <form className="space-y-4">
+                        <FormField
+                          control={checkoutForm.control}
+                          name="selectedAddress"
+                          rules={{ required: true }}
+                          render={({ field }) => (
+                            <RadioGroup
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              className="space-y-3"
+                            >
+                              {addresses.map((address) => (
+                                <div
+                                  key={address.id}
+                                  className="flex items-start space-x-3"
                                 >
-                                  <div className="p-4 border rounded-lg hover:bg-accent transition-colors">
-                                    <div className="font-medium flex items-center gap-2">
-                                      {address.lineOne}
-                                      {/* {address.isDefault && (
+                                  <RadioGroupItem
+                                    value={address.id}
+                                    id={address.id}
+                                    className="mt-1"
+                                  />
+                                  <Label
+                                    htmlFor={address.id}
+                                    className="flex-1 cursor-pointer"
+                                  >
+                                    <div className="p-4 border rounded-lg hover:bg-accent transition-colors">
+                                      <div className="font-medium flex items-center gap-2">
+                                        {address.lineOne}
+                                        {/* {address.isDefault && (
                                       <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
                                         Default
                                       </span>
                                     )} */}
+                                      </div>
+                                      <div className="text-sm text-muted-foreground mt-1">
+                                        {address.lineTwo}
+                                        <br />
+                                        {address.city}, {address.state}{" "}
+                                        {address.pincode}
+                                        <br />
+                                        {address.country}
+                                      </div>
                                     </div>
-                                    <div className="text-sm text-muted-foreground mt-1">
-                                      {address.lineTwo}
-                                      <br />
-                                      {address.city}, {address.state}{" "}
-                                      {address.pincode}
-                                      <br />
-                                      {address.country}
-                                    </div>
-                                  </div>
-                                </Label>
-                              </div>
-                            ))}
-                          </RadioGroup>
-                        )}
-                      />
-                    </form>
+                                  </Label>
+                                </div>
+                              ))}
+                            </RadioGroup>
+                          )}
+                        />
+                      </form>
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <MapPin className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p className="text-lg font-medium">No address found</p>
+                        <p className="text-sm">
+                          Please add an address to continue with checkout
+                        </p>
+                      </div>
+                    )}
                   </Form>
                 )}
 
@@ -388,6 +401,9 @@ const Checkout = () => {
             total={orderDetails?.total || 0}
             btnName="Pay now"
             onPayNow={onPayNow}
+            isDisabled={
+              !checkoutForm.watch("selectedAddress") || addresses.length === 0
+            }
           />
         </div>
       </div>

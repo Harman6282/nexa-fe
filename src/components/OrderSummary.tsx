@@ -11,6 +11,7 @@ const OrderSummary = ({
   total,
   btnName,
   onPayNow,
+  isDisabled = false,
 }: {
   cartItems: CartItems[];
   originalTotal: number;
@@ -19,6 +20,7 @@ const OrderSummary = ({
   total: number;
   btnName: string;
   onPayNow?: () => void;
+  isDisabled?: boolean;
 }) => {
   return (
     <>
@@ -69,6 +71,7 @@ const OrderSummary = ({
             <Button
               className="w-full cursor-pointer py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4"
               onClick={onPayNow}
+              disabled={isDisabled}
             >
               {btnName}
             </Button>

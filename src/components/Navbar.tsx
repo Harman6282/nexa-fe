@@ -98,6 +98,12 @@ export const Navbar = () => {
           {user ? (
             <>
               {/* Bag */}
+              {user?.role === "ADMIN" && (
+                <Link href={"/admin"}>
+                  {" "}
+                  <Button variant={"default"}>Dashboard </Button>{" "}
+                </Link>
+              )}
               <Link href="/cart" className="relative">
                 <Button variant="ghost" size="icon" className="cursor-pointer">
                   <ShoppingBag className="h-5 w-5 cursor-pointer" />
