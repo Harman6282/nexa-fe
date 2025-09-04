@@ -1,12 +1,7 @@
-"use client"
+"use client";
 
-import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -31,178 +26,79 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  MoreHorizontal, 
-  Search, 
-  Filter, 
-  Plus, 
-  Eye, 
-  Edit, 
+import {
+  MoreHorizontal,
+  Search,
+  Filter,
+  Plus,
+  Eye,
+  Edit,
   Trash2,
   Users,
   TrendingUp,
   Star,
-  MapPin
+  MapPin,
 } from "lucide-react";
+import axios from "axios";
+import { formatDate } from "@/utils";
 
 // Mock data for customers
-const mockCustomers = [
-  {
-    id: "CUST-001",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+91 98765 43210",
-    location: "Mumbai, Maharashtra",
-    status: "active",
-    joinDate: "2023-01-15",
-    totalOrders: 12,
-    totalSpent: 24999,
-    lastOrder: "2024-01-10",
-    avatar: "https://i.pravatar.cc/100?img=1",
-  },
-  {
-    id: "CUST-002",
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    phone: "+91 98765 43211",
-    location: "Delhi, NCR",
-    status: "active",
-    joinDate: "2023-03-20",
-    totalOrders: 8,
-    totalSpent: 18999,
-    lastOrder: "2024-01-12",
-    avatar: "https://i.pravatar.cc/100?img=2",
-  },
-  {
-    id: "CUST-003",
-    name: "Mike Johnson",
-    email: "mike.johnson@example.com",
-    phone: "+91 98765 43212",
-    location: "Bangalore, Karnataka",
-    status: "active",
-    joinDate: "2023-06-10",
-    totalOrders: 15,
-    totalSpent: 35999,
-    lastOrder: "2024-01-15",
-    avatar: "https://i.pravatar.cc/100?img=3",
-  },
-  {
-    id: "CUST-004",
-    name: "Sarah Wilson",
-    email: "sarah.wilson@example.com",
-    phone: "+91 98765 43213",
-    location: "Chennai, Tamil Nadu",
-    status: "inactive",
-    joinDate: "2023-02-05",
-    totalOrders: 3,
-    totalSpent: 5999,
-    lastOrder: "2023-12-20",
-    avatar: "https://i.pravatar.cc/100?img=4",
-  },
-  {
-    id: "CUST-005",
-    name: "David Brown",
-    email: "david.brown@example.com",
-    phone: "+91 98765 43214",
-    location: "Hyderabad, Telangana",
-    status: "active",
-    joinDate: "2023-08-15",
-    totalOrders: 6,
-    totalSpent: 12999,
-    lastOrder: "2024-01-08",
-    avatar: "https://i.pravatar.cc/100?img=5",
-  },
-  {
-    id: "CUST-006",
-    name: "Emily Davis",
-    email: "emily.davis@example.com",
-    phone: "+91 98765 43215",
-    location: "Pune, Maharashtra",
-    status: "active",
-    joinDate: "2023-11-30",
-    totalOrders: 4,
-    totalSpent: 8999,
-    lastOrder: "2024-01-14",
-    avatar: "https://i.pravatar.cc/100?img=6",
-  },
-  {
-    id: "CUST-007",
-    name: "Robert Miller",
-    email: "robert.miller@example.com",
-    phone: "+91 98765 43216",
-    location: "Kolkata, West Bengal",
-    status: "inactive",
-    joinDate: "2023-04-12",
-    totalOrders: 2,
-    totalSpent: 3999,
-    lastOrder: "2023-11-15",
-    avatar: "https://i.pravatar.cc/100?img=7",
-  },
-  {
-    id: "CUST-008",
-    name: "Lisa Anderson",
-    email: "lisa.anderson@example.com",
-    phone: "+91 98765 43217",
-    location: "Ahmedabad, Gujarat",
-    status: "active",
-    joinDate: "2023-07-08",
-    totalOrders: 9,
-    totalSpent: 21999,
-    lastOrder: "2024-01-16",
-    avatar: "https://i.pravatar.cc/100?img=8",
-  },
-];
+
+type customersSchema = {
+  id: string;
+  avatar:
+    | string
+    | "https://imgs.search.brave.com/zMHdiWHkzhpWvwSuznZrhKA_X-P3omVlmVrR_Id4hf8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzE2LzA1LzQ1LzM2/LzM2MF9GXzE2MDU0/NTM2MTlfZGxOUWFl/ZjNCbmEwdTdKRTVV/blpmUmp6clRxeVlr/WWguanBn";
+  name: string;
+  email: string;
+  ordersCount: number;
+  totalSpent: number;
+  lastOrder: Date;
+  address: {
+    city: string;
+    country: string;
+  };
+};
+
+type CustomersDetailsType = {
+  avgOrderValue: number;
+  revenue: number;
+  totalCustomers: number;
+  customers: customersSchema[];
+};
 
 const CustomersPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [locationFilter, setLocationFilter] = useState("all");
-  const [customers, setCustomers] = useState(mockCustomers);
+  const [customers, setCustomers] = useState();
+  const [customersDetails, setCustomersDetails] =
+    useState<CustomersDetailsType>();
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      active: { variant: "default", text: "Active" },
-      inactive: { variant: "secondary", text: "Inactive" },
-      suspended: { variant: "destructive", text: "Suspended" },
-    };
-    
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.active;
-    return <Badge variant={config.variant as any}>{config.text}</Badge>;
-  };
-
-  const getCustomerTier = (totalSpent: number) => {
-    if (totalSpent >= 30000) {
-      return <Badge variant="default" className="bg-purple-600">Premium</Badge>;
-    } else if (totalSpent >= 15000) {
-      return <Badge variant="default" className="bg-blue-600">Gold</Badge>;
-    } else if (totalSpent >= 5000) {
-      return <Badge variant="default" className="bg-green-600">Silver</Badge>;
-    } else {
-      return <Badge variant="outline">Bronze</Badge>;
-    }
-  };
-
-  const filteredCustomers = customers.filter(customer => {
-    const matchesSearch = 
+  const filteredCustomers = customersDetails?.customers?.filter((customer) => {
+    const matchesSearch =
       customer.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.phone.includes(searchTerm);
-    
-    const matchesStatus = statusFilter === "all" || customer.status === statusFilter;
-    const matchesLocation = locationFilter === "all" || customer.location.includes(locationFilter);
-    
-    return matchesSearch && matchesStatus && matchesLocation;
+      customer.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesSearch;
   });
 
-  const handleDeleteCustomer = (customerId: string) => {
-    setCustomers(customers.filter(customer => customer.id !== customerId));
+  const getCustomersDetails = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/customers`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(res.data.data);
+      setCustomersDetails(res.data.data);
+    } catch (_error) {}
   };
 
-  const totalCustomers = customers.length;
-  const activeCustomers = customers.filter(c => c.status === "active").length;
-  const totalRevenue = customers.reduce((sum, customer) => sum + customer.totalSpent, 0);
-  const avgOrderValue = totalRevenue / customers.reduce((sum, customer) => sum + customer.totalOrders, 0);
+  useEffect(() => {
+    getCustomersDetails();
+  }, []);
 
   return (
     <div className="p-6 space-y-6">
@@ -222,7 +118,9 @@ const CustomersPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Users className="w-8 h-8 text-blue-600" />
               <div>
-                <div className="text-2xl font-bold text-blue-600">{totalCustomers}</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {customersDetails?.totalCustomers}
+                </div>
                 <div className="text-sm text-gray-500">Total Customers</div>
               </div>
             </div>
@@ -233,7 +131,9 @@ const CustomersPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <TrendingUp className="w-8 h-8 text-green-600" />
               <div>
-                <div className="text-2xl font-bold text-green-600">{activeCustomers}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {customersDetails?.totalCustomers}
+                </div>
                 <div className="text-sm text-gray-500">Active Customers</div>
               </div>
             </div>
@@ -245,7 +145,7 @@ const CustomersPage: React.FC = () => {
               <Star className="w-8 h-8 text-yellow-600" />
               <div>
                 <div className="text-2xl font-bold text-yellow-600">
-                  ₹{totalRevenue.toLocaleString()}
+                  ₹{customersDetails?.revenue}
                 </div>
                 <div className="text-sm text-gray-500">Total Revenue</div>
               </div>
@@ -258,7 +158,7 @@ const CustomersPage: React.FC = () => {
               <MapPin className="w-8 h-8 text-purple-600" />
               <div>
                 <div className="text-2xl font-bold text-purple-600">
-                  ₹{Math.round(avgOrderValue).toLocaleString()}
+                  ₹{customersDetails?.avgOrderValue}
                 </div>
                 <div className="text-sm text-gray-500">Avg Order Value</div>
               </div>
@@ -283,17 +183,6 @@ const CustomersPage: React.FC = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                  <SelectItem value="suspended">Suspended</SelectItem>
-                </SelectContent>
-              </Select>
               <Select value={locationFilter} onValueChange={setLocationFilter}>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Filter by location" />
@@ -310,10 +199,6 @@ const CustomersPage: React.FC = () => {
                   <SelectItem value="Ahmedabad">Ahmedabad</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline">
-                <Filter className="w-4 h-4 mr-2" />
-                More Filters
-              </Button>
             </div>
           </div>
         </CardContent>
@@ -332,8 +217,6 @@ const CustomersPage: React.FC = () => {
                   <TableHead>Customer</TableHead>
                   <TableHead>Contact</TableHead>
                   <TableHead>Location</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Tier</TableHead>
                   <TableHead>Orders</TableHead>
                   <TableHead>Total Spent</TableHead>
                   <TableHead>Last Order</TableHead>
@@ -341,38 +224,43 @@ const CustomersPage: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredCustomers.map((customer) => (
+                {filteredCustomers?.map((customer) => (
                   <TableRow key={customer.id}>
                     <TableCell>
                       <div className="flex items-center space-x-3">
                         <img
-                          src={customer.avatar}
+                          src={
+                            customer.avatar ||
+                            "https://cdn-icons-png.flaticon.com/128/847/847969.png"
+                          }
                           alt={customer.name}
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div>
                           <div className="font-medium">{customer.name}</div>
-                          <div className="text-sm text-gray-500">{customer.id}</div>
+                          <div className="text-sm text-gray-500">
+                            {customer.id}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
                         <div>{customer.email}</div>
-                        <div className="text-gray-500">{customer.phone}</div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-1">
                         <MapPin className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm">{customer.location}</span>
+                        <span className="text-sm">{`${
+                          customer.address.city || "N/A"
+                        }, ${customer.address.country || ""}`}</span>
                       </div>
                     </TableCell>
-                    <TableCell>{getStatusBadge(customer.status)}</TableCell>
-                    <TableCell>{getCustomerTier(customer.totalSpent)}</TableCell>
-                    <TableCell>{customer.totalOrders}</TableCell>
-                    <TableCell>₹{customer.totalSpent.toLocaleString()}</TableCell>
-                    <TableCell>{customer.lastOrder}</TableCell>
+
+                    <TableCell>{customer?.ordersCount}</TableCell>
+                    <TableCell>₹{customer?.totalSpent}</TableCell>
+                    <TableCell>{formatDate(customer?.lastOrder)}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -393,10 +281,7 @@ const CustomersPage: React.FC = () => {
                             <Eye className="mr-2 h-4 w-4" />
                             View Orders
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDeleteCustomer(customer.id)}
-                            className="text-red-600"
-                          >
+                          <DropdownMenuItem className="text-red-600">
                             <Trash2 className="mr-2 h-4 w-4" />
                             Delete
                           </DropdownMenuItem>
@@ -408,8 +293,8 @@ const CustomersPage: React.FC = () => {
               </TableBody>
             </Table>
           </div>
-          
-          {filteredCustomers.length === 0 && (
+
+          {filteredCustomers?.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               No customers found matching your criteria.
             </div>
