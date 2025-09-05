@@ -44,6 +44,7 @@ import {
   useProductStore,
 } from "@/lib/store";
 import axios from "axios";
+import AddProductDialog from "@/components/admin/AddProductDialog";
 
 function shortDescription(description: string, wordCount: number = 3): string {
   return description.split(" ").slice(0, wordCount).join(" ") + "...";
@@ -126,15 +127,19 @@ const ProductsPage: React.FC = () => {
   ).length;
   const outOfStockCount = filteredProducts?.filter((p) => p.stock === 0).length;
 
+  const handleProductAdded = () => {};
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Products Management</h1>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Add New Product
-        </Button>
+        <AddProductDialog onProductAdded={handleProductAdded}>
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Add New Product
+          </Button>
+        </AddProductDialog>
       </div>
 
       {/* Stats Cards */}
