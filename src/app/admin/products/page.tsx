@@ -45,6 +45,8 @@ import {
 } from "@/lib/store";
 import axios from "axios";
 import AddProductDialog from "@/components/admin/AddProductDialog";
+import EditProductDialog from "@/components/admin/EditProductDialog";
+import DeleteProductDialog from "@/components/admin/DeleteProductDialog";
 
 function shortDescription(description: string, wordCount: number = 3): string {
   return description.split(" ").slice(0, wordCount).join(" ") + "...";
@@ -72,6 +74,7 @@ const ProductsPage: React.FC = () => {
   const [isFetching, setIsFetching] = useState(false);
 
   const [productsData, setProductsData] = useState<adminProductsSchema[]>();
+  const [originalProducts, setOriginalProducts] = useState<ProductSchema[]>([]);
 
   const getProducts = async () => {
     try {
@@ -79,6 +82,7 @@ const ProductsPage: React.FC = () => {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/products`
       );
+      setOriginalProducts(response.data.data.products);
       setProductsData(response.data.data.products);
       setAdminProducts(formatProductsData(response.data.data.products));
     } catch (_error) {
@@ -112,10 +116,15 @@ const ProductsPage: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleDeleteProduct = (productId: string) => {
-    setProductsData(
-      filteredProducts?.filter((product) => product.id !== productId)
+  const handleDeleteProduct = async (productId: string) => {
+    // Update local state
+    const updatedProducts = originalProducts.filter(
+      (product) => product.id !== productId
     );
+  };
+  const handleProductUpdated = () => {
+    // Refresh the products list
+    getProducts();
   };
 
   const totalValue = filteredProducts?.reduce(
@@ -127,7 +136,10 @@ const ProductsPage: React.FC = () => {
   ).length;
   const outOfStockCount = filteredProducts?.filter((p) => p.stock === 0).length;
 
-  const handleProductAdded = () => {};
+  const handleProductAdded = () => {
+    // Refresh the products list
+    getProducts();
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -292,17 +304,34 @@ const ProductsPage: React.FC = () => {
                             <Eye className="mr-2 h-4 w-4" />
                             View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit Product
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDeleteProduct(product.id)}
-                            className="text-red-600"
+                          <EditProductDialog
+                            product={
+                              originalProducts.find((p) => p.id === product.id)!
+                            }
+                            onProductUpdated={handleProductUpdated}
                           >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onSelect={(e) => e.preventDefault()}
+                            >
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit Product
+                            </DropdownMenuItem>
+                          </EditProductDialog>
+                          <DeleteProductDialog
+                            productId={product.id}
+                            productName={product.name}
+                            onProductDeleted={() =>
+                              handleDeleteProduct(product.id)
+                            }
+                          >
+                            <DropdownMenuItem
+                              onSelect={(e) => e.preventDefault()}
+                              className="text-red-600"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DeleteProductDialog>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

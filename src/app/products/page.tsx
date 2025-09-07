@@ -49,7 +49,7 @@ export default function Products() {
       const response = await axios.get(
         `${
           process.env.NEXT_PUBLIC_API_URL
-        }/products?page=${currentPage}&limit=${limit || 5}`
+        }/products?page=${currentPage}&limit=${limit || 10}`
       );
       setProducts(response.data.data.products);
       setTotalPages(response.data.data.totalPages);
