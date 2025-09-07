@@ -145,47 +145,6 @@ const AdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
       </section>
-
-      {/* Recent Orders Table */}
-      <section className="mt-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-2 text-sm font-semibold">
-                      Order ID
-                    </th>
-                    <th className="px-4 py-2 text-sm font-semibold">
-                      Customer
-                    </th>
-                    <th className="px-4 py-2 text-sm font-semibold">Amount</th>
-                    <th className="px-4 py-2 text-sm font-semibold">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">#123456</td>
-                    <td className="px-4 py-2">John Doe</td>
-                    <td className="px-4 py-2">₹2,499</td>
-                    <td className="px-4 py-2 text-green-600">Completed</td>
-                  </tr>
-                  <tr className="border-t">
-                    <td className="px-4 py-2">#123457</td>
-                    <td className="px-4 py-2">Jane Smith</td>
-                    <td className="px-4 py-2">₹1,199</td>
-                    <td className="px-4 py-2 text-yellow-600">Pending</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
     </div>
   );
 };

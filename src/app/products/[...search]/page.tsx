@@ -18,23 +18,43 @@ import {
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { ProductSchema, useProductStore, userStore } from "@/lib/store";
+import ProductDetailsSkeleton from "@/components/shimmer/Prod_details_shimmer";
 
 const ProductDetails = () => {
   const params = useParams();
   const [productData, setProductData] = useState<ProductSchema>();
+  const [isLoading, setIsLoading] = useState(false);
   const products = useProductStore((state) => state.products);
   const { user } = userStore();
 
   const slug = params?.search?.toString();
-  const router = useRouter()
+  const router = useRouter();
 
   function getProduct() {
     const item = products.find((item) => item.slug == slug);
     setProductData(item);
   }
 
+  const fetchProduct = async (slug: string) => {
+    try {
+      setIsLoading(true);
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${slug}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setProductData(res.data.data.products[0]);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     getProduct();
+    fetchProduct(slug!);
   }, []);
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -111,182 +131,184 @@ const ProductDetails = () => {
   };
 
   return (
-    productData && (
-      <div className="min-h-screen bg-background relative">
-        {/* Go Back Button */}
-        <Button
-          variant="outline"
-          className="absolute top-5 left-5 flex items-center gap-2"
-          onClick={() => router.push('/products?page=1')}
-        >
-          <ArrowLeft className="h-5 w-5" />
-          Back
-        </Button>
+    <div className="min-h-screen bg-background relative">
+      {/* Go Back Button */}
+      <Button
+        variant="outline"
+        className="absolute top-5 left-5 flex items-center gap-2"
+        onClick={() => router.push("/products?page=1")}
+      >
+        <ArrowLeft className="h-5 w-5" />
+        Back
+      </Button>
 
-        <div className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-20 xl:px-36 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* Image Gallery */}
-            <div className="space-y-5">
-              <div className="aspect-square overflow-hidden rounded-xl bg-muted shadow-md">
-                <img
-                  src={productData.images[selectedImage]?.url}
-                  alt={productData.name}
-                  className="h-full w-full object-cover object-top transition-transform duration-300 hover:scale-105"
-                />
-              </div>
-              <div className="flex space-x-3">
-                {productData.images.map((image, index) => (
-                  <button
-                    key={image.id}
-                    onClick={() => setSelectedImage(index)}
-                    className={`aspect-square w-20 overflow-hidden rounded-lg border-2 transition-colors duration-200 ${
-                      selectedImage === index ? "border-black" : "border-muted"
-                    }`}
-                  >
-                    <img
-                      src={image.url}
-                      alt={`${productData.name} ${index + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Product Info */}
-            <div className="space-y-5">
-              <div>
-                <Badge
-                  variant="secondary"
-                  className="mb-3 text-md bg-gray-100 shadow-xs"
-                >
-                  {productData.brand}
-                </Badge>
-                <h1 className="text-4xl font-bold text-foreground">
-                  {productData.name}
-                </h1>
-                {/* <div className="flex items-center space-x-2 mt-3">
-                  <div className="flex">{renderStars(productData.ratings)}</div>
-                  <span className="text-sm text-muted-foreground">
-                    ({productData.numReviews} reviews)
-                  </span>
-                </div> */}
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <span className="text-4xl font-bold text-foreground">
-                  ₹{productData.price.toFixed(2)}
-                </span>
-              </div>
-
-              <p className="text-base text-muted-foreground whitespace-pre-line">
-                {productData.description.split(",").join("\n")}
-              </p>
-
-              {/* Size Selection */}
-              <div>
-                <h3 className="font-semibold mb-3">Size</h3>
-                <div className="flex flex-wrap gap-3">
-                  {uniqueSizes.map((size) => (
-                    <Button
-                      key={size}
-                      size="sm"
-                      onClick={() => setSelectedSize(size)}
-                      className={`px-4 py-1 text-sm transition-all duration-200 ${
-                        selectedSize === size
-                          ? "bg-gray-900 text-white shadow-sm"
-                          : "bg-gray-100 border-0 text-black "
+      {isLoading ? (
+        <ProductDetailsSkeleton />
+      ) : (
+        productData && (
+          <div className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-20 xl:px-36 py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+              {/* Image Gallery */}
+              <div className="space-y-5 p-10">
+                <div className="aspect-square overflow-hidden rounded-xl bg-muted shadow-md">
+                  <img
+                    src={productData.images[selectedImage]?.url}
+                    alt={productData.name}
+                    className="h-full w-full object-cover object-top transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+                <div className="flex space-x-3">
+                  {productData.images.map((image, index) => (
+                    <button
+                      key={image.id}
+                      onClick={() => setSelectedImage(index)}
+                      className={`aspect-square w-20 overflow-hidden rounded-lg border-2 transition-colors duration-200 ${
+                        selectedImage === index
+                          ? "border-black"
+                          : "border-muted"
                       }`}
                     >
-                      {size}
-                    </Button>
+                      <img
+                        src={image.url}
+                        alt={`${productData.name} ${index + 1}`}
+                        className="h-full w-full object-cover"
+                      />
+                    </button>
                   ))}
                 </div>
               </div>
 
-              {/* Stock Info */}
-              {selectedSize ? (
-                selectedVariant ? (
-                  selectedVariant.stock > 0 ? (
-                    <p className="text-sm text-green-600">
-                      In stock: {selectedVariant.stock}
-                    </p>
-                  ) : (
-                    <p className="text-sm text-red-600 font-semibold">
-                      Out of stock
-                    </p>
-                  )
-                ) : (
-                  <p className="text-sm text-red-600">out of stock</p>
-                )
-              ) : (
-                <p className="text-sm text-muted-foreground">Select size</p>
-              )}
-
-              {/* Quantity & Actions */}
+              {/* Product Info */}
               <div className="space-y-5">
-                <div className="flex items-center space-x-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={quantity <= 1}
-                    className="cursor-pointer"
+                <div>
+                  <Badge
+                    variant="secondary"
+                    className="mb-3 text-md bg-gray-100 shadow-xs"
                   >
-                    <Minus className="h-4 w-4 cursor-pointer" />
-                  </Button>
-                  <span className="font-medium text-lg w-8 text-center">
-                    {quantity}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="cursor-pointer"
-                    disabled={
-                      !selectedVariant || quantity >= selectedVariant.stock
-                    }
-                  >
-                    <Plus className="h-4 w-4 cursor-pointer" />
-                  </Button>
+                    {productData.brand}
+                  </Badge>
+                  <h1 className="text-4xl font-bold text-foreground">
+                    {productData.name}
+                  </h1>
                 </div>
 
-                <Button
-                  className="w-full py-5 text-lg bg-black text-white cursor-pointer"
-                  disabled={
-                    !selectedSize ||
-                    !selectedVariant ||
-                    selectedVariant.stock === 0 ||
-                    addingState
-                  }
-                  onClick={handleAddToCart}
-                >
-                  <ShoppingCart className="mr-3 h-5 w-5" />
-                  {addingState ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    " Add to Cart"
-                  )}
-                </Button>
+                <div className="flex items-center space-x-4">
+                  <span className="text-4xl font-bold text-foreground">
+                    ₹{productData.price.toFixed(2)}
+                  </span>
+                </div>
 
-                <Button
-                  variant="outline"
-                  className="w-full py-5 text-lg"
-                  onClick={() => handleAddToWishlist(productData.id)}
-                >
-                  <Heart
-                    className={`mr-3 h-5 w-5 transition-transform duration-200 ${
-                      isWishlisted ? "fill-current text-red-500 scale-125" : ""
-                    }`}
-                  />
-                  {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-                </Button>
+                <p className="text-base text-muted-foreground whitespace-pre-line">
+                  {productData.description.split(",").join("\n")}
+                </p>
+
+                {/* Size Selection */}
+                <div>
+                  <h3 className="font-semibold mb-3">Size</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {uniqueSizes.map((size) => (
+                      <Button
+                        key={size}
+                        size="sm"
+                        onClick={() => setSelectedSize(size)}
+                        className={`px-4 py-1 text-sm transition-all duration-200 ${
+                          selectedSize === size
+                            ? "bg-gray-900 text-white shadow-sm"
+                            : "bg-gray-100 border-0 text-black "
+                        }`}
+                      >
+                        {size}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Stock Info */}
+                {selectedSize ? (
+                  selectedVariant ? (
+                    selectedVariant.stock > 0 ? (
+                      <p className="text-sm text-green-600">
+                        In stock: {selectedVariant.stock}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-red-600 font-semibold">
+                        Out of stock
+                      </p>
+                    )
+                  ) : (
+                    <p className="text-sm text-red-600">out of stock</p>
+                  )
+                ) : (
+                  <p className="text-sm text-muted-foreground">Select size</p>
+                )}
+
+                {/* Quantity & Actions */}
+                <div className="space-y-5">
+                  <div className="flex items-center space-x-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                      className="cursor-pointer"
+                    >
+                      <Minus className="h-4 w-4 cursor-pointer" />
+                    </Button>
+                    <span className="font-medium text-lg w-8 text-center">
+                      {quantity}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="cursor-pointer"
+                      disabled={
+                        !selectedVariant || quantity >= selectedVariant.stock
+                      }
+                    >
+                      <Plus className="h-4 w-4 cursor-pointer" />
+                    </Button>
+                  </div>
+
+                  <Button
+                    className="w-full py-5 text-lg bg-black text-white cursor-pointer"
+                    disabled={
+                      !selectedSize ||
+                      !selectedVariant ||
+                      selectedVariant.stock === 0 ||
+                      addingState
+                    }
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart className="mr-3 h-5 w-5" />
+                    {addingState ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      " Add to Cart"
+                    )}
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="w-full py-5 text-lg"
+                    onClick={() => handleAddToWishlist(productData.id)}
+                  >
+                    <Heart
+                      className={`mr-3 h-5 w-5 transition-transform duration-200 ${
+                        isWishlisted
+                          ? "fill-current text-red-500 scale-125"
+                          : ""
+                      }`}
+                    />
+                    {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    )
+        )
+      )}
+    </div>
   );
 };
 

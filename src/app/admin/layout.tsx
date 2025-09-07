@@ -26,11 +26,6 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLogout = () => {
-    // Clear cookies and redirect to login
-    alert("admin logged out")
-  };
-
   const SidebarContent = () => (
     <>
       <div className="p-6 text-2xl font-bold">NexaBuy Admin</div>
@@ -38,7 +33,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Link href="/admin">
           <Button
             variant={pathname === "/admin" ? "default" : "ghost"}
-            className="w-full justify-start"
+            className="w-full justify-start cursor-pointer"
           >
             <LayoutDashboard className="w-5 h-5 mr-2" />
             Dashboard
@@ -47,7 +42,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Link href="/admin/orders">
           <Button
             variant={pathname === "/admin/orders" ? "default" : "ghost"}
-            className="w-full justify-start"
+            className="w-full justify-start cursor-pointer"
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
             Orders
@@ -56,7 +51,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Link href="/admin/products">
           <Button
             variant={pathname === "/admin/products" ? "default" : "ghost"}
-            className="w-full justify-start"
+            className="w-full justify-start cursor-pointer"
           >
             <Box className="w-5 h-5 mr-2" />
             Products
@@ -65,23 +60,13 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Link href="/admin/customers">
           <Button
             variant={pathname === "/admin/customers" ? "default" : "ghost"}
-            className="w-full justify-start"
+            className="w-full justify-start cursor-pointer"
           >
             <Users className="w-5 h-5 mr-2" />
             Customers
           </Button>
         </Link>
       </nav>
-      <div className="p-4 border-t">
-        <Button
-          variant="destructive"
-          className="w-full flex justify-start"
-          onClick={handleLogout}
-        >
-          <LogOut className="w-5 h-5 mr-2" />
-          Logout
-        </Button>
-      </div>
     </>
   );
 

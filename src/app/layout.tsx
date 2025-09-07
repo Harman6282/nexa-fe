@@ -30,12 +30,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${spaceGrotesk.className} ${geistMono.variable} antialiased`}
+        className={`${spaceGrotesk.className} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <Navbar />
-        {children}
-        <Toaster
-        />
+        <main className="flex-grow">{children}</main>
+        <Toaster />
         <Footer />
       </body>
     </html>

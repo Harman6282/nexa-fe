@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { redirect } from "next/navigation";

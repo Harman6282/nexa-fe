@@ -47,6 +47,7 @@ import axios from "axios";
 import AddProductDialog from "@/components/admin/AddProductDialog";
 import EditProductDialog from "@/components/admin/EditProductDialog";
 import DeleteProductDialog from "@/components/admin/DeleteProductDialog";
+import { useRouter } from "next/navigation";
 
 function shortDescription(description: string, wordCount: number = 3): string {
   return description.split(" ").slice(0, wordCount).join(" ") + "...";
@@ -56,6 +57,7 @@ const formatProductsData = (products: ProductSchema[]) => {
   const formated = products.map((item) => ({
     id: item.id,
     name: item.name,
+    slug: item.slug,
     category: item.categoryName,
     price: item.price,
     description: shortDescription(item.description, 3),
@@ -75,6 +77,8 @@ const ProductsPage: React.FC = () => {
 
   const [productsData, setProductsData] = useState<adminProductsSchema[]>();
   const [originalProducts, setOriginalProducts] = useState<ProductSchema[]>([]);
+
+  const router = useRouter();
 
   const getProducts = async () => {
     try {
@@ -300,9 +304,13 @@ const ProductsPage: React.FC = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              router.push(`/products/${product.slug}`)
+                            }
+                          >
                             <Eye className="mr-2 h-4 w-4" />
-                            View Details
+                            View Product
                           </DropdownMenuItem>
                           <EditProductDialog
                             product={
