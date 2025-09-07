@@ -44,6 +44,8 @@ export default function page() {
         { withCredentials: true }
       );
 
+      console.log(response.data);
+
       // Try to set user immediately from response
       const immediateUser = response?.data?.user?.data ?? response?.data?.user;
       if (immediateUser) {
@@ -62,8 +64,7 @@ export default function page() {
       router.push("/");
       toast.success("Logged in successfully!");
     } catch (error: any) {
-      console.error(error);
-      toast.error("Login failed. Please try again.");
+      toast.error(error?.response?.data?.message);
     }
   };
 

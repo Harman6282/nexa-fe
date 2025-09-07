@@ -58,13 +58,35 @@ const Checkout = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
-
+  const [scriptLoaded, setScriptLoaded] = useState(false);
   const { orderDetails, clearPersistedData } = useCartStore();
 
   // const userAddresses = userStore((state) => state.user?.address);
   const cartId = userStore((state) => state?.user?.cart[0].id);
 
   const router = useRouter();
+
+  const loadScript = (src: string) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
+  useEffect(() => {
+    loadScript("https://checkout.razorpay.com/v1/checkout.js").then(
+      (loaded) => {
+        setScriptLoaded(!!loaded);
+      }
+    );
+  }, []);
 
   const getAddresses = async () => {
     try {
@@ -149,19 +171,58 @@ const Checkout = () => {
       cartId: cartId,
       addressId: selectedId,
     };
-    if (data.cartId && data.addressId) {
-      try {
-        const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/orders`,
-          data,
-          { withCredentials: true }
-        );
-        toast.success("Order placed");
-        clearPersistedData();
-        router.push("/profile");
-      } catch (_error) {
-        // Optionally show a toast: toast.error("Payment failed");
-      }
+
+    if (!data.cartId || !data.addressId) {
+      toast.error("Please select an address");
+      return;
+    }
+
+    try {
+      // 1️⃣ Create order on backend
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/orders`,
+        data,
+        { withCredentials: true }
+      );
+
+      const { razorpayOrder, key } = res.data.data;
+
+      // 2️⃣ Initialize Razorpay payment
+      const paymentObject = new (window as any).Razorpay({
+        key, // use backend key
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        order_id: razorpayOrder.id, // from backend
+        name: "NexaBuy",
+        description: "Order Payment",
+        handler: async function (response: any) {
+          // 3️⃣ Verify payment on backend
+          const verificationResponse = await axios.put(
+            `${process.env.NEXT_PUBLIC_API_URL}/orders/verify-payment`,
+            {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            },
+            { withCredentials: true }
+          );
+
+          if (verificationResponse.data.success) {
+            toast.success("Payment successful");
+            clearPersistedData();
+            router.push("/profile");
+          } else {
+            toast.error("Payment verification failed");
+          }
+        },
+        theme: { color: "#3399cc" },
+      });
+
+      // 4️⃣ Open Razorpay modal
+      paymentObject.open();
+    } catch (error) {
+      console.error(error);
+      toast.error("Payment failed. Please try again.");
     }
   }
 
@@ -402,7 +463,8 @@ const Checkout = () => {
             btnName="Pay now"
             onPayNow={onPayNow}
             isDisabled={
-              !checkoutForm.watch("selectedAddress") || addresses.length === 0
+              !checkoutForm.watch("selectedAddress") ||
+              (addresses.length === 0 && !scriptLoaded)
             }
           />
         </div>

@@ -47,6 +47,7 @@ export type ordersSchema = {
   name: string;
   email: string;
   items: ProductSchema[];
+  paymentStatus: string;
   total: string;
   status: string;
   createdAt: string;
@@ -108,14 +109,14 @@ const OrdersPage: React.FC = () => {
 
   const getPaymentBadge = (payment: string) => {
     const paymentConfig = {
-      paid: { variant: "default", text: "Paid" },
-      pending: { variant: "secondary", text: "Pending" },
-      refunded: { variant: "destructive", text: "Refunded" },
+      PAID: { variant: "default", text: "Paid" },
+      PENDING: { variant: "secondary", text: "Pending" },
+      FAILED: { variant: "destructive", text: "failed" },
     };
 
     const config =
       paymentConfig[payment as keyof typeof paymentConfig] ||
-      paymentConfig.pending;
+      paymentConfig.PENDING;
     return <Badge variant={config.variant as any}>{config.text}</Badge>;
   };
 
@@ -231,83 +232,6 @@ const OrdersPage: React.FC = () => {
         </Button>
       </div>
 
-      {/* Stats Cards */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-blue-600">
-              {orders.length}
-            </div>
-            <div className="text-sm text-gray-500">Total Orders</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-green-600">
-              ₹
-              {orders
-                .reduce((sum, order) => sum + order.total, 0)
-                .toLocaleString()}
-            </div>
-            <div className="text-sm text-gray-500">Total Revenue</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-yellow-600">
-              {orders.filter((o) => o.status === "pending").length}
-            </div>
-            <div className="text-sm text-gray-500">Pending Orders</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-purple-600">
-              {orders.filter((o) => o.status === "completed").length}
-            </div>
-            <div className="text-sm text-gray-500">Completed Orders</div>
-          </CardContent>
-        </Card>
-      </div> */}
-
-      {/* Filters and Search */}
-      {/* <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Search orders by ID, customer, or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="shipped">Shipped</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline">
-                <Filter className="w-4 h-4 mr-2" />
-                More Filters
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card> */}
-
       {/* Orders Table */}
       <Card>
         <CardHeader>
@@ -356,7 +280,9 @@ const OrdersPage: React.FC = () => {
                         </div>
                       )}
                     </TableCell>
-                    <TableCell>{getPaymentBadge("paid")}</TableCell>
+                    <TableCell>
+                      {getPaymentBadge(order?.paymentStatus)}
+                    </TableCell>
                     <TableCell>{order?.createdAt}</TableCell>
                     <TableCell>
                       <DropdownMenu>
