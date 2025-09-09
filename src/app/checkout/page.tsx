@@ -63,8 +63,30 @@ const Checkout = () => {
 
   // const userAddresses = userStore((state) => state.user?.address);
   const cartId = userStore((state) => state?.user?.cart[0].id);
+  const cartItems = userStore((state) => state.cartItems);
 
   const router = useRouter();
+
+  // Validate checkout access
+  useEffect(() => {
+    // Check if user has cart items
+    if (!cartItems || cartItems.length === 0) {
+      toast.error("Your cart is empty. Please add items to proceed to checkout.");
+      router.push("/cart");
+      return;
+    }
+
+    // Check if user came from cart page (additional client-side validation)
+    const referer = document.referrer;
+    if (!referer || !referer.includes("/cart")) {
+      toast.error("Please proceed to checkout from your cart.");
+      router.push("/cart");
+      return;
+    }
+
+    // Set a flag in session storage to track valid checkout access
+    sessionStorage.setItem("checkoutAccess", "true");
+  }, [cartItems, router]);
 
   const loadScript = (src: string) => {
     return new Promise((resolve) => {
@@ -210,7 +232,10 @@ const Checkout = () => {
           if (verificationResponse.data.success) {
             toast.success("Payment successful");
             clearPersistedData();
-            router.push("/profile");
+            // Set flag for valid placed page access
+            sessionStorage.setItem("paymentSuccess", "true");
+            sessionStorage.removeItem("checkoutAccess");
+            router.push("/placed");
           } else {
             toast.error("Payment verification failed");
           }
