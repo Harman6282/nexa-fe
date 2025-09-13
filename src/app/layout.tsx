@@ -28,6 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+       
+      </head>
       <body
         suppressHydrationWarning
         className={`${spaceGrotesk.className} ${geistMono.variable} antialiased flex flex-col min-h-screen`}

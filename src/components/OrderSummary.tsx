@@ -29,7 +29,9 @@ const OrderSummary = ({
   const handleCheckoutClick = (e: React.MouseEvent) => {
     if (!cartItems || cartItems.length === 0) {
       e.preventDefault();
-      toast.error("Your cart is empty. Please add items to proceed to checkout.");
+      toast.error(
+        "Your cart is empty. Please add items to proceed to checkout."
+      );
       return;
     }
     // Allow navigation to proceed
@@ -48,17 +50,13 @@ const OrderSummary = ({
               <span>Total MRP</span>
               <span>₹{originalTotal!}</span>
             </div>
-            {discount && (
-              <div className="flex justify-between text-green-600">
-                <span>Discount on MRP</span>
-                <span>-₹{discount}</span>
-              </div>
-            )}
             <div className="flex justify-between">
               <span>Convenience Fee</span>
               <span className="text-green-600">FREE</span>
             </div>
-            {btnName !== "Checkout" && (
+            {btnName === "Checkout" ? (
+              ""
+            ) : (
               <div className="flex justify-between">
                 <span>Shipping Fee</span>
                 <span className={deliveryCharges === 0 ? "text-green-600" : ""}>
@@ -75,7 +73,7 @@ const OrderSummary = ({
 
           {btnName === "Checkout" ? (
             <Link href="/checkout" onClick={handleCheckoutClick}>
-              <Button 
+              <Button
                 className="w-full cursor-pointer py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors mb-4"
                 disabled={!cartItems || cartItems.length === 0}
               >
@@ -90,14 +88,6 @@ const OrderSummary = ({
             >
               {btnName}
             </Button>
-          )}
-
-          {discount && (
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                You will save ₹{discount.toLocaleString()} on this order
-              </p>
-            </div>
           )}
         </div>
       </div>

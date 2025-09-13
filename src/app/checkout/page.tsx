@@ -76,14 +76,6 @@ const Checkout = () => {
       return;
     }
 
-    // Check if user came from cart page (additional client-side validation)
-    const referer = document.referrer;
-    if (!referer || !referer.includes("/cart")) {
-      toast.error("Please proceed to checkout from your cart.");
-      router.push("/cart");
-      return;
-    }
-
     // Set a flag in session storage to track valid checkout access
     sessionStorage.setItem("checkoutAccess", "true");
   }, [cartItems, router]);

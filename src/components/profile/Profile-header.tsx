@@ -33,13 +33,6 @@ export function ProfileHeader({ name, email, avatarUrl }: ProfileHeaderProps) {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{name}</h1>
         <p className="text-gray-600 mb-4">{email}</p>
       </div>
-      <Button
-        variant="default"
-        className=""
-      >
-        <Edit3 className="w-4 h-4 mr-2" />
-        Edit Profile
-      </Button>
     </div>
   );
 }

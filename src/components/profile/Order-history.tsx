@@ -54,13 +54,6 @@ export function OrderHistory({ order }: { order: OrderHistoryProps[] }) {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Order History</h2>
-        <Button
-          variant="outline"
-          className="border-gray-300 text-gray-700 bg-transparent"
-        >
-          <Eye className="w-4 h-4 mr-2" />
-          View All
-        </Button>
       </div>
 
       <div className="space-y-6">

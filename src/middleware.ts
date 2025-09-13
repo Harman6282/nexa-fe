@@ -23,22 +23,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
     
-    // For admin routes, we'll do client-side role validation
-    // since we can't easily decode JWT in middleware without the secret
-    // The admin layout will handle the role checking
   }
-
-  // Additional protection for specific routes
-  if (pathname === "/checkout") {
-    // Check if user has valid cart items (this will be validated on the client side too)
-    const referer = request.headers.get("referer");
-    if (!referer || !referer.includes("/cart")) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/cart";
-      return NextResponse.redirect(url);
-    }
-  }
-
   if (pathname === "/placed") {
     // Check if user came from checkout (payment success)
     const referer = request.headers.get("referer");
