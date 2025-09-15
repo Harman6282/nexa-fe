@@ -90,8 +90,6 @@ const ProductDetails = () => {
     quantity: quantity,
   };
 
-  console.log(user);
-
   async function handleAddToCart() {
     setAddingState(true);
     try {

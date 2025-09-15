@@ -153,7 +153,6 @@ const Checkout = () => {
       pincode: data.pincode.trim(),
       country: data.country.trim(),
     };
-    console.log(newAddr);
     try {
       setIsLoading(true);
       const res = await axios.post(
@@ -162,7 +161,6 @@ const Checkout = () => {
         { withCredentials: true }
       );
       setAddresses((prev) => [...prev, res?.data?.address]);
-      console.log(res.data.address);
       toast.success(res?.data?.message || "Address added successfully");
       setIsLoading(false);
     } catch (error: any) {

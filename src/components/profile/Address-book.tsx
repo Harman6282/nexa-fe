@@ -96,7 +96,6 @@ export function AddressBook() {
       pincode: data.pincode.trim(),
       country: data.country.trim(),
     };
-    console.log(newAddr);
     try {
       setIsLoading(true);
       const res = await axios.post(
@@ -105,7 +104,6 @@ export function AddressBook() {
         { withCredentials: true }
       );
       setAddresses((prev) => [...prev, res?.data?.address]);
-      console.log(res.data.address);
       toast.success(res?.data?.message || "Address added successfully");
       setIsLoading(false);
     } catch (error: any) {
@@ -138,7 +136,6 @@ export function AddressBook() {
           withCredentials: true,
         }
       );
-      console.log(res.data);
       toast.success(res?.data?.message || "Address updated successfully");
 
       // Update the address in the local state
@@ -170,8 +167,6 @@ export function AddressBook() {
         }
       );
 
-      console.log(res.data);
-      console.log(res?.data?.message);
       toast.success(res?.data?.message);
       setAddresses(addresses.filter((address) => address?.id != id));
       setIsLoading(false);

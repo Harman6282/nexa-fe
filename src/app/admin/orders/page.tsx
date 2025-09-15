@@ -72,7 +72,6 @@ const OrdersPage: React.FC = () => {
           withCredentials: true,
         }
       );
-      console.log(res.data.data);
       if (res.data.success === true) {
         setOrders(
           res.data.data?.map((order: ordersSchema) => ({
@@ -174,7 +173,6 @@ const OrdersPage: React.FC = () => {
         )
       );
 
-      console.log(res.data);
     } catch (error) {
       console.log(error);
     } finally {

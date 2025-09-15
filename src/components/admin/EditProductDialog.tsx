@@ -96,7 +96,6 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({
   // Reset form when product changes
   useEffect(() => {
     if (product) {
-      console.log("Initializing form with product:", product);
       const formData = {
         name: product.name,
         description: product.description,
@@ -110,7 +109,6 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({
           stock: variant.stock,
         })),
       };
-      console.log("Form data:", formData);
       form.reset(formData);
     }
   }, [product, form]);
@@ -126,7 +124,6 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({
   };
 
   const onSubmit = async (data: ProductFormData) => {
-    console.log("Form submitted with data:", data);
     setIsLoading(true);
 
     try {
@@ -140,7 +137,6 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({
         variants: data.variants,
       };
 
-      console.log("Sending update data:", updateData);
 
       const res = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/products/update/${product.id}`,
@@ -452,11 +448,7 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({
               <Button
                 type="submit"
                 disabled={isLoading}
-                onClick={() => {
-                  console.log("Submit button clicked");
-                  console.log("Form values:", form.getValues());
-                  console.log("Form errors:", form.formState.errors);
-                }}
+                
               >
                 {isLoading ? (
                   <>

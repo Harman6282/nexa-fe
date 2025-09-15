@@ -57,7 +57,6 @@ export default function ProfilePage() {
           withCredentials: true,
         }
       );
-      console.log(res.data);
       setOrders(res.data.data.items);
     } catch (error) {
       setOrders([]);

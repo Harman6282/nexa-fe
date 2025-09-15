@@ -33,7 +33,6 @@ export function Wishlist() {
         }
       );
 
-      console.log(res.data.data);
       setWishlist(res.data.data);
     } catch (error) {}
   };
@@ -51,7 +50,6 @@ export function Wishlist() {
             withCredentials: true,
           }
         );
-        console.log(res.data.data);
         getWishlist();
       } catch (error) {}
     }

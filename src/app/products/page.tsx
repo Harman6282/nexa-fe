@@ -41,7 +41,6 @@ export default function Products() {
   const limit = searchParams.get("limit");
   const category = searchParams.get("category");
   const q = searchParams.get("q");
-  console.log("rendered");
 
   const getProducts = async () => {
     try {
@@ -65,9 +64,7 @@ export default function Products() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${q}`
       );
-      console.log(response.data?.data?.products);
       const searchedProducts = response.data?.data?.products;
-      console.log("totalPages: ", response.data?.data?.totalPages);
       setTotalPages(response.data?.data?.totalPages);
       if (
         searchedProducts.length != 0 &&
@@ -89,7 +86,6 @@ export default function Products() {
 
   useEffect(() => {
     if (q != null) {
-      console.log(q);
       searchProducts();
     }
   }, [q]);
@@ -138,7 +134,6 @@ export default function Products() {
   }, [products, filters, category]);
 
   const handlePageClick = (page: number) => {
-    console.log(page);
     router.push(`/products?page=${page}`);
   };
 

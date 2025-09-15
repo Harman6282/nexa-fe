@@ -91,7 +91,6 @@ const CustomersPage: React.FC = () => {
           withCredentials: true,
         }
       );
-      console.log(res.data.data);
       setCustomersDetails(res.data.data);
     } catch (_error) {}
   };

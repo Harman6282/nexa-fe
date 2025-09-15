@@ -44,8 +44,6 @@ export default function page() {
         { withCredentials: true }
       );
 
-      console.log(response.data);
-
       // Try to set user immediately from response
       const immediateUser = response?.data?.user?.data ?? response?.data?.user;
       if (immediateUser) {
