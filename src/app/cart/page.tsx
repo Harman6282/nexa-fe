@@ -24,9 +24,11 @@ import Image from "next/image";
 import { toast } from "sonner";
 import CartShimmer from "@/components/shimmer/Cart_shimmer";
 import OrderSummary from "@/components/OrderSummary";
+import { useRouter } from "next/navigation";
 
 export default function Cart() {
   const cartItems = userStore((state) => state.cartItems);
+  const router = useRouter();
   const {
     removeFromCart,
     increaseQuantity,
@@ -170,7 +172,10 @@ export default function Cart() {
       <div className="min-h-screen bg-white">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="flex items-center mb-8">
-            <ArrowLeft className="w-6 h-6 mr-4 cursor-pointer" />
+            <ArrowLeft
+              className="w-6 h-6 mr-4 cursor-pointer"
+              onClick={goback}
+            />
             <h1 className="text-2xl font-bold">Shopping Bag</h1>
           </div>
 
@@ -206,12 +211,19 @@ export default function Cart() {
     }
   };
 
+  function goback() {
+    router.back();
+  }
+
   return cartItems ? (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center mb-8">
-          <ArrowLeft className="w-6 h-6 mr-4 cursor-pointer hover:text-gray-600" />
+        <div className="flex items-center mb-8 ">
+          <ArrowLeft
+            className="w-6 h-6 mr-4 cursor-pointer hover:text-gray-600"
+            onClick={goback}
+          />
           <h1 className="text-2xl font-bold">Shopping Bag</h1>
           <span className="text-gray-600 ml-2">
             ({cartItems?.length} items)
