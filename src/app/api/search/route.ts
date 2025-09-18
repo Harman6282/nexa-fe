@@ -6,15 +6,16 @@ export const GET = async (req: Request) => {
   const q = searchParams.get("q") || "";
 
   try {
-    const response = await axios(
+    const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${q}`,
       {
         withCredentials: true,
       }
     );
 
-    return response;
-  } catch (error) {
+    // ✅ Convert Axios data into a proper Next.js Response
+    return NextResponse.json(response.data, { status: response.status });
+  } catch (error: any) {
     console.error(error);
     return NextResponse.json(
       { error: "Failed to fetch products" },
