@@ -14,7 +14,7 @@ export async function GET() {
   }
 
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+    const res = await axios.get(`${process.env.API_URL}/auth/me`, {
       headers: { Cookie: `accessToken=${token}` },
     });
 
