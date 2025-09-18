@@ -225,9 +225,7 @@ const ProductDetails = () => {
                 {selectedSize ? (
                   selectedVariant ? (
                     selectedVariant.stock > 0 ? (
-                      <p className="text-sm text-green-600">
-                        In stock: {selectedVariant.stock}
-                      </p>
+                     ""
                     ) : (
                       <p className="text-sm text-red-600 font-semibold">
                         Out of stock
