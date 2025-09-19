@@ -4,9 +4,11 @@ import Image from "next/image";
 import axios from "axios";
 import Link from "next/link";
 import { ShoppingCart, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function CollectionSection() {
   const [products, setProducts] = React.useState<any[]>([]);
+  const router = useRouter();
 
   async function getData() {
     try {
@@ -46,7 +48,7 @@ function CollectionSection() {
                 ? "NEW ARRIVAL"
                 : null);
             return (
-              <div key={product.id} className="group">
+              <div key={product.id} className="group" onClick={() => router.push(`/products/${product.slug}`)}>
                 {/* Image tile */}
                 <div className="relative rounded-3xl overflow-hidden bg-neutral-100 aspect-[4/5]">
                   <Image
