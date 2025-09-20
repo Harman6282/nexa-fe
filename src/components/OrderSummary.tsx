@@ -51,6 +51,10 @@ const OrderSummary = ({
               <span>₹{originalTotal!}</span>
             </div>
             <div className="flex justify-between">
+              <span>Discount</span>
+              <span>₹{discount} OFF</span>
+            </div>
+            <div className="flex justify-between">
               <span>Convenience Fee</span>
               <span className="text-green-600">FREE</span>
             </div>

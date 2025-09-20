@@ -198,7 +198,6 @@ const Checkout = () => {
       );
 
       const { razorpayOrder, key } = res.data.data;
-
       // 2️⃣ Initialize Razorpay payment
       const paymentObject = new (window as any).Razorpay({
         key, // use backend key

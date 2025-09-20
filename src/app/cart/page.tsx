@@ -40,21 +40,25 @@ export default function Cart() {
   const timeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { setOrderDetails } = useCartStore();
 
-  const subtotal = cartItems?.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
-  const originalTotal = cartItems?.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
-  const discount =
+  const originalTotal =
     cartItems?.reduce(
-      (sum, item) => sum + (item.product.discount ?? 0) * item.quantity,
+      (sum, item) => sum + item.product.price * item.quantity,
       0
     ) ?? 0;
-  const deliveryCharges = subtotal! > 500 ? 0 : 60;
-  const total = subtotal! + deliveryCharges - discount;
+
+  const discount =
+    cartItems?.reduce((sum, item) => {
+      const price = item.product.price ?? 0;
+      const discountPercent = item.product.discount ?? 0; // 20
+      const discountAmount = (price * discountPercent) / 100;
+      return sum + discountAmount * item.quantity;
+    }, 0) ?? 0;
+
+  const subtotal = originalTotal - discount;
+
+  const deliveryCharges = subtotal > 500 ? 0 : 60;
+
+  const total = subtotal + deliveryCharges;
 
   const getCart = async () => {
     try {
