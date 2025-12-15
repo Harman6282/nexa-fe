@@ -84,13 +84,15 @@ export default function Home() {
               />
 
               {/* Shop now bubble */}
-              <button className="absolute right-4 top-4 h-20 w-20 rounded-full bg-white/90 text-black text-xs font-semibold backdrop-blur-sm shadow-md">
+              <Link href={'/products'}>
+              <button className="absolute right-4 top-4 h-20 w-20 rounded-full cursor-pointer bg-white/90 text-black text-xs font-semibold backdrop-blur-sm shadow-md">
                 <span className="absolute inset-0 grid place-items-center">
                   SHOP
                   <br />
                   NOW
                 </span>
               </button>
+              </Link>
 
               {/* Bottom controls */}
               <div className="absolute left-4 right-4 bottom-4 flex items-center justify-center gap-3">
