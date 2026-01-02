@@ -60,10 +60,12 @@ export default function RegisterForm() {
       }
 
       toast.success("Registered successfully!");
-      router.push("/");
+      router.push(`/verify-email?email=${data.email}`);
     } catch (error: any) {
-      console.error(error);
-      toast.error("Registration failed. Please try again.");
+      console.log(error.response.data.errors);
+      if (error.status === 409) {
+        toast.error(error.data.response.message);
+      }
     }
   };
 

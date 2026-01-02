@@ -22,11 +22,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Plus, MapPin, CreditCard, Loader2 } from "lucide-react";
+import { Plus, MapPin, CreditCard, Loader2, Currency } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore, userStore } from "@/lib/store";
 import axios from "axios";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import AddressShimmer from "@/components/shimmer/Address_shimmer";
 import OrderSummary from "@/components/OrderSummary";
@@ -54,6 +54,20 @@ export interface AddAddressForm {
   country: string;
 }
 
+const loadScript = (src: string) => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.body.appendChild(script);
+  });
+};
+
 const Checkout = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +85,9 @@ const Checkout = () => {
   useEffect(() => {
     // Check if user has cart items
     if (!cartItems || cartItems.length === 0) {
-      toast.error("Your cart is empty. Please add items to proceed to checkout.");
+      toast.error(
+        "Your cart is empty. Please add items to proceed to checkout."
+      );
       router.push("/cart");
       return;
     }
@@ -80,27 +96,16 @@ const Checkout = () => {
     sessionStorage.setItem("checkoutAccess", "true");
   }, [cartItems, router]);
 
-  const loadScript = (src: string) => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = src;
-      script.onload = () => {
-        resolve(true);
-      };
-      script.onerror = () => {
-        resolve(false);
-      };
-      document.body.appendChild(script);
-    });
-  };
-
-  useEffect(() => {
-    loadScript("https://checkout.razorpay.com/v1/checkout.js").then(
-      (loaded) => {
-        setScriptLoaded(!!loaded);
-      }
+  const RazorpayLoadScript = async () => {
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
     );
-  }, []);
+
+    if (!res) {
+      alert("Razorpay SDK failed to load.");
+      return;
+    }
+  };
 
   const getAddresses = async () => {
     try {
@@ -178,6 +183,7 @@ const Checkout = () => {
   const total = subtotal + shipping + tax;
 
   async function onPayNow() {
+    RazorpayLoadScript();
     const selectedId = checkoutForm.getValues("selectedAddress");
     const data = {
       cartId: cartId,
@@ -190,24 +196,26 @@ const Checkout = () => {
     }
 
     try {
-      // 1️⃣ Create order on backend
+      //? Create order on backend
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/orders`,
         data,
         { withCredentials: true }
       );
 
+      console.log(res.data);
+
       const { razorpayOrder, key } = res.data.data;
-      // 2️⃣ Initialize Razorpay payment
+      //? Initialize Razorpay payment
       const paymentObject = new (window as any).Razorpay({
-        key, // use backend key
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         order_id: razorpayOrder.id, // from backend
-        name: "NexaBuy",
+        name: "Nexa Fashion",
         description: "Order Payment",
         handler: async function (response: any) {
-          // 3️⃣ Verify payment on backend
+          //? Verify payment on backend
           const verificationResponse = await axios.put(
             `${process.env.NEXT_PUBLIC_API_URL}/orders/verify-payment`,
             {
@@ -229,7 +237,7 @@ const Checkout = () => {
             toast.error("Payment verification failed");
           }
         },
-        theme: { color: "#3399cc" },
+        theme: { color: "#924023" },
       });
 
       // 4️⃣ Open Razorpay modal

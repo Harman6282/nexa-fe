@@ -42,6 +42,10 @@
 }
 
 @theme inline {
+  --color-nexa-background: #e4e0e1;
+  --color-nexa-surface: #d6c0b3;
+  --color-nexa-accent: #ab886d;
+  --color-nexa-dark: #493628;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
