@@ -20,15 +20,15 @@ const Searchbar = () => {
   };
 
   return (
-    <div className="hidden md:block w-64">
+    <div className="w-full">
       <div className="relative">
         <Search
-          className="absolute left-3 top-2.5 h-4 w-4 text-gray-500 cursor-pointer"
+          className="absolute left-3 top-2.5 h-4 w-4 text-nexa-dark/50 cursor-pointer"
           onClick={handleSearch}
         />
         <Input
-          placeholder="Search for products, brands and more"
-          className="pl-10 text-sm rounded-sm border-gray-300"
+          placeholder="Q Search for products..."
+          className="pl-10 text-sm rounded-lg border-nexa-surface/50 focus:border-nexa-accent bg-nexa-background/50"
           onKeyDown={handleKeyDown}
           ref={inputRef}
         />

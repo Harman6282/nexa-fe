@@ -42,10 +42,39 @@
 }
 
 @theme inline {
-  --color-nexa-background: #e4e0e1;
-  --color-nexa-surface: #d6c0b3;
-  --color-nexa-accent: #ab886d;
+  /* Colors */
+  --color-primary: #493628;
+
+  --color-background-light: #e4e0e1;
+  --color-background-dark: #d6c0b3;
+
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #f5f3f4;
+
+  --color-text-main: #493628;
+  --color-text-secondary: #ab886d;
+  --color-text-muted: #ab886d;
+
+  --color-accent: #ab886d;
+  --color-accent-light: #d6c0b3;
+
+  /* Nexa Colors */
+  --color-nexa-base: #e4e0e1;
   --color-nexa-dark: #493628;
+  --color-nexa-card: #ffffff;
+  --color-nexa-border: #d6c0b3;
+  --color-nexa-accent: #ab886d;
+  --color-nexa-button: #493628;
+
+  /* Font */
+  --font-display: Inter, sans-serif;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

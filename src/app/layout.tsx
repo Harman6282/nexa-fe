@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next"
 
@@ -34,13 +33,13 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className={`${spaceGrotesk.className} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${spaceGrotesk.className} ${geistMono.variable} bg-background-light text-text-main font-display overflow-x-hidden antialiased selection:bg-accent/20 flex flex-col min-h-screen`}
       >
-        <Navbar />
-        <main className="flex-grow">{children}</main>
+        <ConditionalLayout>
+          {children}
+        </ConditionalLayout>
         <Analytics />
         <Toaster />
-        <Footer />
       </body>
     </html>
   );

@@ -1,15 +1,24 @@
 "use client";
 
-import { AddressBook } from "@/components/profile/Address-book";
-import { OrderHistory } from "@/components/profile/Order-history";
-import { ProfileHeader } from "@/components/profile/Profile-header";
-import { Wishlist } from "@/components/profile/Whishlist";
-import ProfileShimmer from "@/components/shimmer/Profile_shimmer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
 import { userStore } from "@/lib/store";
 import axios from "axios";
-import { Heart, MapPin, Package, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ProfileSidebar } from "@/components/profile/ProfileSidebar";
+import { PersonalInformation } from "@/components/profile/PersonalInformation";
+import { RecentOrders } from "@/components/profile/RecentOrders";
+import { SavedAddresses } from "@/components/profile/SavedAddresses";
+import ProfileShimmer from "@/components/shimmer/Profile_shimmer";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+export interface Address {
+  id: string;
+  lineOne: string;
+  lineTwo?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+}
 
 export interface OrderHistoryProps {
   orderId: string;
@@ -29,25 +38,10 @@ export interface OrderHistoryProps {
   createdAt: Date;
 }
 
-export interface Address {
-  city: string;
-  country: string;
-  createdAt: string;
-  id: string;
-  lineOne: string;
-  lineTwo: string;
-  pincode: string;
-  state: string;
-  updatedAt: string;
-  userId: string;
-}
-
 export default function ProfilePage() {
   const [orders, setOrders] = useState<OrderHistoryProps[]>([]);
-
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const user = userStore((state) => state.user);
-
-  // const cartId = userStore((state) => state.user?.cart[0].id);
 
   const getOrders = async () => {
     try {
@@ -57,15 +51,29 @@ export default function ProfilePage() {
           withCredentials: true,
         }
       );
-      setOrders(res.data.data.items);
+      setOrders(res.data.data.items || []);
     } catch (error) {
       setOrders([]);
     }
-    return;
+  };
+
+  const getAddresses = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/address`,
+        {
+          withCredentials: true,
+        }
+      );
+      setAddresses(res.data.data || []);
+    } catch (error) {
+      setAddresses([]);
+    }
   };
 
   useEffect(() => {
     getOrders();
+    getAddresses();
   }, []);
 
   if (user === null || user === undefined) {
@@ -73,49 +81,48 @@ export default function ProfilePage() {
   }
 
   return (
-    orders && (
-      <div className="min-h-screen bg-white">
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
-          {user && <ProfileHeader name={user?.name} email={user?.email} />}
+    <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="flex mb-8">
+        <ol className="inline-flex items-center space-x-1 md:space-x-2">
+          <li className="inline-flex items-center">
+            <Link
+              href="/"
+              className="inline-flex items-center text-sm font-medium text-text-muted hover:text-accent transition-colors"
+            >
+              Home
+            </Link>
+          </li>
+          <li>
+            <div className="flex items-center">
+              <ChevronRight className="text-text-muted text-sm mx-1 h-4 w-4" />
+              <span className="text-sm font-medium text-text-main">
+                My Profile
+              </span>
+            </div>
+          </li>
+        </ol>
+      </nav>
 
-          <Tabs defaultValue="orders" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-gray-100 mb-8 ">
-              <TabsTrigger
-                value="orders"
-                className="data-[state=active]:text-white cursor-pointer data-[state=active]:bg-stone-800 "
-              >
-                <Package className="w-4 h-4 mr-2" />
-                Orders
-              </TabsTrigger>
-              <TabsTrigger
-                value="wishlist"
-                className="data-[state=active]:text-white cursor-pointer data-[state=active]:bg-stone-800"
-              >
-                <Heart className="w-4 h-4 mr-2" />
-                Wishlist
-              </TabsTrigger>
-              <TabsTrigger
-                value="addresses"
-                className="data-[state=active]:text-white cursor-pointer data-[state=active]:bg-stone-800"
-              >
-                <MapPin className="w-4 h-4 mr-2" />
-                Addresses
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="orders">
-              <OrderHistory order={orders} />
-            </TabsContent>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Sidebar */}
+        <ProfileSidebar />
 
-            <TabsContent value="wishlist">
-              <Wishlist />
-            </TabsContent>
+        {/* Main Content */}
+        <div className="lg:col-span-9 space-y-8">
+          {/* Personal Information */}
+          <PersonalInformation />
 
-            <TabsContent value="addresses">
-              <AddressBook />
-            </TabsContent>
-          </Tabs>
+          {/* Recent Orders and Saved Addresses */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <RecentOrders orders={orders} />
+            <SavedAddresses
+              addresses={addresses}
+              onRefresh={getAddresses}
+            />
+          </div>
         </div>
       </div>
-    )
+    </main>
   );
 }

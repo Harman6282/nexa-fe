@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Heart, ShoppingBag, User } from "lucide-react";
+import { Search, Heart, ShoppingBag, User, Shirt, Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,13 +15,12 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useProductStore, userStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import Searchbar from "./Searchbar";
 
 const categories = [
-  { name: "ALL", href: "/products?category=all" },
-  { name: "MEN", href: "/products?category=men" },
-  { name: "WOMEN", href: "/products?category=women" },
-  { name: "KIDS", href: "/products?category=kids" },
+  { name: "Men", href: "/products?category=men" },
+  { name: "Women", href: "/products?category=women" },
+  { name: "Kids", href: "/products?category=kids" },
+  { name: "Sale", href: "/products?category=sale" },
 ];
 
 export const Navbar = () => {
@@ -47,7 +46,6 @@ export const Navbar = () => {
 
   useEffect(() => {
     getUser();
-    // getProducts();
   }, []);
 
   const handleLogout = async () => {
@@ -67,101 +65,122 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-[#FFFFFF]/90 backdrop-blur-md border-b border-[#D6C0B3]">
+      <div className="px-4 md:px-8 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className="text-2xl font-extrabold text-black tracking-wide cursor-pointer"
-        >
-          NEXA
-        </Link>
-
-        {/* Category Tabs */}
-        <div className="hidden lg:flex gap-6 text-sm font-medium tracking-wide">
-          {categories.map((tab) => (
-            <Link
-              key={tab.name}
-              href={tab.href}
-              className="text-gray-700 hover:text-black transition cursor-pointer"
-            >
-              {tab.name}
-            </Link>
-          ))}
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-3 text-text-main">
+            <div className="size-9 rounded-lg bg-accent flex items-center justify-center text-white shadow-sm">
+              <Shirt className="h-5 w-5" />
+            </div>
+            <h2 className="text-2xl font-black leading-tight tracking-tight hidden sm:block text-text-main">
+              Nexa Fashion
+            </h2>
+          </Link>
         </div>
 
-        {/* Right Icons / Auth */}
-        <div className="flex items-center gap-4">
-          {/* Search bar (hidden on small) */}
-          <Searchbar />
+        {/* Search Bar - Center */}
+        <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <label className="relative w-full group">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-text-muted/60 group-focus-within:text-accent">
+              <Search className="h-5 w-5" />
+            </div>
+            <Input
+              type="text"
+              placeholder="Search for products..."
+              className="block w-full py-2.5 pl-10 pr-3 text-sm text-text-main bg-[#E4E0E1] border border-transparent hover:border-[#D6C0B3] focus:bg-white rounded-lg focus:ring-1 focus:ring-accent focus:border-accent placeholder:text-text-muted/50 transition-all font-medium shadow-sm"
+            />
+          </label>
+        </div>
 
-          {user ? (
-            <>
-              {/* Bag */}
-              {user?.role === "ADMIN" && (
-                <Link href={"/admin"}>
-                  {" "}
-                  <Button variant={"default"}>Dashboard </Button>{" "}
-                </Link>
-              )}
-              <Link href="/cart" className="relative">
-                <Button variant="ghost" size="icon" className="cursor-pointer">
-                  <ShoppingBag className="h-5 w-5 cursor-pointer" />
-                  {cartItems && cartItems?.length > 0 && (
-                    <span className="absolute -top-1 -right-0 bg-gray-800 text-white text-xs rounded-full px-1 min-w-[14px] flex items-center justify-center">
-                      {cartItems.length}
-                    </span>
-                  )}
-                </Button>
+        {/* Right Side */}
+        <div className="flex items-center gap-3 md:gap-5">
+          {/* Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-8 mr-4">
+            {categories.map((tab) => (
+              <Link
+                key={tab.name}
+                href={tab.href}
+                className="text-sm font-bold uppercase tracking-wide text-text-muted hover:text-text-main transition-colors"
+              >
+                {tab.name}
               </Link>
+            ))}
+          </nav>
 
-              {/* Profile Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Avatar className="h-6 w-6 cursor-pointer  duration-300 border-none">
-                      <AvatarFallback>
-                        <User className="h-4 w-4" />
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="bg-white border-none shadow-sm"
-                  align="end"
-                >
-                  <DropdownMenuItem
-                    className="cursor-pointer hover:bg-gray-100 duration-300"
-                    asChild
-                  >
-                    <Link
-                      href="/profile"
-                      className="cursor-pointer  rounded-none"
-                    >
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer  hover:bg-gray-100 duration-300 border-b-gray-200 rounded-none">
-                    Orders
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="cursor-pointer hover:bg-gray-100 duration-300 rounded-none"
-                    onClick={() => handleLogout()}
-                  >
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
-          ) : (
-            <Link href="/login">
-              <Button className="bg-black text-white rounded-full px-5 py-2 h-9">
-                Login
-              </Button>
+          {/* Icons */}
+          <div className="flex gap-3">
+            <Link href="/whishlist">
+              <button className="flex items-center justify-center size-10 rounded-lg hover:bg-[#E4E0E1] text-text-main transition-all relative group">
+                <Heart className="h-6 w-6" />
+              </button>
             </Link>
-          )}
+
+            <Link href="/cart" className="relative">
+              <button className="flex items-center justify-center size-10 rounded-lg hover:bg-[#E4E0E1] text-text-main transition-all relative group">
+                <ShoppingBag className="h-6 w-6" />
+                {cartItems && cartItems?.length > 0 && (
+                  <span className="absolute top-1 right-0 size-4 bg-accent text-white text-[10px] font-bold flex items-center justify-center rounded-lg shadow-sm">
+                    {cartItems.length}
+                  </span>
+                )}
+              </button>
+            </Link>
+
+            {user ? (
+              <>
+                {user?.role === "ADMIN" && (
+                  <Link href={"/admin"}>
+                    <Button
+                      variant={"default"}
+                      className="hidden sm:inline-flex"
+                    >
+                      Dashboard
+                    </Button>
+                  </Link>
+                )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center justify-center size-10 rounded-lg hover:bg-[#E4E0E1] text-text-main transition-all relative group">
+                      <User className="h-6 w-6" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className="bg-white border-none shadow-sm"
+                    align="end"
+                  >
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-gray-100 duration-300"
+                      asChild
+                    >
+                      <Link href="/profile">Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 duration-300">
+                      Orders
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-gray-100 duration-300"
+                      onClick={() => handleLogout()}
+                    >
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <Link href="/login">
+                <button className="flex items-center justify-center size-10 rounded-lg hover:bg-[#E4E0E1] text-text-main transition-all relative group">
+                  <User className="h-6 w-6" />
+                </button>
+              </Link>
+            )}
+
+            <button className="lg:hidden flex items-center justify-center size-10 rounded-lg hover:bg-[#E4E0E1] text-text-main transition-all">
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
         </div>
       </div>
-    </nav>
+    </header>
   );
 };
