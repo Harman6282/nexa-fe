@@ -237,7 +237,7 @@ const Checkout = () => {
             toast.error("Payment verification failed");
           }
         },
-        theme: { color: "#3399cc" },
+        theme: { color: "#924023" },
       });
 
       // 4️⃣ Open Razorpay modal
