@@ -28,7 +28,7 @@ export default function Products() {
   const [isFetching, setIsFetching] = useState(false);
 
   const [filters, setFilters] = useState<Filters>({
-    priceRange: [0, 500],
+    priceRange: [0, 99999],
     category: "",
     size: [],
     color: [],
@@ -50,11 +50,14 @@ export default function Products() {
       const response = await axios.get(
         `${
           process.env.NEXT_PUBLIC_API_URL
-        }/products?page=${currentPage}&limit=${limit || 12}`
+        }/products?page=${currentPage}&limit=${limit || 10}`
       );
+
+      console.log(response.data)
       setProducts(response.data.data.products);
       setTotalPages(response.data.data.totalPages);
     } catch (_error) {
+      
     } finally {
       setIsFetching(false);
     }
@@ -109,17 +112,22 @@ export default function Products() {
         ? filters.category
         : category || "";
 
-    if (selectedCategory && selectedCategory.toLowerCase() !== "all") {
-      const catLower = selectedCategory.toLowerCase();
-      result = result.filter((p) =>
-        (p.categoryName || "").toLowerCase().startsWith(catLower)
-      );
+    // Only filter by category if a category is actually selected (not empty and not "all")
+    if (selectedCategory && selectedCategory.trim() !== "" && selectedCategory.toLowerCase() !== "all") {
+      const catLower = selectedCategory.toLowerCase().trim();
+      result = result.filter((p) => {
+        const productCategory = (p.categoryName || "").toLowerCase();
+        return productCategory.startsWith(catLower) || productCategory === catLower;
+      });
     }
 
     // Price range
     if (filters.priceRange && filters.priceRange.length === 2) {
       const [min, max] = filters.priceRange;
-      result = result.filter((p) => p.price >= min && p.price <= max);
+      result = result.filter((p) => {
+        const productPrice = typeof p.price === 'number' ? p.price : 0;
+        return productPrice >= min && productPrice <= max;
+      });
     }
 
     // Sizes via variants
@@ -128,7 +136,7 @@ export default function Products() {
       result = result.filter(
         (p) =>
           Array.isArray(p.variants) &&
-          p.variants.some((v) => sizesSet.has(v.size))
+          p.variants.some((v) => v.size && sizesSet.has(v.size))
       );
     }
 
@@ -136,7 +144,7 @@ export default function Products() {
 
     // Update active filters for display
     setActiveFilters({
-      category: selectedCategory,
+      category: selectedCategory && selectedCategory.trim() !== "" ? selectedCategory : undefined,
       size: filters.size || [],
     });
   }, [products, filters, category]);
@@ -147,7 +155,7 @@ export default function Products() {
 
   const clearAllFilters = () => {
     setFilters({
-      priceRange: [0, 500],
+      priceRange: [0, 99999],
       category: "",
       size: [],
       color: [],
@@ -289,7 +297,7 @@ export default function Products() {
                     id={product.id}
                     slug={product.slug}
                     title={product.name}
-                    image={product.images.map((img) => img.url)}
+                    image={Array.isArray(product.images) ? product.images.map((img) => img.url) : []}
                     price={product.price}
                     discount={product.discount || 0}
                     brand={product.brand}

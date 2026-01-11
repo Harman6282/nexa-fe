@@ -104,6 +104,10 @@ const ProductDetails = () => {
 
       toast.success("Added to cart", {
         className: "bg-green-500 text-white border border-gray-200",
+        action: {
+          label: "View Cart",
+          onClick: () => router.push("/cart"),
+        },
       });
     } catch (_error) {
       toast.error("Failed to add to cart");
@@ -266,15 +270,15 @@ const ProductDetails = () => {
                   {discount > 0 ? (
                     <>
                       <span className="text-4xl md:text-5xl font-black text-[#D9534F]">
-                        ${discountedPrice.toFixed(2)}
+                        ₹{discountedPrice.toFixed(2)}
                       </span>
                       <span className="text-xl text-text-muted/50 line-through font-semibold">
-                        ${originalPrice.toFixed(2)}
+                        ₹{originalPrice.toFixed(2)}
                       </span>
                     </>
                   ) : (
                     <span className="text-4xl md:text-5xl font-black text-text-main">
-                      ${originalPrice.toFixed(2)}
+                      ₹{originalPrice.toFixed(2)}
                     </span>
                   )}
                 </div>

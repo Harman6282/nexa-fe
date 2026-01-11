@@ -125,7 +125,10 @@ const ProductsPage: React.FC = () => {
     const updatedProducts = originalProducts.filter(
       (product) => product.id !== productId
     );
+
+    console.log("deleting product with id:", productId)
   };
+
   const handleProductUpdated = () => {
     // Refresh the products list
     getProducts();

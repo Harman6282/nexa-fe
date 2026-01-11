@@ -103,7 +103,7 @@ export function RecentOrders({ orders }: RecentOrdersProps) {
                         {firstItem.name}
                       </h4>
                       <span className="text-sm font-medium text-text-main">
-                        ${order.total.toFixed(2)}
+                        ₹{order.total.toFixed(2)}
                       </span>
                     </div>
                     <p className="text-xs text-text-muted mt-1">

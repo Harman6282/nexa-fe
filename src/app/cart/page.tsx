@@ -344,15 +344,15 @@ export default function Cart() {
                               {itemDiscount > 0 ? (
                                 <>
                                   <span className="text-lg font-black text-[#D9534F]">
-                                    ${(discountedPrice * item.quantity).toFixed(2)}
+                                    ₹{(discountedPrice * item.quantity).toFixed(2)}
                                   </span>
                                   <span className="text-sm text-text-muted/50 line-through">
-                                    ${(itemPrice * item.quantity).toFixed(2)}
+                                    ₹{(itemPrice * item.quantity).toFixed(2)}
                                   </span>
                                 </>
                               ) : (
                                 <span className="text-lg font-black text-text-main">
-                                  ${(itemPrice * item.quantity).toFixed(2)}
+                                  ₹{(itemPrice * item.quantity).toFixed(2)}
                                 </span>
                               )}
                             </div>

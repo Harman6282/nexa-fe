@@ -88,11 +88,11 @@ const OrderSummary = ({
               </div>
               <div className="flex flex-col justify-center items-end">
                 <p className="text-sm font-bold text-text-main">
-                  ${(discountedPrice * item.quantity).toFixed(2)}
+                  ₹{(discountedPrice * item.quantity).toFixed(2)}
                 </p>
                 {itemDiscount > 0 && (
                   <p className="text-xs text-text-secondary/50 line-through">
-                    ${(itemPrice * item.quantity).toFixed(2)}
+                    ₹{(itemPrice * item.quantity).toFixed(2)}
                   </p>
                 )}
               </div>
@@ -123,28 +123,28 @@ const OrderSummary = ({
         <div className="flex justify-between text-sm text-text-secondary">
           <span>Subtotal</span>
           <span className="font-bold text-text-main">
-            ${subtotal.toFixed(2)}
+            ₹{subtotal.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between text-sm text-text-secondary">
           <span>Shipping</span>
           <span className="font-bold text-text-main">
-            {deliveryCharges === 0 ? "Free" : `$${deliveryCharges?.toFixed(2)}`}
+            {deliveryCharges === 0 ? "Free" : `₹${deliveryCharges?.toFixed(2)}`}
           </span>
         </div>
         <div className="flex justify-between text-sm text-text-secondary">
           <span>Taxes (Estimated)</span>
-          <span className="font-bold text-text-main">${tax.toFixed(2)}</span>
+          <span className="font-bold text-text-main">₹{tax.toFixed(2)}</span>
         </div>
         <div className="h-px bg-[#D6C0B3]/20 my-2 opacity-50" />
         <div className="flex justify-between items-end">
           <span className="text-base font-bold text-text-main">Total</span>
           <div className="flex items-end gap-2">
             <span className="text-xs font-bold text-text-secondary mb-1">
-              USD
+              INR
             </span>
             <span className="text-2xl font-bold text-primary tracking-tight">
-              ${finalTotal.toFixed(2)}
+              ₹{finalTotal.toFixed(2)}
             </span>
           </div>
         </div>
@@ -166,7 +166,7 @@ const OrderSummary = ({
             onClick={onPayNow}
             disabled={isDisabled}
           >
-            Pay ${finalTotal.toFixed(2)}
+            Pay ₹{finalTotal.toFixed(2)}
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         )}

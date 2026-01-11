@@ -82,7 +82,7 @@ function CollectionSection() {
                     {product.name}
                   </h3>
                   <p className="text-sm font-extrabold text-neutral-500">
-                    ${product.price}
+                    ₹{product.price}
                   </p>
                 </div>
               </div>

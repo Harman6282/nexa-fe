@@ -26,7 +26,7 @@ export default function Sidebar({
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
   filters: Filters;
 }) {
-  const [priceRange, setPriceRange] = useState<number[]>([0, 500]);
+  const [priceRange, setPriceRange] = useState<number[]>([0, 99999]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
@@ -92,12 +92,12 @@ export default function Sidebar({
   };
 
   const resetAll = () => {
-    setPriceRange([0, 500]);
+    setPriceRange([0, 99999]);
     setSelectedCategories([]);
     setSelectedSizes([]);
     setSelectedColors([]);
     setFilters({
-      priceRange: [0, 500],
+      priceRange: [0, 99999],
       category: "",
       size: [],
       color: [],
@@ -187,16 +187,16 @@ export default function Sidebar({
           <div className="px-1 py-2">
             <Slider
               min={0}
-              max={500}
-              step={10}
+              max={99999}
+              step={100}
               value={priceRange}
               onValueChange={handlePriceChange}
               className="w-full [&_[data-slot=slider-track]]:h-1.5 [&_[data-slot=slider-track]]:bg-background-light [&_[data-slot=slider-track]]:border [&_[data-slot=slider-track]]:border-accent/10 [&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:size-4 [&_[data-slot=slider-thumb]]:bg-primary [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-surface-light [&_[data-slot=slider-thumb]]:shadow [&_[data-slot=slider-thumb]]:hover:scale-110"
             />
             <div className="flex justify-between mt-3 text-xs font-bold text-text-secondary">
-              <span>$0</span>
-              <span>${priceRange[1]}</span>
-              <span>$500+</span>
+              <span>₹0</span>
+              <span>₹{priceRange[1]}</span>
+              <span>₹99999+</span>
             </div>
           </div>
         )}

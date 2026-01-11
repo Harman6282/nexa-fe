@@ -101,7 +101,7 @@ export const ProductCard = ({
             className="w-full py-2.5 bg-primary text-surface-light font-bold rounded-lg shadow-lg hover:bg-text-main hover:text-white transition-colors flex items-center justify-center gap-2 text-sm"
           >
             <ShoppingCart className="text-lg" />
-            Quick Add
+            View
           </Button>
         </div>
       </div>
@@ -120,15 +120,15 @@ export const ProductCard = ({
           {discount > 0 ? (
             <>
               <p className="font-bold text-lg text-red-700">
-                ${discountedPrice.toFixed(2)}
+                ₹{discountedPrice.toFixed(2)}
               </p>
               <p className="text-xs text-text-secondary line-through font-medium">
-                ${price.toFixed(2)}
+                ₹{price.toFixed(2)}
               </p>
             </>
           ) : (
             <p className="font-bold text-lg text-primary">
-              ${price.toFixed(2)}
+              ₹{price.toFixed(2)}
             </p>
           )}
         </div>

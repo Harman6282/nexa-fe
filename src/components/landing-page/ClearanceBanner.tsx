@@ -12,7 +12,7 @@ export default function ClearanceBanner() {
         <div className="grid md:grid-cols-2 relative z-10">
           {/* Left Half - Dark Brown Background */}
           <div className="p-10 md:p-16 flex flex-col items-start justify-center gap-6">
-            <span className="text-white font-bold tracking-widest uppercase text-xs bg-accent px-3 py-1 rounded-lg shadow-sm">
+            <span className="text-primary font-bold tracking-widest uppercase text-xs bg-accent px-3 py-1 rounded-lg shadow-sm">
               Limited Time Offer
             </span>
             <h2 className="text-4xl md:text-6xl font-black leading-none text-white">
@@ -27,14 +27,14 @@ export default function ClearanceBanner() {
             <div className="flex gap-4 w-full mt-4">
               <Button
                 asChild
-                className="h-12 px-8 rounded-lg bg-white text-text-main font-bold hover:bg-primary hover:text-white transition-all shadow-lg transform hover:-translate-y-1"
+                className="h-12 px-8 rounded-lg bg-white text-text-main font-bold hover:bg-nexa-dark hover:border hover:text-white transition-all shadow-lg transform hover:-translate-y-1"
               >
                 <Link href="/products?category=sale">Shop Sale</Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
-                className="h-12 px-8 rounded-lg border border-white/30 text-white font-bold hover:bg-white/10 hover:border-white transition-colors"
+                className="h-12 px-8 rounded-lg border text-text-main border-white/30 hover:text-white font-bold hover:bg-white/10 hover:border-white transition-colors"
               >
                 <Link href="/products?category=sale">View Details</Link>
               </Button>

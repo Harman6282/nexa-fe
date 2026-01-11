@@ -126,29 +126,14 @@ export default function NewArrivals() {
                   {discount > 0 ? (
                     <p className="text-[#D9534F] font-bold text-sm">
                       <span className="line-through text-text-muted/50 mr-2 text-xs font-normal">
-                        ${originalPrice.toFixed(2)}
+                        ₹{originalPrice.toFixed(2)}
                       </span>
-                      ${discountedPrice.toFixed(2)}
+                      ₹{discountedPrice.toFixed(2)}
                     </p>
                   ) : (
                     <p className="text-text-muted font-semibold text-sm">
-                      ${originalPrice.toFixed(2)}
+                      ₹{originalPrice.toFixed(2)}
                     </p>
-                  )}
-                  {colors.length > 0 && (
-                    <div className="flex gap-1.5">
-                      {colors.map((color: string, idx: number) => {
-                        const colorValue =
-                          colorMap[color.toLowerCase()] || "#d6c0b3";
-                        return (
-                          <div
-                            key={idx}
-                            className="size-3 rounded-full border border-[#D6C0B3]"
-                            style={{ backgroundColor: colorValue }}
-                          />
-                        );
-                      })}
-                    </div>
                   )}
                 </div>
               </div>

@@ -169,9 +169,9 @@ export const Navbar = () => {
               </>
             ) : (
               <Link href="/login">
-                <button className="flex items-center justify-center size-10 rounded-lg hover:bg-[#E4E0E1] text-text-main transition-all relative group">
-                  <User className="h-6 w-6" />
-                </button>
+                <Button className="flex  items-center justify-center size-10 rounded-lg hover:bg-[#E4E0E1] text-text-main md:px-9 bg-background-dark transition-all relative group">
+                  Login{" "}
+                </Button>
               </Link>
             )}
 
