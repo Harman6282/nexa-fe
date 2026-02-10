@@ -1,5 +1,30 @@
+"use client";
+
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
+
+// SSR-safe storage: only use localStorage in the browser (avoids "localStorage is not a function" during Next.js SSR)
+const hasLocalStorage = (): boolean =>
+  typeof window !== "undefined" &&
+  typeof window.localStorage !== "undefined" &&
+  typeof window.localStorage.getItem === "function";
+
+const safeStorage = {
+  getItem: (name: string): string | null => {
+    if (!hasLocalStorage()) return null;
+    return window.localStorage.getItem(name);
+  },
+  setItem: (name: string, value: string): void => {
+    if (!hasLocalStorage()) return;
+    window.localStorage.setItem(name, value);
+  },
+  removeItem: (name: string): void => {
+    if (!hasLocalStorage()) return;
+    window.localStorage.removeItem(name);
+  },
+};
+
+const cartStorage = createJSONStorage<CartState>(() => safeStorage);
 
 // ? Product store starts here
 export type ImageSchema = {
@@ -116,11 +141,11 @@ export interface CartItems {
 
 export type Wishlist = {
   id: string;
-  name: string;
-  image: string;
   productId: string;
-  slug: string;
-  price: string;
+  name: string;
+  image: string | null;
+  price: number;
+  createdAt?: string;
 };
 
 type UserStore = {
@@ -206,9 +231,9 @@ export const useCartStore = create<CartState>()(
       clearOrderDetails: () => set({ orderDetails: null }),
       clearPersistedData: () => {
         set({ orderDetails: null });
-        localStorage.removeItem("cart-storage");
+        safeStorage.removeItem("cart-storage");
       },
     }),
-    { name: "cart-storage" }
+    { name: "cart-storage", storage: cartStorage! }
   )
 );

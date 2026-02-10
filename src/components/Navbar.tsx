@@ -110,7 +110,7 @@ export const Navbar = () => {
 
           {/* Icons */}
           <div className="flex gap-3">
-            <Link href="/whishlist">
+            <Link href="/wishlist">
               <button className="flex items-center justify-center size-10 rounded-lg hover:bg-[#E4E0E1] text-text-main transition-all relative group">
                 <Heart className="h-6 w-6" />
               </button>

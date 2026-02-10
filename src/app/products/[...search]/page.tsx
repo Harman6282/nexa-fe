@@ -28,24 +28,33 @@ const ProductDetails = () => {
   const products = useProductStore((state) => state.products);
   const { user } = userStore();
 
-  const slug = params?.search?.toString();
+  const slug = Array.isArray(params?.search)
+    ? params.search[0]
+    : params?.search?.toString();
+  const isUuid = (value: string | undefined) =>
+    !!value &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value
+    );
   const router = useRouter();
 
   function getProduct() {
-    const item = products.find((item) => item.slug == slug);
+    if (!slug) return;
+    const item = products.find((item) => item.slug === slug || item.id === slug);
     setProductData(item);
   }
 
-  const fetchProduct = async (slug: string) => {
+  const fetchProduct = async (value: string) => {
     try {
       setIsLoading(true);
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${slug}`,
-        {
-          withCredentials: true,
-        }
-      );
-      setProductData(res.data.data.products[0]);
+      const endpoint = isUuid(value)
+        ? `${process.env.NEXT_PUBLIC_API_URL}/products/${value}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/products/search?q=${value}`;
+      const res = await axios.get(endpoint, {
+        withCredentials: true,
+      });
+      const data = isUuid(value) ? res.data.data : res.data.data.products?.[0];
+      setProductData(data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -55,7 +64,9 @@ const ProductDetails = () => {
 
   useEffect(() => {
     getProduct();
-    fetchProduct(slug!);
+    if (slug) {
+      fetchProduct(slug);
+    }
   }, []);
 
   const [selectedImage, setSelectedImage] = useState(0);

@@ -52,7 +52,7 @@ export function SavedAddresses({ addresses, onRefresh }: SavedAddressesProps) {
 
     try {
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/address/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/address/delete/${id}`,
         {
           withCredentials: true,
         }
@@ -84,7 +84,7 @@ export function SavedAddresses({ addresses, onRefresh }: SavedAddressesProps) {
     try {
       if (editingAddress) {
         await axios.put(
-          `${process.env.NEXT_PUBLIC_API_URL}/address/${editingAddress.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/address/update/${editingAddress.id}`,
           data,
           { withCredentials: true }
         );
@@ -119,7 +119,7 @@ export function SavedAddresses({ addresses, onRefresh }: SavedAddressesProps) {
   };
 
   return (
-    <section className="flex flex-col gap-5">
+    <section id="saved-addresses" className="flex flex-col gap-5">
       <div className="flex items-center justify-between px-1">
         <h3 className="text-lg font-bold text-text-main">Saved Addresses</h3>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

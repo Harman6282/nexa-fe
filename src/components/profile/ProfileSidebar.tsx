@@ -7,7 +7,6 @@ import {
   User,
   Package2,
   MapPin,
-  CreditCard,
   Heart,
   LogOut,
 } from "lucide-react";
@@ -39,38 +38,38 @@ export function ProfileSidebar() {
   };
 
   const navItems = [
-    { href: "/profile", icon: User, label: "Personal Info", path: "/profile" },
     {
-      href: "/profile/orders",
-      icon: Package2,
-      label: "My Orders",
-      path: "/profile/orders",
+      href: "/profile#personal-info",
+      icon: User,
+      label: "Personal Info",
+      path: "/profile#personal-info",
     },
     {
-      href: "/profile/addresses",
+      href: "/profile#recent-orders",
+      icon: Package2,
+      label: "Recent Orders",
+      path: "/profile#recent-orders",
+    },
+    {
+      href: "/profile#saved-addresses",
       icon: MapPin,
       label: "Addresses",
-      path: "/profile/addresses",
+      path: "/profile#saved-addresses",
     },
     {
-      href: "/profile/payment",
-      icon: CreditCard,
-      label: "Payment Methods",
-      path: "/profile/payment",
-    },
-    {
-      href: "/profile/wishlist",
+      href: "/wishlist",
       icon: Heart,
       label: "Wishlist",
-      path: "/profile/wishlist",
+      path: "/wishlist",
     },
   ];
 
   const isActive = (path: string) => {
-    if (path === "/profile") {
-      return pathname === "/profile";
+    const base = path.split("#")[0];
+    if (base === "/profile") {
+      return pathname === "/profile" && path.includes("personal-info");
     }
-    return pathname?.startsWith(path);
+    return pathname?.startsWith(base);
   };
 
   return (
@@ -78,9 +77,9 @@ export function ProfileSidebar() {
       <div className="bg-white rounded-xl shadow-sm border border-[#D6C0B3] overflow-hidden sticky top-24">
         <div className="p-6 border-b border-[#D6C0B3]/50 flex flex-col items-center text-center gap-3">
           <div className="size-20 rounded-full bg-[#E4E0E1] overflow-hidden ring-4 ring-[#E4E0E1] shadow-sm">
-            {user?.avatar ? (
+            {user ? (
               <Image
-                src={user.avatar}
+                src=""
                 alt="User profile picture"
                 width={80}
                 height={80}
@@ -88,11 +87,7 @@ export function ProfileSidebar() {
               />
             ) : (
               <div className="w-full h-full bg-[#D6C0B3] flex items-center justify-center text-2xl font-bold text-text-main">
-                {user?.name
-                  ?.split(" ")
-                  .map((n: string) => n[0])
-                  .join("")
-                  .toUpperCase() || "U"}
+               "userName"
               </div>
             )}
           </div>

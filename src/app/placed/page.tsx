@@ -19,7 +19,7 @@ const OrderSuccess: React.FC = () => {
   useEffect(() => {
     // Validate access to placed page
     const paymentSuccess = sessionStorage.getItem("paymentSuccess");
-    
+
     if (!paymentSuccess) {
       // Redirect to home if accessed without valid payment
       window.location.href = "/";
@@ -44,7 +44,7 @@ const OrderSuccess: React.FC = () => {
         year: "numeric",
         month: "long",
         day: "numeric",
-      })
+      }),
     );
   }, []);
 

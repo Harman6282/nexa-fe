@@ -8,19 +8,15 @@ export default function Home() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="flex-1 bg-background-light">
-        {/* Hero Section */}
+
         <HeroSection />
 
-        {/* New Arrivals Section */}
         <NewArrivals />
 
-        {/* Shop Categories Section */}
         <ShopCategories />
 
-        {/* End of Season Clearance Banner */}
         <ClearanceBanner />
 
-        {/* Newsletter Section */}
         <NewsletterSection />
       </main>
     </div>

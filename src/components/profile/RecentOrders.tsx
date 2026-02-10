@@ -61,11 +61,11 @@ export function RecentOrders({ orders }: RecentOrdersProps) {
   };
 
   return (
-    <section className="flex flex-col gap-5">
+    <section id="recent-orders" className="flex flex-col gap-5">
       <div className="flex items-center justify-between px-1">
         <h3 className="text-lg font-bold text-text-main">Recent Orders</h3>
         <Link
-          href="/profile/orders"
+          href="/profile#recent-orders"
           className="text-sm font-medium text-accent hover:text-text-main transition-colors"
         >
           View All
