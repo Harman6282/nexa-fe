@@ -11,9 +11,11 @@ import { Filters } from "@/app/products/page";
 export default function Sidebar({
   className,
   setFilters,
+  onApply,
 }: {
   className?: string;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  onApply?: () => void;
 }) {
   const [priceRange, setPriceRange] = useState<number[]>([500, 5000]);
   const [category, setCategory] = useState<string>("all");
@@ -32,6 +34,7 @@ export default function Sidebar({
       size: sizes,
     };
     setFilters(next);
+    onApply?.();
   };
 
   return (
@@ -123,6 +126,7 @@ export default function Sidebar({
           setCategory("all");
           setSizes([]);
           setFilters({ priceRange: [500, 5000], category: "all", size: [] });
+          onApply?.();
         }}
         className="w-full border-black text-black hover:bg-gray-100"
       >

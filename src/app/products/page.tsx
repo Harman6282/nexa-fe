@@ -10,12 +10,15 @@ import axios from "axios";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 export type Filters = {
   priceRange?: number[] | null;
@@ -29,6 +32,7 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const [isFetching, setIsFetching] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [filters, setFilters] = useState<Filters>({
     priceRange: [500, 5000],
@@ -41,6 +45,7 @@ export default function Products() {
   const limit = searchParams.get("limit");
   const category = searchParams.get("category");
   const q = searchParams.get("q");
+  const [mobileSearchTerm, setMobileSearchTerm] = useState("");
 
   const getProducts = async () => {
     try {
@@ -82,6 +87,7 @@ export default function Products() {
   useEffect(() => {
     const pageParam = Number(searchParams.get("page")) || 1;
     setCurrentPage(pageParam);
+    setMobileSearchTerm(q || "");
   }, [searchParams]);
 
   useEffect(() => {
@@ -134,11 +140,53 @@ export default function Products() {
   }, [products, filters, category]);
 
   const handlePageClick = (page: number) => {
-    router.push(`/products?page=${page}`);
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.set("page", String(page));
+    router.push(`/products?${nextParams.toString()}`);
+  };
+
+  const handleMobileSearch = () => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+    const nextQuery = mobileSearchTerm.trim();
+
+    if (nextQuery) {
+      nextParams.set("q", nextQuery);
+    } else {
+      nextParams.delete("q");
+    }
+    nextParams.set("page", "1");
+
+    router.push(`/products?${nextParams.toString()}`);
   };
 
   return (
-    <div className="flex gap-1">
+    <div className="flex flex-col md:flex-row gap-1">
+      <div className="md:hidden px-2 mt-3">
+        <div className="flex items-center gap-2">
+          <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" aria-label="Toggle filters">
+                <SlidersHorizontal className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[85vw] max-w-sm p-0 overflow-y-auto">
+              <SheetTitle className="sr-only">Product filters</SheetTitle>
+              <Sidebar className="w-full border-r-0 shadow-none" setFilters={setFilters} onApply={() => setIsFilterOpen(false)} />
+            </SheetContent>
+          </Sheet>
+
+          <Input
+            value={mobileSearchTerm}
+            onChange={(e) => setMobileSearchTerm(e.target.value)}
+            placeholder="Search products"
+            className="h-10"
+          />
+          <Button onClick={handleMobileSearch} className="h-10 px-3" aria-label="Search products">
+            <Search className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
       <Sidebar
         className="hidden md:inline-block w-1/4"
         setFilters={setFilters}
