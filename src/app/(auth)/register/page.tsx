@@ -56,11 +56,11 @@ export default function RegisterForm() {
             const payload = me.data.user?.data ?? me.data.user;
             setUser(payload);
           }
-        } catch {}
+        } catch { }
       }
 
       toast.success("Registered successfully!");
-      router.push("/");
+      router.push(`/verify-email?email=${data.email}`);
     } catch (error: any) {
       console.error(error);
       toast.error("Registration failed. Please try again.");
